@@ -21,6 +21,8 @@ public class CommandIntegrationTest {
     @Inject
     HerokuConnection conn;
 
+    String appName;
+
     @Test
     public void testCreateAppCommand() throws HerokuAPIException, IOException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
@@ -32,5 +34,17 @@ public class CommandIntegrationTest {
         HerokuCommandResponse response = cmd.execute(conn);
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
+        appName = response.get("name").toString();
     }
+
+    @Test(dependsOnMethods = "testCreateAppCommand")
+    public void testDestroyAppCommand() throws IOException, HerokuAPIException {
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        config.set(HerokuRequestKeys.name, appName);
+        HerokuCommand cmd = new HerokuAppDestroyCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+    }
+
+
 }
