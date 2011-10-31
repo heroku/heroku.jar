@@ -4,12 +4,19 @@ import com.google.inject.Inject;
 import com.heroku.ConnectionTestModule;
 import com.heroku.connection.HerokuAPIException;
 import com.heroku.connection.HerokuConnection;
-//import org.testng.Assert;
-import static org.testng.Assert.*;
+import com.heroku.util.OpenSSHKeyUtil;
+import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+//import org.testng.Assert;
 
 /**
  * TODO: Javadoc
@@ -18,12 +25,21 @@ import java.io.IOException;
  */
 @Guice(modules = ConnectionTestModule.class)
 public class CommandIntegrationTest {
+
     @Inject
     HerokuConnection conn;
 
     String appName;
 
-    @Test
+    public CommandIntegrationTest() {
+        // setup verbose logging
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "debug");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
+    }
+
+    //@Test
     public void testCreateAppCommand() throws HerokuAPIException, IOException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
         config.set(HerokuRequestKeys.stack, "cedar");
@@ -37,7 +53,7 @@ public class CommandIntegrationTest {
         appName = response.get("name").toString();
     }
 
-    @Test(dependsOnMethods = "testCreateAppCommand")
+    //@Test(dependsOnMethods = "testCreateAppCommand")
     public void testDestroyAppCommand() throws IOException, HerokuAPIException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
         config.set(HerokuRequestKeys.name, appName);
@@ -46,5 +62,39 @@ public class CommandIntegrationTest {
         assertNotNull(response);
     }
 
+    @Test
+    public void testKeysAddCommand() throws IOException, HerokuAPIException, NoSuchAlgorithmException {
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+
+        String sshkey = OpenSSHKeyUtil.encodeOpenSSHPublicKeyString(OpenSSHKeyUtil.generateRSAPublicKey());
+
+        config.set(HerokuRequestKeys.sshkey, sshkey);
+        HerokuCommand cmd = new HerokuKeysAddCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+    }
+
+    @Test(dependsOnMethods = "testKeysAddCommand")
+    public void testKeysRemoveCommand() throws IOException, HerokuAPIException {
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+
+        /*
+        String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
+        config.set(HerokuRequestKeys.sshkey, sshkey);
+        HerokuCommand cmd = new HerokuKeysAddCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+        */
+    }
+
+    @Test(expectedExceptions = HerokuAPIException.class)
+    public void testKeysAddCommandWithDuplicateKey() throws IOException, HerokuAPIException {
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
+        config.set(HerokuRequestKeys.sshkey, sshkey);
+        HerokuCommand cmd = new HerokuKeysAddCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+    }
 
 }

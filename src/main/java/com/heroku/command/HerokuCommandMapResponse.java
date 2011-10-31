@@ -15,6 +15,10 @@ public class HerokuCommandMapResponse implements HerokuCommandResponse {
 
     private final Map<String, String> data;
 
+    public HerokuCommandMapResponse() {
+        this.data = new HashMap<String, String>();
+    }
+
     public HerokuCommandMapResponse(byte[] data) {
         Type listType = new TypeToken<HashMap<String, String>>(){}.getType();
         this.data = Collections.unmodifiableMap(new Gson().<Map<String, String>>fromJson(new String(data), listType));

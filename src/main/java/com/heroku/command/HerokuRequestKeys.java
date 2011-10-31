@@ -13,7 +13,8 @@ public enum HerokuRequestKeys {
     requested ("requested"),
     beta ("beta"),
     name ("name"),
-    app ("app");
+    app ("app"),
+    sshkey ("sshkey");
 
     public final String queryParameter;
 
