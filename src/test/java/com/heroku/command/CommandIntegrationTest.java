@@ -31,6 +31,8 @@ public class CommandIntegrationTest {
 
     String appName;
 
+    private static final String KEY_COMMENT = "foo@bar";
+
     public CommandIntegrationTest() {
         // setup verbose logging
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -39,7 +41,7 @@ public class CommandIntegrationTest {
         System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.commons.httpclient", "debug");
     }
 
-    //@Test
+    @Test
     public void testCreateAppCommand() throws HerokuAPIException, IOException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
         config.set(HerokuRequestKeys.stack, "cedar");
@@ -53,7 +55,7 @@ public class CommandIntegrationTest {
         appName = response.get("name").toString();
     }
 
-    //@Test(dependsOnMethods = "testCreateAppCommand")
+    @Test(dependsOnMethods = "testCreateAppCommand")
     public void testDestroyAppCommand() throws IOException, HerokuAPIException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
         config.set(HerokuRequestKeys.name, appName);
@@ -66,25 +68,22 @@ public class CommandIntegrationTest {
     public void testKeysAddCommand() throws IOException, HerokuAPIException, NoSuchAlgorithmException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
 
-        String sshkey = OpenSSHKeyUtil.encodeOpenSSHPublicKeyString(OpenSSHKeyUtil.generateRSAPublicKey());
-
+        String sshkey = OpenSSHKeyUtil.encodeOpenSSHPublicKeyString(OpenSSHKeyUtil.generateRSAPublicKey(), KEY_COMMENT);
+        
         config.set(HerokuRequestKeys.sshkey, sshkey);
         HerokuCommand cmd = new HerokuKeysAddCommand(config);
         HerokuCommandResponse response = cmd.execute(conn);
         assertNotNull(response);
     }
 
-    @Test(dependsOnMethods = "testKeysAddCommand")
+    @Test(dependsOnMethods={"testKeysAddCommand"})
     public void testKeysRemoveCommand() throws IOException, HerokuAPIException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
 
-        /*
-        String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
-        config.set(HerokuRequestKeys.sshkey, sshkey);
-        HerokuCommand cmd = new HerokuKeysAddCommand(config);
+        config.set(HerokuRequestKeys.name, KEY_COMMENT);
+        HerokuCommand cmd = new HerokuKeysRemoveCommand(config);
         HerokuCommandResponse response = cmd.execute(conn);
         assertNotNull(response);
-        */
     }
 
     @Test(expectedExceptions = HerokuAPIException.class)

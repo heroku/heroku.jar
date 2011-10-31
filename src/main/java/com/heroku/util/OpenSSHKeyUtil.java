@@ -27,11 +27,11 @@ public class OpenSSHKeyUtil {
         return publicKey;
     }
 
-    public static String encodeOpenSSHPublicKeyString(RSAPublicKey publicKey) throws IOException {
+    public static String encodeOpenSSHPublicKeyString(RSAPublicKey publicKey, String keyComment) throws IOException {
 
         byte[] openSSHPublicKeyBytes = encodeOpenSSHPublicKeyBytes(publicKey);
 
-        String openSSHPublicKeyString = "ssh-rsa " + new String(Base64.encodeBase64(openSSHPublicKeyBytes));
+        String openSSHPublicKeyString = "ssh-rsa " + new String(Base64.encodeBase64(openSSHPublicKeyBytes)) + " " + keyComment;
 
         return openSSHPublicKeyString;
     }
