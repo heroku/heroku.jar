@@ -13,25 +13,25 @@ import java.io.IOException;
  *
  * @author James Ward
  */
-public class HerokuKeysAddCommand implements HerokuCommand {
+public class HerokuSharingAddCommand implements HerokuCommand {
 
-    // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
+    // xml(post("/apps/#{app_name}/collaborators", { 'collaborator[email]' => email }).to_s)
 
-    private final String RESOURCE_URL = "/user/keys";
+    private final String RESOURCE_URL = "/apps";
     private final HerokuCommandConfig<HerokuRequestKeys> config;
 
-    public HerokuKeysAddCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
+    public HerokuSharingAddCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
         this.config = config;
     }
 
     @Override
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL;
+
+        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKeys.app) + "/collaborators";
         PostMethod method = connection.getHttpMethod(new PostMethod(endpoint));
-        method.addRequestHeader(HerokuResponseFormat.JSON.acceptHeader);
-        method.addRequestHeader(HerokuContentType.SSH_AUTHKEY.contentType);
-        method.setRequestBody(config.get(HerokuRequestKeys.sshkey));
+        method.addRequestHeader(HerokuResponseFormat.XML.acceptHeader);
+        method.setRequestBody(new NameValuePair[] {getParam(HerokuRequestKeys.collaborator)});
         client.executeMethod(method);
 
         if (method.getStatusCode() != 200)
@@ -39,7 +39,7 @@ public class HerokuKeysAddCommand implements HerokuCommand {
             throw new HerokuAPIException(method.getStatusText());
         }
 
-        // successful response is an empty string
+        // successful response is a string like: demo@heroku.com added as a collaborator on fierce-meadow-5651
         return new HerokuCommandMapResponse();
     }
 

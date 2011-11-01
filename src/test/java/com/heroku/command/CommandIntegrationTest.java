@@ -11,12 +11,11 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
-//import org.testng.Assert;
 
 /**
  * TODO: Javadoc
@@ -26,12 +25,14 @@ import static org.testng.Assert.assertNotNull;
 @Guice(modules = ConnectionTestModule.class)
 public class CommandIntegrationTest {
 
+    private static final String KEY_COMMENT = "foo@bar";
+
+    public static final String DEMO_EMAIL = "jw+demo@heroku.com";
+
     @Inject
     HerokuConnection conn;
 
     String appName;
-
-    private static final String KEY_COMMENT = "foo@bar";
 
     public CommandIntegrationTest() {
         // setup verbose logging
@@ -65,11 +66,11 @@ public class CommandIntegrationTest {
     }
 
     @Test
-    public void testKeysAddCommand() throws IOException, HerokuAPIException, NoSuchAlgorithmException {
+    public void testKeysAddCommand() throws IOException, HerokuAPIException {
         HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
 
         String sshkey = OpenSSHKeyUtil.encodeOpenSSHPublicKeyString(OpenSSHKeyUtil.generateRSAPublicKey(), KEY_COMMENT);
-        
+
         config.set(HerokuRequestKeys.sshkey, sshkey);
         HerokuCommand cmd = new HerokuKeysAddCommand(config);
         HerokuCommandResponse response = cmd.execute(conn);
@@ -94,6 +95,63 @@ public class CommandIntegrationTest {
         HerokuCommand cmd = new HerokuKeysAddCommand(config);
         HerokuCommandResponse response = cmd.execute(conn);
         assertNotNull(response);
+    }
+
+    @Test
+    public void testSharingAddCommand() throws IOException, HerokuAPIException {
+        testCreateAppCommand();
+
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        config.set(HerokuRequestKeys.app, appName);
+        config.set(HerokuRequestKeys.collaborator, DEMO_EMAIL);
+
+        HerokuCommand cmd = new HerokuSharingAddCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+    }
+
+    @Test(dependsOnMethods={"testSharingAddCommand"})
+    public void testSharingRemoveCommand() throws IOException, HerokuAPIException {
+        testSharingAddCommand();
+
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        config.set(HerokuRequestKeys.app, appName);
+        config.set(HerokuRequestKeys.collaborator, DEMO_EMAIL);
+
+        HerokuCommand cmd = new HerokuSharingRemoveCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+        assertNotNull(response);
+
+        testDestroyAppCommand();
+    }
+
+
+    @Test
+    public void testSharingTransferCommand() throws IOException, HerokuAPIException {
+        testSharingAddCommand();
+
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        config.set(HerokuRequestKeys.app, appName);
+        config.set(HerokuRequestKeys.collaborator, DEMO_EMAIL);
+
+        HerokuCommand cmd = new HerokuSharingTransferCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+
+        // this app can't be destroyed after it has been transferred - until we add a second heroku user to this setup
+    }
+
+    @Test
+    public void testConfigAddCommand() throws IOException, HerokuAPIException {
+        testCreateAppCommand();
+
+        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
+        config.set(HerokuRequestKeys.app, appName);
+        config.set(HerokuRequestKeys.configvars, "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
+
+        HerokuCommand cmd = new HerokuConfigAddCommand(config);
+        HerokuCommandResponse response = cmd.execute(conn);
+
+        testDestroyAppCommand();
     }
 
 }

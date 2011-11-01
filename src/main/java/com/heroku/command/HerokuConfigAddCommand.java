@@ -4,7 +4,9 @@ import com.heroku.connection.HerokuAPIException;
 import com.heroku.connection.HerokuConnection;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.io.IOException;
 
@@ -13,25 +15,28 @@ import java.io.IOException;
  *
  * @author James Ward
  */
-public class HerokuKeysAddCommand implements HerokuCommand {
+public class HerokuConfigAddCommand implements HerokuCommand {
 
-    // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
+    // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
-    private final String RESOURCE_URL = "/user/keys";
+    private final String RESOURCE_URL = "/apps";
     private final HerokuCommandConfig<HerokuRequestKeys> config;
 
-    public HerokuKeysAddCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
+    public HerokuConfigAddCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
         this.config = config;
     }
 
     @Override
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL;
-        PostMethod method = connection.getHttpMethod(new PostMethod(endpoint));
-        method.addRequestHeader(HerokuResponseFormat.JSON.acceptHeader);
-        method.addRequestHeader(HerokuContentType.SSH_AUTHKEY.contentType);
-        method.setRequestBody(config.get(HerokuRequestKeys.sshkey));
+
+        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKeys.app) + "/config_vars";
+
+        RequestEntity requestEntity = new StringRequestEntity(config.get(HerokuRequestKeys.configvars), HerokuResponseFormat.JSON.value, "UTF-8");
+
+        PutMethod method = connection.getHttpMethod(new PutMethod(endpoint));
+        method.addRequestHeader(HerokuResponseFormat.XML.acceptHeader);
+        method.setRequestEntity(requestEntity);
         client.executeMethod(method);
 
         if (method.getStatusCode() != 200)

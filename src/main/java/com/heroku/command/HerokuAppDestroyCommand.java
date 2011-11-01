@@ -3,9 +3,7 @@ package com.heroku.command;
 import com.heroku.connection.HerokuAPIException;
 import com.heroku.connection.HerokuConnection;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.IOException;
 
