@@ -1,16 +1,22 @@
 package com.heroku.connection;
 
 import com.google.gson.Gson;
+import com.heroku.HerokuApiVersion;
 import com.heroku.HerokuResource;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
+import com.heroku.command.HerokuResponseFormat;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * TODO: Enter JavaDoc
@@ -39,19 +45,19 @@ public class HerokuBasicAuthConnectionProvider implements HerokuConnectionProvid
 
     @Override
     public HerokuConnection getConnection() throws HerokuAPIException, IOException {
-        PostMethod loginPost = new PostMethod(endpoint.toString() + HerokuResource.LOGIN.value);
-        loginPost.addRequestHeader(new Header("Accept", "application/json"));
-        loginPost.addRequestHeader(new Header("X-Heroku-API-Version", "2"));
-        loginPost.setRequestBody(new NameValuePair[] {
-                new NameValuePair("username", username),
-                new NameValuePair("password", password)
-        });
+        HttpPost loginPost = new HttpPost(endpoint.toString() + HerokuResource.Login.value);
+        loginPost.addHeader(HerokuResponseFormat.JSON.acceptHeader);
+        loginPost.addHeader(HerokuApiVersion.v2.versionHeader);
+        loginPost.setEntity(new UrlEncodedFormEntity(Arrays.asList(
+                new BasicNameValuePair("username", username),
+                new BasicNameValuePair("password", password)
+        )));
 
-        HttpClient client = new HttpClient();
-        client.executeMethod(loginPost);
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse response = client.execute(loginPost);
         
-        if (loginPost.getStatusCode() == HttpStatus.SC_OK) {
-            String rawLoginResponse = new String(loginPost.getResponseBody());
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String rawLoginResponse = EntityUtils.toString(response.getEntity());
             LoginResponse loginResponse = new Gson().fromJson(rawLoginResponse, LoginResponse.class);
             return new HerokuBasicAuthConnection(
                     endpoint,
@@ -59,7 +65,7 @@ public class HerokuBasicAuthConnectionProvider implements HerokuConnectionProvid
                     loginResponse.id,
                     loginResponse.email
             );
-        } else if (loginPost.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+        } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
             throw new HerokuAPIException("Invalid username and password combination.");
         } else {
             throw new HerokuAPIException("Unknown error occurred while connecting to Heroku.");

@@ -1,6 +1,7 @@
 package com.heroku.command;
 
-import org.apache.commons.httpclient.Header;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 
 /**
  * TODO: Javadoc
@@ -16,6 +17,6 @@ public enum HerokuResponseFormat {
 
     HerokuResponseFormat(String value, String mimeType) {
         this.value = value;
-        this.acceptHeader = new Header("Accept", mimeType);
+        this.acceptHeader = new BasicHeader("Accept", mimeType);
     }
 }

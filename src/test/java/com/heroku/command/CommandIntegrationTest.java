@@ -1,12 +1,10 @@
 package com.heroku.command;
 
-import com.google.inject.Inject;
-import com.heroku.ConnectionTestModule;
+import com.heroku.HerokuStack;
 import com.heroku.connection.HerokuAPIException;
-import com.heroku.connection.HerokuConnection;
 //import org.testng.Assert;
 import static org.testng.Assert.*;
-import org.testng.annotations.Guice;
+
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -16,34 +14,38 @@ import java.io.IOException;
  *
  * @author Naaman Newbold
  */
-@Guice(modules = ConnectionTestModule.class)
-public class CommandIntegrationTest {
-    @Inject
-    HerokuConnection conn;
-
-    String appName;
+public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws HerokuAPIException, IOException {
-        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
-        config.set(HerokuRequestKeys.stack, "cedar");
-        config.set(HerokuRequestKeys.remote, "heroku");
-        config.set(HerokuRequestKeys.timeout, "10");
-        config.set(HerokuRequestKeys.addons, "");
+        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
+
         HerokuCommand cmd = new HerokuAppCreateCommand(config);
-        HerokuCommandResponse response = cmd.execute(conn);
+        HerokuCommandResponse response = cmd.execute(connection);
+
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
-        appName = response.get("name").toString();
     }
 
-    @Test(dependsOnMethods = "testCreateAppCommand")
-    public void testDestroyAppCommand() throws IOException, HerokuAPIException {
-        HerokuCommandConfig<HerokuRequestKeys> config = new HerokuCommandConfig<HerokuRequestKeys>();
-        config.set(HerokuRequestKeys.name, appName);
+    @Test(dataProvider = "app")
+    public void testListAppsCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
+
+        HerokuCommand cmd = new HerokuAppsCommand(config);
+        HerokuCommandResponse response = cmd.execute(connection);
+
+        assertNotNull(response.get(app.get("name").toString()));
+    }
+
+    @Test(dataProvider = "app")
+    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
+
         HerokuCommand cmd = new HerokuAppDestroyCommand(config);
-        HerokuCommandResponse response = cmd.execute(conn);
-        assertNotNull(response);
+
+        HerokuCommandResponse response = cmd.execute(connection);
+
+        assertEquals(response.isSuccess(), true);
     }
 
 

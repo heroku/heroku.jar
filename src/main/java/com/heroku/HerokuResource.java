@@ -6,7 +6,8 @@ package com.heroku;
  * @author Naaman Newbold
  */
 public enum HerokuResource {
-    LOGIN ("/login");
+    Login("/login"),
+    Apps("/apps");
 
     public final String value;
     
