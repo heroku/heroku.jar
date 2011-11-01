@@ -1,4 +1,4 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;

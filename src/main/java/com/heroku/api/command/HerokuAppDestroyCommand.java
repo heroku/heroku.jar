@@ -1,13 +1,12 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
-import com.heroku.HerokuResource;
-import com.heroku.connection.HerokuAPIException;
-import com.heroku.connection.HerokuConnection;
+import com.heroku.api.HerokuResource;
+import com.heroku.api.connection.HerokuAPIException;
+import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

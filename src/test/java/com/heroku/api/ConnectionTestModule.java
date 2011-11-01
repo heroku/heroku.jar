@@ -1,11 +1,10 @@
-package com.heroku;
+package com.heroku.api;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.heroku.connection.HerokuAPIException;
-import com.heroku.connection.HerokuBasicAuthConnectionProvider;
-import com.heroku.connection.HerokuConnection;
-import com.heroku.connection.HerokuConnectionProvider;
+import com.heroku.api.connection.HerokuAPIException;
+import com.heroku.api.connection.HerokuBasicAuthConnectionProvider;
+import com.heroku.api.connection.HerokuConnection;
 
 import java.io.IOException;
 import java.util.Properties;

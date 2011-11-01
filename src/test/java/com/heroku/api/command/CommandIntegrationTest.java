@@ -1,7 +1,7 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
-import com.heroku.HerokuStack;
-import com.heroku.connection.HerokuAPIException;
+import com.heroku.api.HerokuStack;
+import com.heroku.api.connection.HerokuAPIException;
 //import org.testng.Assert;
 import static org.testng.Assert.*;
 

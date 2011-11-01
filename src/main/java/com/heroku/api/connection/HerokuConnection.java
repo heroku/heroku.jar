@@ -1,6 +1,6 @@
-package com.heroku.connection;
+package com.heroku.api.connection;
 
-import com.heroku.command.HerokuCommand;
+import com.heroku.api.command.HerokuCommand;
 import org.apache.http.HttpMessage;
 import org.apache.http.client.HttpClient;
 

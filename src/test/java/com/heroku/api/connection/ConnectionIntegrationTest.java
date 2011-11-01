@@ -1,7 +1,7 @@
-package com.heroku.connection;
+package com.heroku.api.connection;
 
 import com.google.inject.Inject;
-import com.heroku.ConnectionTestModule;
+import com.heroku.api.ConnectionTestModule;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;

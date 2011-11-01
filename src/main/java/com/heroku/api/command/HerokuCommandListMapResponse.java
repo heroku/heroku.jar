@@ -1,4 +1,4 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

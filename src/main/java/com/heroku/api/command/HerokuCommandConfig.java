@@ -1,6 +1,6 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
-import com.heroku.HerokuStack;
+import com.heroku.api.HerokuStack;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,9 @@
-package com.heroku.connection;
+package com.heroku.api.connection;
 
 import com.google.gson.Gson;
-import com.heroku.HerokuApiVersion;
-import com.heroku.HerokuResource;
-import com.heroku.command.HerokuResponseFormat;
+import com.heroku.api.HerokuApiVersion;
+import com.heroku.api.HerokuResource;
+import com.heroku.api.command.HerokuResponseFormat;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;

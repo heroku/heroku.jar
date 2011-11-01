@@ -1,6 +1,4 @@
-package com.heroku.connection;
-
-import java.io.IOException;
+package com.heroku.api.connection;
 
 /**
  * TODO: Enter JavaDoc

@@ -1,11 +1,10 @@
-package com.heroku.command;
+package com.heroku.api.command;
 
 import com.google.inject.Inject;
-import com.heroku.ConnectionTestModule;
-import com.heroku.HerokuStack;
-import com.heroku.connection.HerokuAPIException;
-import com.heroku.connection.HerokuConnection;
-import org.testng.Assert;
+import com.heroku.api.ConnectionTestModule;
+import com.heroku.api.HerokuStack;
+import com.heroku.api.connection.HerokuAPIException;
+import com.heroku.api.connection.HerokuConnection;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;

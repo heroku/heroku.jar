@@ -1,4 +1,4 @@
-package com.heroku.connection;
+package com.heroku.api.connection;
 
 import java.io.IOException;
 
