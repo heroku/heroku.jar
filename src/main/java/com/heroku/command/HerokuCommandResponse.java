@@ -6,5 +6,6 @@ package com.heroku.command;
  * @author Naaman Newbold
  */
 public interface HerokuCommandResponse {
+    boolean isSuccess();
     Object get(String key);
 }

@@ -1,6 +1,6 @@
 package com.heroku.command;
 
-import org.apache.commons.httpclient.Header;
+import org.apache.http.message.BasicHeader;
 
 /**
  * TODO: Javadoc
@@ -10,9 +10,9 @@ import org.apache.commons.httpclient.Header;
 public enum HerokuContentType {
     SSH_AUTHKEY ("text/ssh-authkey");
 
-    public final Header contentType;
+    public final BasicHeader contentType;
 
     HerokuContentType(String mimeType) {
-        this.contentType = new Header("Content-Type", mimeType);
+        this.contentType = new BasicHeader("Content-Type", mimeType);
     }
 }

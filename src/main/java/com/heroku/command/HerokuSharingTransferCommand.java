@@ -2,11 +2,13 @@ package com.heroku.command;
 
 import com.heroku.connection.HerokuAPIException;
 import com.heroku.connection.HerokuConnection;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -23,35 +25,28 @@ public class HerokuSharingTransferCommand implements HerokuCommand {
     // http request body = app[transfer_owner]=jw%2Bdemo%40heroku.com
 
     private final String RESOURCE_URL = "/apps";
-    private final HerokuCommandConfig<HerokuRequestKeys> config;
+    private final HerokuCommandConfig config;
 
-    public HerokuSharingTransferCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
+    public HerokuSharingTransferCommand(HerokuCommandConfig config) {
         this.config = config;
     }
 
     @Override
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKeys.app);
+        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKey.name);
 
-        RequestEntity requestEntity = new StringRequestEntity("app[transfer_owner]=" + URLEncoder.encode(config.get(HerokuRequestKeys.collaborator), "UTF-8"), "application/x-www-form-urlencoded", "UTF-8");
+        HttpEntity requestEntity = new StringEntity("app[transfer_owner]=" +
+                URLEncoder.encode(config.get(HerokuRequestKey.collaborator), "UTF-8"));
 
         HttpClient client = connection.getHttpClient();
-        PutMethod method = connection.getHttpMethod(new PutMethod(endpoint));
-        method.addRequestHeader(HerokuResponseFormat.XML.acceptHeader);
-        method.setRequestEntity(requestEntity);
-        client.executeMethod(method);
+        HttpPut method = connection.getHttpMethod(new HttpPut(endpoint));
+        method.addHeader(HerokuResponseFormat.XML.acceptHeader);
+        method.setEntity(requestEntity);
 
-        if (method.getStatusCode() != 200)
-        {
-            throw new HerokuAPIException(method.getStatusText());
-        }
+        HttpResponse response = client.execute(method);
+        boolean success = (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
 
-        // successful response is an empty string
-        return new HerokuCommandMapResponse();
-    }
-
-    private NameValuePair getParam(HerokuRequestKeys param) {
-        return new NameValuePair(param.queryParameter, config.get(param));
+        return new HerokuCommandEmptyResponse(success);
     }
 
 }

@@ -2,9 +2,12 @@ package com.heroku.command;
 
 import com.heroku.connection.HerokuAPIException;
 import com.heroku.connection.HerokuConnection;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+
 
 import java.io.IOException;
 
@@ -18,9 +21,9 @@ public class HerokuKeysRemoveCommand implements HerokuCommand {
     // delete("/user/keys/#{escape(key)}").to_s
 
     private final String RESOURCE_URL = "/user/keys";
-    private final HerokuCommandConfig<HerokuRequestKeys> config;
+    private final HerokuCommandConfig config;
 
-    public HerokuKeysRemoveCommand(HerokuCommandConfig<HerokuRequestKeys> config) {
+    public HerokuKeysRemoveCommand(HerokuCommandConfig config) {
         this.config = config;
     }
 
@@ -29,22 +32,14 @@ public class HerokuKeysRemoveCommand implements HerokuCommand {
         HttpClient client = connection.getHttpClient();
 
         String endpoint = connection.getEndpoint().toString() + RESOURCE_URL +
-                        "/" + config.get(HerokuRequestKeys.name);
-        DeleteMethod method = connection.getHttpMethod(new DeleteMethod(endpoint));
-        method.addRequestHeader(HerokuResponseFormat.JSON.acceptHeader);
-        client.executeMethod(method);
+                        "/" + config.get(HerokuRequestKey.name);
+        HttpDelete method = connection.getHttpMethod(new HttpDelete(endpoint));
+        method.addHeader(HerokuResponseFormat.JSON.acceptHeader);
 
-        if (method.getStatusCode() != 200)
-        {
-            throw new HerokuAPIException(method.getStatusText());
-        }
+        HttpResponse response = client.execute(method);
+        boolean success = (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
 
-        // successful response is an empty string
-        return new HerokuCommandMapResponse();
-    }
-
-    private NameValuePair getParam(HerokuRequestKeys param) {
-        return new NameValuePair(param.queryParameter, config.get(param));
+        return new HerokuCommandEmptyResponse(success);
     }
 
 }

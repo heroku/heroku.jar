@@ -2,11 +2,15 @@ package com.heroku.command;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO: Javadoc
@@ -16,14 +20,18 @@ import java.util.Map;
 public class HerokuCommandMapResponse implements HerokuCommandResponse {
 
     private final Map<String, String> data;
+    private final boolean success;
 
-    public HerokuCommandMapResponse() {
-        this.data = new HashMap<String, String>();
-    }
-
-    public HerokuCommandMapResponse(byte[] data) {
+    public HerokuCommandMapResponse(byte[] data, boolean success) {
         Type listType = new TypeToken<HashMap<String, String>>(){}.getType();
         this.data = Collections.unmodifiableMap(new Gson().<Map<String, String>>fromJson(new String(data), listType));
+
+        this.success = success;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return success;
     }
 
     @Override

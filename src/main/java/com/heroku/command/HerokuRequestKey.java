@@ -5,7 +5,7 @@ package com.heroku.command;
 *
 * @author Naaman Newbold
 */
-public enum HerokuRequestKeys {
+public enum HerokuRequestKey {
     stack ("app[stack]"),
     remote ("remote"),
     timeout ("timeout"),
@@ -13,7 +13,6 @@ public enum HerokuRequestKeys {
     requested ("requested"),
     beta ("beta"),
     name ("name"),
-    app ("app"),
     sshkey ("sshkey"),
     config("config"),
     collaborator("collaborator[email]"),
@@ -21,7 +20,7 @@ public enum HerokuRequestKeys {
 
     public final String queryParameter;
 
-    HerokuRequestKeys(String queryParameter) {
+    HerokuRequestKey(String queryParameter) {
         this.queryParameter = queryParameter;
     }
 }

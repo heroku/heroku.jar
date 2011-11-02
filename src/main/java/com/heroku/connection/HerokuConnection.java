@@ -1,8 +1,8 @@
 package com.heroku.connection;
 
 import com.heroku.command.HerokuCommand;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
+import org.apache.http.HttpMessage;
+import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +15,7 @@ import java.net.URL;
 public interface HerokuConnection {
     void executeCommand(HerokuCommand command) throws HerokuAPIException, IOException;
     HttpClient getHttpClient();
-    <T extends HttpMethod> T getHttpMethod(T method);
+    <T extends HttpMessage> T getHttpMethod(T method);
     URL getEndpoint();
     String getEmail();
     String getApiKey();
