@@ -30,6 +30,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         HerokuCommand cmd = new HerokuAppCreateCommand(config);
         HerokuCommandResponse response = cmd.execute(connection);
 
+        assertTrue(response.isSuccess());
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
     }

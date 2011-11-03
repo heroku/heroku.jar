@@ -5,7 +5,7 @@ package com.heroku.api.connection;
  *
  * @author Naaman Newbold
  */
-public class HerokuAPIException extends Exception {
+public class HerokuAPIException extends RuntimeException {
     public HerokuAPIException(String msg) {
         super(msg);
     }

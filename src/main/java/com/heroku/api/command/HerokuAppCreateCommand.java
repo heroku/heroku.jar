@@ -45,7 +45,7 @@ public class HerokuAppCreateCommand implements HerokuCommand {
             getParam(HerokuRequestKey.addons)
         )));
         HttpResponse response = client.execute(method);
-        boolean success = (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
+        boolean success = (response.getStatusLine().getStatusCode() == HttpStatus.SC_ACCEPTED);
 
         return new HerokuCommandMapResponse(EntityUtils.toByteArray(response.getEntity()), success);
     }

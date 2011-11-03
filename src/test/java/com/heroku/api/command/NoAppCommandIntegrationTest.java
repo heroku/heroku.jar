@@ -5,11 +5,14 @@ import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
-import com.heroku.util.OpenSSHKeyUtil;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.KeyPair;
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -31,12 +34,18 @@ public class NoAppCommandIntegrationTest {
 
     // doesn't need an app
     @Test
-    public void testKeysAddCommand() throws IOException, HerokuAPIException {
+    public void testKeysAddCommand() throws IOException, HerokuAPIException, JSchException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
-        String sshkey = OpenSSHKeyUtil.encodeOpenSSHPublicKeyString(OpenSSHKeyUtil.generateRSAPublicKey(), PUBLIC_KEY_COMMENT);
+        JSch jsch = new JSch();
+        KeyPair keyPair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
 
-        config.set(HerokuRequestKey.sshkey, sshkey);
+        ByteArrayOutputStream publicKeyOutputStream = new ByteArrayOutputStream();
+        keyPair.writePublicKey(publicKeyOutputStream, PUBLIC_KEY_COMMENT);
+        publicKeyOutputStream.close();
+        String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
+
+        config.set(HerokuRequestKey.sshkey, sshPublicKey);
         HerokuCommand cmd = new HerokuKeysAddCommand(config);
         HerokuCommandResponse response = cmd.execute(connection);
 
