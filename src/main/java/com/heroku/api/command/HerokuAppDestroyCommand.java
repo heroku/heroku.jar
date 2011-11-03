@@ -1,7 +1,6 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuResource;
-import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -17,7 +16,6 @@ import java.io.IOException;
  */
 public class HerokuAppDestroyCommand implements HerokuCommand {
 
-    private final String RESOURCE_URL = HerokuResource.Apps.value;
     private final HerokuCommandConfig config;
 
     public HerokuAppDestroyCommand(HerokuCommandConfig config) {
@@ -25,11 +23,11 @@ public class HerokuAppDestroyCommand implements HerokuCommand {
     }
 
     @Override
-    public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
+    public HerokuCommandResponse execute(HerokuConnection connection) throws IOException {
         HttpClient client = connection.getHttpClient();
 
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL +
-                "/" + config.get(HerokuRequestKey.name);
+        String endpoint = connection.getEndpoint().toString()
+                + String.format(HerokuResource.App.value, config.get(HerokuRequestKey.name));
 
         HttpDelete method = connection.getHttpMethod(new HttpDelete(endpoint));
         method.addHeader(HerokuResponseFormat.JSON.acceptHeader);

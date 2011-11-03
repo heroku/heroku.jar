@@ -11,12 +11,12 @@ import java.util.*;
  *
  * @author Naaman Newbold
  */
-public class HerokuCommandMapResponse implements HerokuCommandResponse {
+public class HerokuCommandJsonMapResponse implements HerokuCommandResponse {
 
     private final Map<String, String> data;
     private final boolean success;
 
-    public HerokuCommandMapResponse(byte[] data, boolean success) {
+    public HerokuCommandJsonMapResponse(byte[] data, boolean success) {
         Type listType = new TypeToken<HashMap<String, String>>(){}.getType();
         this.data = Collections.unmodifiableMap(new Gson().<Map<String, String>>fromJson(new String(data), listType));
 

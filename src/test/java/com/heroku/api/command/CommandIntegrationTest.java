@@ -1,7 +1,6 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuStack;
-import com.heroku.api.connection.HerokuAPIException;
 //import org.testng.Assert;
 import static org.testng.Assert.*;
 
@@ -17,7 +16,7 @@ import java.io.IOException;
 public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
-    public void testCreateAppCommand() throws HerokuAPIException, IOException {
+    public void testCreateAppCommand() throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
         HerokuCommand cmd = new HerokuAppCreateCommand(config);
@@ -28,7 +27,19 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testAppCommand(HerokuCommandResponse app) throws IOException {
+        HerokuCommandConfig config = new HerokuCommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString());
+
+        HerokuCommand cmd = new HerokuAppCommand(config);
+        HerokuCommandResponse response = cmd.execute(connection);
+
+        assertEquals(response.get("name"), app.get("name"));
+    }
+
+    @Test(dataProvider = "app")
+    public void testListAppsCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
         HerokuCommand cmd = new HerokuAppsCommand(config);
@@ -38,7 +49,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
 
         HerokuCommand cmd = new HerokuAppDestroyCommand(config);

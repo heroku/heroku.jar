@@ -1,7 +1,6 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuResource;
-import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,7 +30,7 @@ public class HerokuAppCreateCommand implements HerokuCommand {
     }
 
     @Override
-    public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
+    public HerokuCommandResponse execute(HerokuConnection connection) throws IOException {
         HttpClient client = connection.getHttpClient();
         String endpoint = connection.getEndpoint().toString() + RESOURCE_URL;
 
@@ -50,7 +49,7 @@ public class HerokuAppCreateCommand implements HerokuCommand {
         HttpResponse response = client.execute(method);
         boolean success = (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK);
 
-        return new HerokuCommandMapResponse(EntityUtils.toByteArray(response.getEntity()), success);
+        return new HerokuCommandJsonMapResponse(EntityUtils.toByteArray(response.getEntity()), success);
     }
 
     private BasicNameValuePair getParam(HerokuRequestKey param) {
