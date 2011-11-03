@@ -81,21 +81,29 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // if we do this then we will no longer be able to remove the app
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
-    @Test(dataProvider = "app", dependsOnMethods = {"testSharingAddCommand"})
+    @Test(dataProvider = "app")
     public void testSharingTransferCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
         config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
 
-        HerokuCommand cmd = new HerokuSharingTransferCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        HerokuCommand sharingAddCommand = new HerokuSharingAddCommand(config);
+        sharingAddCommand.execute(connection);
 
-        assertTrue(response.isSuccess());
+        config.set(HerokuRequestKey.transferOwner, DEMO_EMAIL);
+
+        HerokuCommand sharingTransferCommand = new HerokuSharingTransferCommand(config);
+        HerokuCommandResponse sharingTransferCommandResponse = sharingTransferCommand.execute(connection);
+
+        assertTrue(sharingTransferCommandResponse.isSuccess());
     }
 
-    @Test(dataProvider = "app", dependsOnMethods = {"testSharingAddCommand"})
+    @Test(dataProvider = "app")
     public void testSharingRemoveCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
-        config.set(HerokuRequestKey.collaborator, connection.getEmail());
+        config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
+
+        HerokuCommand sharingAddCommand = new HerokuSharingAddCommand(config);
+        sharingAddCommand.execute(connection);
 
         HerokuCommand cmd = new HerokuSharingRemoveCommand(config);
         HerokuCommandResponse response = cmd.execute(connection);

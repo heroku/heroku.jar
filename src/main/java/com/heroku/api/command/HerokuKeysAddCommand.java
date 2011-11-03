@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuResource;
 import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpResponse;
@@ -19,7 +20,6 @@ public class HerokuKeysAddCommand implements HerokuCommand {
 
     // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
 
-    private final String RESOURCE_URL = "/user/keys";
     private final HerokuCommandConfig config;
 
     public HerokuKeysAddCommand(HerokuCommandConfig config) {
@@ -29,7 +29,7 @@ public class HerokuKeysAddCommand implements HerokuCommand {
     @Override
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL;
+        String endpoint = connection.getEndpoint().toString() + HerokuResource.Keys.value;
         HttpPost method = connection.getHttpMethod(new HttpPost(endpoint));
         method.addHeader(HerokuResponseFormat.JSON.acceptHeader);
         method.addHeader(HerokuContentType.SSH_AUTHKEY.contentType);

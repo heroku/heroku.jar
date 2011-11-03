@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuResource;
 import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpResponse;
@@ -20,7 +21,6 @@ public class HerokuKeysRemoveCommand implements HerokuCommand {
 
     // delete("/user/keys/#{escape(key)}").to_s
 
-    private final String RESOURCE_URL = "/user/keys";
     private final HerokuCommandConfig config;
 
     public HerokuKeysRemoveCommand(HerokuCommandConfig config) {
@@ -31,8 +31,7 @@ public class HerokuKeysRemoveCommand implements HerokuCommand {
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
 
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL +
-                        "/" + config.get(HerokuRequestKey.name);
+        String endpoint = connection.getEndpoint().toString() + String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.name));
         HttpDelete method = connection.getHttpMethod(new HttpDelete(endpoint));
         method.addHeader(HerokuResponseFormat.JSON.acceptHeader);
 

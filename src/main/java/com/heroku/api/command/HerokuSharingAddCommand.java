@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuResource;
 import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpResponse;
@@ -8,7 +9,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ public class HerokuSharingAddCommand implements HerokuCommand {
 
     // xml(post("/apps/#{app_name}/collaborators", { 'collaborator[email]' => email }).to_s)
 
-    private final String RESOURCE_URL = "/apps";
     private final HerokuCommandConfig config;
 
     public HerokuSharingAddCommand(HerokuCommandConfig config) {
@@ -33,7 +32,7 @@ public class HerokuSharingAddCommand implements HerokuCommand {
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
 
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKey.name) + "/collaborators";
+        String endpoint = connection.getEndpoint().toString() + String.format(HerokuResource.Collaborators.value, config.get(HerokuRequestKey.name));
         HttpPost method = connection.getHttpMethod(new HttpPost(endpoint));
         method.addHeader(HerokuResponseFormat.XML.acceptHeader);
         method.setEntity(new UrlEncodedFormEntity(Arrays.asList(

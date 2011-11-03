@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuResource;
 import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.apache.http.HttpEntity;
@@ -20,7 +21,6 @@ public class HerokuConfigAddCommand implements HerokuCommand {
 
     // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
-    private final String RESOURCE_URL = "/apps";
     private final HerokuCommandConfig config;
 
     public HerokuConfigAddCommand(HerokuCommandConfig config) {
@@ -31,7 +31,8 @@ public class HerokuConfigAddCommand implements HerokuCommand {
     public HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException {
         HttpClient client = connection.getHttpClient();
 
-        String endpoint = connection.getEndpoint().toString() + RESOURCE_URL + "/" + config.get(HerokuRequestKey.name) + "/config_vars";
+        String endpoint = connection.getEndpoint().toString() + String.format(HerokuResource.ConfigVars.value,
+                config.get(HerokuRequestKey.name));
 
         HttpEntity requestEntity = new StringEntity(config.get(HerokuRequestKey.configvars));
 

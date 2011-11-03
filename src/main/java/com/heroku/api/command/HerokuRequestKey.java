@@ -16,6 +16,7 @@ public enum HerokuRequestKey {
     sshkey ("sshkey"),
     config("config"),
     collaborator("collaborator[email]"),
+    transferOwner("app[transfer_owner]"),
     configvars("config_vars");
 
     public final String queryParameter;
