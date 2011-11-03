@@ -13,7 +13,11 @@ public enum HerokuRequestKey {
     requested ("requested"),
     beta ("beta"),
     name ("name"),
-    app ("app");
+    sshkey ("sshkey"),
+    config("config"),
+    collaborator("collaborator[email]"),
+    transferOwner("app[transfer_owner]"),
+    configvars("config_vars");
 
     public final String queryParameter;
 
