@@ -36,7 +36,7 @@ public class HerokuBasicAuthConnection implements HerokuConnection {
     }
 
     @Override
-    public void executeCommand(HerokuCommand command) throws HerokuAPIException, IOException {
+    public void executeCommand(HerokuCommand command) throws IOException {
         command.execute(this);
     }
 

@@ -2,7 +2,6 @@ package com.heroku.api;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuBasicAuthConnectionProvider;
 import com.heroku.api.connection.HerokuConnection;
 
@@ -21,7 +20,7 @@ public class ConnectionTestModule extends AbstractModule {
     }
 
     @Provides
-    HerokuConnection getConnection() throws IOException, HerokuAPIException {
+    HerokuConnection getConnection() throws IOException {
         AuthenticationTestCredentials cred = getCredentials();
         return new HerokuBasicAuthConnectionProvider(cred.username, cred.password).getConnection();
     }

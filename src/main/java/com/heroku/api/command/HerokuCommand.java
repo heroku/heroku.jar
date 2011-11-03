@@ -11,5 +11,5 @@ import java.io.IOException;
  * @author Naaman Newbold
  */
 public interface HerokuCommand {
-    HerokuCommandResponse execute(HerokuConnection connection) throws HerokuAPIException, IOException;
+    HerokuCommandResponse execute(HerokuConnection connection) throws IOException;
 }

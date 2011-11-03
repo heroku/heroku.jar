@@ -1,7 +1,6 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuStack;
-import com.heroku.api.connection.HerokuAPIException;
 
 import static org.testng.Assert.*;
 
@@ -24,7 +23,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     private static final String DEMO_EMAIL = "jw+demo@heroku.com";
 
     @Test
-    public void testCreateAppCommand() throws HerokuAPIException, IOException {
+    public void testCreateAppCommand() throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
         HerokuCommand cmd = new HerokuAppCreateCommand(config);
@@ -36,7 +35,19 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testAppCommand(HerokuCommandResponse app) throws IOException {
+        HerokuCommandConfig config = new HerokuCommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString());
+
+        HerokuCommand cmd = new HerokuAppCommand(config);
+        HerokuCommandResponse response = cmd.execute(connection);
+
+        assertEquals(response.get("name"), app.get("name"));
+    }
+
+    @Test(dataProvider = "app")
+    public void testListAppsCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
         HerokuCommand cmd = new HerokuAppsCommand(config);
@@ -46,7 +57,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
 
         HerokuCommand cmd = new HerokuAppDestroyCommand(config);
@@ -57,7 +68,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testSharingAddCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testSharingAddCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
         config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
 
@@ -71,7 +82,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
     @Test(dataProvider = "app", dependsOnMethods = {"testSharingAddCommand"})
-    public void testSharingTransferCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testSharingTransferCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
         config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
 
@@ -82,7 +93,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app", dependsOnMethods = {"testSharingAddCommand"})
-    public void testSharingRemoveCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testSharingRemoveCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
         config.set(HerokuRequestKey.collaborator, connection.getEmail());
 
@@ -93,7 +104,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testConfigAddCommand(HerokuCommandResponse app) throws IOException, HerokuAPIException {
+    public void testConfigAddCommand(HerokuCommandResponse app) throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
         config.set(HerokuRequestKey.configvars, "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
 

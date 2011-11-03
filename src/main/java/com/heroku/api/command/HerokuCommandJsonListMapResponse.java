@@ -14,12 +14,12 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class HerokuCommandListMapResponse implements HerokuCommandResponse {
+public class HerokuCommandJsonListMapResponse implements HerokuCommandResponse {
 
     private final List<Map<String, String>> data;
     private final boolean success;
 
-    public HerokuCommandListMapResponse(byte[] data, boolean success) {
+    public HerokuCommandJsonListMapResponse(byte[] data, boolean success) {
         Type listType = new TypeToken<List<HashMap<String, String>>>(){}.getType();
         this.data = Collections.unmodifiableList(new Gson().<List<Map<String, String>>>fromJson(new String(data), listType));
         this.success = success;

@@ -9,5 +9,5 @@ import java.io.IOException;
  */
 public interface HerokuConnectionProvider {
     static final String DEFAULT_ENDPOINT = "https://api.heroku.com";
-    HerokuConnection getConnection() throws IOException, HerokuAPIException;
+    HerokuConnection getConnection() throws IOException;
 }

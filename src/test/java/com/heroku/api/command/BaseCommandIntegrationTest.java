@@ -3,7 +3,6 @@ package com.heroku.api.command;
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
-import com.heroku.api.connection.HerokuAPIException;
 import com.heroku.api.connection.HerokuConnection;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
@@ -27,7 +26,7 @@ public abstract class BaseCommandIntegrationTest {
     private List<HerokuCommandResponse> apps = new ArrayList<HerokuCommandResponse>();
 
     @DataProvider
-    public Object[][] app() throws IOException, HerokuAPIException {
+    public Object[][] app() throws IOException {
         HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
 
         HerokuCommand cmd = new HerokuAppCreateCommand(config);
@@ -39,7 +38,7 @@ public abstract class BaseCommandIntegrationTest {
     }
 
     @AfterTest
-    public void deleteTestApps() throws IOException, HerokuAPIException {
+    public void deleteTestApps() throws IOException {
         for (HerokuCommandResponse res : apps) {
             HerokuCommandConfig config = new HerokuCommandConfig()
                     .onStack(HerokuStack.Cedar)

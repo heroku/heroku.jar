@@ -28,11 +28,11 @@ public class HerokuBasicAuthConnectionProvider implements HerokuConnectionProvid
     private final String username;
     private final String password;
 
-    public HerokuBasicAuthConnectionProvider(String username, String password) throws HerokuAPIException {
+    public HerokuBasicAuthConnectionProvider(String username, String password) {
         this(username, password, HerokuConnectionProvider.DEFAULT_ENDPOINT);
     }
 
-    public HerokuBasicAuthConnectionProvider(String username, String password, String endpoint) throws HerokuAPIException {
+    public HerokuBasicAuthConnectionProvider(String username, String password, String endpoint) {
         super();
         this.username = username;
         this.password = password;
@@ -44,7 +44,7 @@ public class HerokuBasicAuthConnectionProvider implements HerokuConnectionProvid
     }
 
     @Override
-    public HerokuConnection getConnection() throws HerokuAPIException, IOException {
+    public HerokuConnection getConnection() throws IOException {
         HttpPost loginPost = new HttpPost(endpoint.toString() + HerokuResource.Login.value);
         loginPost.addHeader(HerokuResponseFormat.JSON.acceptHeader);
         loginPost.addHeader(HerokuApiVersion.v2.versionHeader);

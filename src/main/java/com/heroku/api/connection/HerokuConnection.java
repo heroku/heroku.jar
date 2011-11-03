@@ -13,7 +13,7 @@ import java.net.URL;
  * @author Naaman Newbold
  */
 public interface HerokuConnection {
-    void executeCommand(HerokuCommand command) throws HerokuAPIException, IOException;
+    void executeCommand(HerokuCommand command) throws IOException;
     HttpClient getHttpClient();
     <T extends HttpMessage> T getHttpMethod(T method);
     URL getEndpoint();

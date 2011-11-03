@@ -20,7 +20,7 @@ public class ConnectionIntegrationTest {
     ConnectionTestModule.AuthenticationTestCredentials cred;
 
     @Test(groups = "integration")
-    public void testValidUsernameAndPassword() throws IOException, HerokuAPIException {
+    public void testValidUsernameAndPassword() throws IOException {
         HerokuConnectionProvider connectionProvider = new HerokuBasicAuthConnectionProvider(cred.username, cred.password);
         HerokuConnection conn = connectionProvider.getConnection();
         Assert.assertNotNull(conn.getApiKey(), "Expected an API key from login, but it doesn't exist.");
@@ -39,7 +39,7 @@ public class ConnectionIntegrationTest {
           dataProvider = "invalidUsernamesAndPasswords",
           expectedExceptions = HerokuAPIException.class,
           expectedExceptionsMessageRegExp = "Invalid username and password combination.")
-    public void testInvalidUsernameAndPassword(String username, String password) throws IOException, HerokuAPIException {
+    public void testInvalidUsernameAndPassword(String username, String password) throws IOException {
         HerokuConnectionProvider auth = new HerokuBasicAuthConnectionProvider(username, password);
         HerokuConnection conn = auth.getConnection();
     }
