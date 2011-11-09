@@ -4,8 +4,8 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
-import com.heroku.api.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class KeysRemoveCommand implements Command {
+public class KeysRemoveCommand implements Command<EmptyResponse> {
 
     // delete("/user/keys/#{escape(key)}").to_s
 
@@ -61,7 +61,7 @@ public class KeysRemoveCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }

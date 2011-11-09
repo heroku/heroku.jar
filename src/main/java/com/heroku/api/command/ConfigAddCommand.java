@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class ConfigAddCommand implements Command {
+public class ConfigAddCommand implements Command<EmptyResponse> {
 
     // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
@@ -63,7 +63,7 @@ public class ConfigAddCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }

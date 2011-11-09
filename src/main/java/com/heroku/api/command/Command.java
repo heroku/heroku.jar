@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public interface Command {
+public interface Command<T extends CommandResponse> {
 
 
     Method getHttpMethod();
@@ -27,6 +27,6 @@ public interface Command {
 
     int getSuccessCode();
 
-    CommandResponse getResponse(byte[] bytes, boolean success);
+    T getResponse(byte[] bytes, boolean success);
 
 }

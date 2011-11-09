@@ -3,8 +3,8 @@ package com.heroku.api.command;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
-import com.heroku.api.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppsCommand implements Command {
+public class AppsCommand implements Command<JsonArrayResponse> {
 
     private final CommandConfig config;
 
@@ -58,7 +58,7 @@ public class AppsCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public JsonArrayResponse getResponse(byte[] bytes, boolean success) {
         return new JsonArrayResponse(bytes,  success);
     }
 }

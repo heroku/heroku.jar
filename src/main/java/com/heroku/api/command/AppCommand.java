@@ -4,8 +4,8 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
-import com.heroku.api.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppCommand implements Command {
+public class AppCommand implements Command<XmlMapResponse> {
 
     private final CommandConfig config;
 
@@ -59,7 +59,7 @@ public class AppCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public XmlMapResponse getResponse(byte[] bytes, boolean success) {
         return new XmlMapResponse(bytes, success);
     }
 }

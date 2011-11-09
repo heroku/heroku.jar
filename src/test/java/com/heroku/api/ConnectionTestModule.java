@@ -2,14 +2,16 @@ package com.heroku.api;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.heroku.api.connection.BasicAuthConnectionProvider;
+import com.heroku.api.command.BasicAuthLoginCommand;
 import com.heroku.api.connection.Connection;
+import com.heroku.api.connection.HttpClientConnection;
 
 import java.io.IOException;
 import java.util.Properties;
 
 /**
  * Guice Module for providing tests with authentication information.
+ *
  * @author Naaman Newbold
  */
 public class ConnectionTestModule extends AbstractModule {
@@ -22,7 +24,7 @@ public class ConnectionTestModule extends AbstractModule {
     @Provides
     Connection getConnection() throws IOException {
         AuthenticationTestCredentials cred = getCredentials();
-        return new BasicAuthConnectionProvider(cred.username, cred.password).getConnection();
+        return new HttpClientConnection(new BasicAuthLoginCommand(cred.username, cred.password));
     }
 
     @Provides
@@ -37,11 +39,11 @@ public class ConnectionTestModule extends AbstractModule {
         Properties props = getProperties();
         return new AuthenticationTestCredentials(
                 props.getProperty("endpoint")
-              , props.getProperty("username")
-              , props.getProperty("password")
+                , props.getProperty("username")
+                , props.getProperty("password")
         );
     }
-    
+
     public static class AuthenticationTestCredentials {
         public final String endpoint;
         public final String username;

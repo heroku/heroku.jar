@@ -14,7 +14,7 @@ import java.net.URL;
  */
 public interface Connection {
 
-    CommandResponse executeCommand(Command command) throws IOException;
+    <T extends CommandResponse> T executeCommand(Command<T> command) throws IOException;
 
     HttpClient getHttpClient();
 

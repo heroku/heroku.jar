@@ -4,7 +4,7 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.*;
-import com.heroku.api.util.HttpUtil;
+import com.heroku.api.http.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class SharingAddCommand implements Command {
+public class SharingAddCommand implements Command<EmptyResponse> {
 
     // xml(post("/apps/#{app_name}/collaborators", { 'collaborator[email]' => email }).to_s)
 
@@ -41,11 +41,9 @@ public class SharingAddCommand implements Command {
 
     @Override
     public String getBody() {
-        try {
-            return HttpUtil.encodeParameters(config, HerokuRequestKey.collaborator);
-        } catch (UnsupportedEncodingException e) {
-            throw new HerokuAPIException("Unable to encode parameters", e);
-        }
+
+        return HttpUtil.encodeParameters(config, HerokuRequestKey.collaborator);
+
     }
 
     @Override
@@ -64,7 +62,7 @@ public class SharingAddCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }

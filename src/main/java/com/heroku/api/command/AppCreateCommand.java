@@ -4,7 +4,7 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.*;
-import com.heroku.api.util.HttpUtil;
+import com.heroku.api.http.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppCreateCommand implements Command {
+public class AppCreateCommand implements Command<JsonMapResponse> {
 
     private final CommandConfig config;
 
@@ -39,19 +39,17 @@ public class AppCreateCommand implements Command {
 
     @Override
     public String getBody() {
-        try {
-            return HttpUtil.encodeParameters(config,
-                    HerokuRequestKey.stack,
-                    HerokuRequestKey.remote,
-                    HerokuRequestKey.timeout,
-                    HerokuRequestKey.addons
-            );
-        } catch (UnsupportedEncodingException e) {
-            throw new HerokuAPIException("Unable to encode parameters.", e);
-        }
+
+        return HttpUtil.encodeParameters(config,
+                HerokuRequestKey.stack,
+                HerokuRequestKey.remote,
+                HerokuRequestKey.timeout,
+                HerokuRequestKey.addons
+        );
+
     }
 
-   @Override
+    @Override
     public Accept getResponseType() {
         return Accept.JSON;
     }
@@ -67,7 +65,7 @@ public class AppCreateCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public JsonMapResponse getResponse(byte[] bytes, boolean success) {
         return new JsonMapResponse(bytes, success);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppDestroyCommand implements Command {
+public class AppDestroyCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
@@ -58,7 +58,7 @@ public class AppDestroyCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }

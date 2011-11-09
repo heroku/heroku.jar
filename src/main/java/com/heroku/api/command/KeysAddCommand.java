@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class KeysAddCommand implements Command {
+public class KeysAddCommand implements Command<EmptyResponse> {
 
     // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
 
@@ -57,7 +57,7 @@ public class KeysAddCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }

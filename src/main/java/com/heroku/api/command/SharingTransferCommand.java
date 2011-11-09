@@ -5,8 +5,8 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
-import com.heroku.api.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class SharingTransferCommand implements Command {
+public class SharingTransferCommand implements Command<EmptyResponse> {
 
     // heroku.update(app, :transfer_owner => email)
     // put("/apps/#{name}", :app => attributes).to_s
@@ -46,17 +46,14 @@ public class SharingTransferCommand implements Command {
 
     @Override
     public String getBody() {
-        try {
-            return HttpUtil.encodeParameters(config, HerokuRequestKey.transferOwner);
-        } catch (UnsupportedEncodingException e) {
-            throw new HerokuAPIException("Unable to encode parameters.", e);
-        }
+        return HttpUtil.encodeParameters(config, HerokuRequestKey.transferOwner);
     }
 
-     @Override
+    @Override
     public Accept getResponseType() {
         return Accept.XML;
     }
+
     @Override
     public Map<String, String> getHeaders() {
         return new HashMap<String, String>();
@@ -68,7 +65,7 @@ public class SharingTransferCommand implements Command {
     }
 
     @Override
-    public CommandResponse getResponse(byte[] bytes, boolean success) {
+    public EmptyResponse getResponse(byte[] bytes, boolean success) {
         return new EmptyResponse(success);
     }
 }
