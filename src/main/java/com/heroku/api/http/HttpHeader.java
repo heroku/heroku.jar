@@ -10,10 +10,6 @@ import java.util.Map;
  */
 public interface HttpHeader {
 
-    static String CONTENT_TYPE = "Content-Type";
-    static String ACCEPT = "Accept";
-
-
     public static class Util {
         public static Map<String, String> setHeaders(HttpHeader... headers) {
             Map<String, String> headerMap = new HashMap<String, String>();

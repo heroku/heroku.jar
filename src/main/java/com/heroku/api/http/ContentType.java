@@ -6,6 +6,7 @@ public enum ContentType implements HttpHeader {
     SSH_AUTHKEY("text/ssh-authkey");
 
     String value;
+    static String CONTENT_TYPE = "Content-Type";
 
     ContentType(String val) {
         this.value = val;

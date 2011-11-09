@@ -6,6 +6,7 @@ public enum Accept implements HttpHeader {
     XML("text/xml");
 
     String value;
+    static String ACCEPT = "Accept";
 
     Accept(String val) {
         this.value = val;
