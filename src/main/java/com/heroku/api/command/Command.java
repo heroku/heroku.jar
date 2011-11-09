@@ -1,5 +1,8 @@
 package com.heroku.api.command;
 
+import com.heroku.api.http.Accept;
+import com.heroku.api.http.Method;
+
 import java.util.Map;
 
 /**
@@ -8,19 +11,9 @@ import java.util.Map;
  * @author Naaman Newbold
  */
 public interface Command {
-    public enum HttpMethod {
-        GET,
-        PUT,
-        POST,
-        DELETE
-    }
 
-    public enum ResponseType {
-        XML,
-        JSON
-    }
 
-    HttpMethod getHttpMethod();
+    Method getHttpMethod();
 
     String getEndpoint();
 
@@ -28,7 +21,7 @@ public interface Command {
 
     String getBody();
 
-    ResponseType getResponseType();
+    Accept getResponseType();
 
     Map<String, String> getHeaders();
 

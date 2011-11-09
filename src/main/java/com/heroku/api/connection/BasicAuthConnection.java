@@ -3,7 +3,8 @@ package com.heroku.api.connection;
 import com.heroku.api.HerokuApiVersion;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
-import com.heroku.api.http.HttpHeader;
+import com.heroku.api.http.Accept;
+import com.heroku.api.http.Method;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -40,7 +41,7 @@ public class BasicAuthConnection implements Connection {
     public CommandResponse executeCommand(Command command) throws IOException {
         HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), endpoint + command.getEndpoint());
         message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
-        message.setHeader(HttpHeader.Accept.HEADER, getAcceptHeader(command.getResponseType()));
+        message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 
         for (Map.Entry<String, String> header : command.getHeaders().entrySet()) {
             message.setHeader(header.getKey(), header.getValue());
@@ -60,18 +61,9 @@ public class BasicAuthConnection implements Connection {
         return command.getResponse(EntityUtils.toByteArray(httpResponse.getEntity()), success);
     }
 
-    private String getAcceptHeader(Command.ResponseType responseType) {
-        switch (responseType) {
-            case XML:
-                return HttpHeader.Accept.TEXT_XML;
-            case JSON:
-                return HttpHeader.Accept.APPLICATION_JSON;
-            default:
-                throw new UnsupportedOperationException(responseType + " is not a supported response type.");
-        }
-    }
 
-    private HttpRequestBase getHttpRequestBase(Command.HttpMethod httpMethod, String endpoint) {
+
+    private HttpRequestBase getHttpRequestBase(Method httpMethod, String endpoint) {
         switch (httpMethod) {
             case GET:
                 return new HttpGet(endpoint);

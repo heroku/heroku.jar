@@ -3,12 +3,10 @@ package com.heroku.api.command;
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HttpHeader;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.*;
 import com.heroku.api.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,8 +25,8 @@ public class SharingAddCommand implements Command {
     }
 
     @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
+    public Method getHttpMethod() {
+        return Method.POST;
     }
 
     @Override
@@ -51,15 +49,13 @@ public class SharingAddCommand implements Command {
     }
 
     @Override
-    public ResponseType getResponseType() {
-        return ResponseType.XML;
+    public Accept getResponseType() {
+        return Accept.XML;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>(){{
-            put(HttpHeader.ContentType.HEADER, HttpHeader.ContentType.FORM_URLENCODED);
-        }};
+        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
     }
 
     @Override

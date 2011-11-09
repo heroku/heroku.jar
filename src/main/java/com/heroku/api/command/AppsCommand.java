@@ -1,7 +1,9 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuResource;
+import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +22,8 @@ public class AppsCommand implements Command {
     }
 
     @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.GET;
+    public Method getHttpMethod() {
+        return Method.GET;
     }
 
     @Override
@@ -40,8 +42,8 @@ public class AppsCommand implements Command {
     }
 
     @Override
-    public ResponseType getResponseType() {
-        return ResponseType.JSON;
+    public Accept getResponseType() {
+        return Accept.JSON;
     }
 
     @Override

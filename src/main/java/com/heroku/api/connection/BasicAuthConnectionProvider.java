@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.heroku.api.HerokuApiVersion;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HttpHeader;
+import com.heroku.api.http.Accept;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -47,7 +47,7 @@ public class BasicAuthConnectionProvider implements ConnectionProvider {
     @Override
     public Connection getConnection() throws IOException {
         HttpPost loginPost = new HttpPost(endpoint.toString() + HerokuResource.Login.value);
-        loginPost.addHeader(HttpHeader.Accept.HEADER, HttpHeader.Accept.APPLICATION_JSON);
+        loginPost.addHeader(Accept.JSON.getHeaderName(), Accept.JSON.getHeaderValue());
         loginPost.addHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
         loginPost.setEntity(new UrlEncodedFormEntity(Arrays.asList(
                 new BasicNameValuePair("username", username),
@@ -56,7 +56,7 @@ public class BasicAuthConnectionProvider implements ConnectionProvider {
 
         HttpClient client = new DefaultHttpClient();
         HttpResponse response = client.execute(loginPost);
-        
+
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String rawLoginResponse = EntityUtils.toString(response.getEntity());
             LoginResponse loginResponse = new Gson().fromJson(rawLoginResponse, LoginResponse.class);

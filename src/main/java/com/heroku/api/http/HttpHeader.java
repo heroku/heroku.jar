@@ -1,22 +1,34 @@
 package com.heroku.api.http;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public final class HttpHeader {
+public interface HttpHeader {
 
-    public static final class ContentType {
-        public final static String HEADER = "Content-Type";
-        public final static String FORM_URLENCODED = "application/x-www-form-urlencoded";
-        public final static String SSH_AUTHKEY = "text/ssh-authkey";
+    static String CONTENT_TYPE = "Content-Type";
+    static String ACCEPT = "Accept";
+
+
+    public static class Util {
+        public static Map<String, String> setHeaders(HttpHeader... headers) {
+            Map<String, String> headerMap = new HashMap<String, String>();
+            for (HttpHeader h : headers) {
+                headerMap.put(h.getHeaderName(), h.getHeaderValue());
+            }
+            return headerMap;
+        }
     }
-    
-    public static final class Accept {
-        public final static String HEADER = "Accept";
-        public final static String APPLICATION_JSON = "application/json";
-        public final static String TEXT_XML = "text/xml";
-    }
+
+
+    String getHeaderName();
+
+    String getHeaderValue();
+
+
 
 }

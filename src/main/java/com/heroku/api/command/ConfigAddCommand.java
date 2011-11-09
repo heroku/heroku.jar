@@ -2,7 +2,9 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
+import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +25,8 @@ public class ConfigAddCommand implements Command {
     }
 
     @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+    public Method getHttpMethod() {
+        return Method.PUT;
     }
 
     @Override
@@ -46,8 +48,8 @@ public class ConfigAddCommand implements Command {
     }
 
     @Override
-    public ResponseType getResponseType() {
-        return ResponseType.XML;
+    public Accept getResponseType() {
+        return Accept.XML;
     }
 
     @Override

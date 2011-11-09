@@ -2,10 +2,8 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.http.HttpHeader;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,8 +22,8 @@ public class KeysAddCommand implements Command {
     }
 
     @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.POST;
+    public Method getHttpMethod() {
+        return Method.POST;
     }
 
     @Override
@@ -43,16 +41,14 @@ public class KeysAddCommand implements Command {
         return config.get(HerokuRequestKey.sshkey);
     }
 
-    @Override
-    public ResponseType getResponseType() {
-        return ResponseType.JSON;
+     @Override
+    public Accept getResponseType() {
+        return Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>() {{
-            put(HttpHeader.ContentType.HEADER, HttpHeader.ContentType.SSH_AUTHKEY);
-        }};
+        return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
     }
 
     @Override

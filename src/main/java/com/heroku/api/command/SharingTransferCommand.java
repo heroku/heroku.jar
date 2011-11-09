@@ -3,7 +3,9 @@ package com.heroku.api.command;
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Method;
 import com.heroku.api.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -28,8 +30,8 @@ public class SharingTransferCommand implements Command {
     }
 
     @Override
-    public HttpMethod getHttpMethod() {
-        return HttpMethod.PUT;
+    public Method getHttpMethod() {
+        return Method.PUT;
     }
 
     @Override
@@ -51,11 +53,10 @@ public class SharingTransferCommand implements Command {
         }
     }
 
-    @Override
-    public ResponseType getResponseType() {
-        return ResponseType.XML;
+     @Override
+    public Accept getResponseType() {
+        return Accept.XML;
     }
-
     @Override
     public Map<String, String> getHeaders() {
         return new HashMap<String, String>();
