@@ -1,4 +1,4 @@
-package com.heroku.api.command;
+package com.heroku.api;
 
 /**
 * TODO: Javadoc

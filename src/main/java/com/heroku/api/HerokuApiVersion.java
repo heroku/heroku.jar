@@ -9,14 +9,14 @@ import org.apache.http.message.BasicHeader;
  * @author Naaman Newbold
  */
 public enum HerokuApiVersion {
-    v3 (3),
-    v2 (2);
+    v2 (2),
+    v3 (3);
+
+    public static final String HEADER = "X-Heroku-API-Version";
 
     public final int version;
-    public final Header versionHeader;
 
     HerokuApiVersion(int version) {
         this.version = version;
-        this.versionHeader = new BasicHeader("X-Heroku-API-Version", String.valueOf(version));
     }
 }

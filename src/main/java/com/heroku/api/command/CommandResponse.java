@@ -5,7 +5,8 @@ package com.heroku.api.command;
  *
  * @author Naaman Newbold
  */
-public interface HerokuCommandResponse {
+public interface CommandResponse {
     boolean isSuccess();
     Object get(String key);
+    byte[] getRawData();
 }

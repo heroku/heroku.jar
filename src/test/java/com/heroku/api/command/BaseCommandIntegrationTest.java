@@ -3,7 +3,7 @@ package com.heroku.api.command;
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
-import com.heroku.api.connection.HerokuConnection;
+import com.heroku.api.connection.Connection;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -21,16 +21,16 @@ import java.util.List;
 public abstract class BaseCommandIntegrationTest {
 
     @Inject
-    HerokuConnection connection;
+    Connection connection;
 
-    private List<HerokuCommandResponse> apps = new ArrayList<HerokuCommandResponse>();
+    private List<CommandResponse> apps = new ArrayList<CommandResponse>();
 
     @DataProvider
     public Object[][] app() throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
+        CommandConfig config = new CommandConfig().onStack(HerokuStack.Cedar);
 
-        HerokuCommand cmd = new HerokuAppCreateCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        Command cmd = new AppCreateCommand(config);
+        CommandResponse response = connection.executeCommand(cmd);
 
         apps.add(response);
 
@@ -39,15 +39,15 @@ public abstract class BaseCommandIntegrationTest {
 
     @AfterTest
     public void deleteTestApps() throws IOException {
-        for (HerokuCommandResponse res : apps) {
-            HerokuCommandConfig config = new HerokuCommandConfig()
+        for (CommandResponse res : apps) {
+            CommandConfig config = new CommandConfig()
                     .onStack(HerokuStack.Cedar)
                     .app(res.get("name").toString());
 
             // quietly clean up apps created. if the destroy fails, it's ok because it might
             // have been deleted before we get to it here.
-            HerokuCommand cmd = new HerokuAppDestroyCommand(config);
-            cmd.execute(connection);
+            Command cmd = new AppDestroyCommand(config);
+            connection.executeCommand(cmd);
         }
     }
 

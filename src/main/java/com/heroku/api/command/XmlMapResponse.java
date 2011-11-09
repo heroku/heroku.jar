@@ -1,15 +1,13 @@
 package com.heroku.api.command;
 
-import com.heroku.api.connection.HerokuAPIException;
+import com.heroku.api.exception.HerokuAPIException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -17,7 +15,7 @@ import java.util.HashMap;
  *
  * @author Naaman Newbold
  */
-public class HerokuCommandXmlMapResponse extends DefaultHandler implements HerokuCommandResponse {
+public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
     private final byte[] rawData;
     private final boolean success;
@@ -26,7 +24,7 @@ public class HerokuCommandXmlMapResponse extends DefaultHandler implements Herok
     private String lastKey;
     private StringBuffer charBuffer;
 
-    public HerokuCommandXmlMapResponse(byte[] data, boolean success) {
+    public XmlMapResponse(byte[] data, boolean success) {
         this.rawData = data;
         this.success = success;
     }
@@ -63,7 +61,7 @@ public class HerokuCommandXmlMapResponse extends DefaultHandler implements Herok
     }
 
     @Override
-    public Object get(String key) {
+    public String get(String key) {
         if (!rawDataIsProcessed) {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             try {
@@ -74,5 +72,10 @@ public class HerokuCommandXmlMapResponse extends DefaultHandler implements Herok
             }
         }
         return data.get(key);
+    }
+
+    @Override
+    public byte[] getRawData() {
+        return rawData;
     }
 }

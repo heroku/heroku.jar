@@ -12,18 +12,18 @@ import java.io.IOException;
  *
  * @author Naaman Newbold
  */
-public class HerokuCommandResponseTest {
+public class CommandResponseTest {
     @Test
     public void testArrayOfJsonElementsMapsToHerokuCommandMap() {
         String jsonArray = "[{\"name\":\"warm-frost-3139\",\"stack\":\"cedar\"},{\"name\":\"vivid-summer-2426\",\"stack\":\"cedar\"}]";
-        HerokuCommandJsonListMapResponse res = new HerokuCommandJsonListMapResponse(jsonArray.getBytes(), true);
+        JsonArrayResponse res = new JsonArrayResponse(jsonArray.getBytes(), true);
         Assert.assertNotNull(res.get("warm-frost-3139"));
     }
 
     @Test
     public void testSingleJsonElementMapsToHerokuCommandMap() {
         String json = "{\"name\":\"warm-frost-3139\",\"stack\":\"cedar\"}";
-        HerokuCommandJsonMapResponse res = new HerokuCommandJsonMapResponse(json.getBytes(), true);
+        JsonMapResponse res = new JsonMapResponse(json.getBytes(), true);
         Assert.assertEquals(res.get("name"), "warm-frost-3139");
     }
 
@@ -36,7 +36,7 @@ public class HerokuCommandResponseTest {
                 "  <repo-size type=\"integer\" nil=\"true\"></repo-size>\n" +
                 "  <id>app1681795@heroku.com</id>\n" +
                 "</app>";
-        HerokuCommandXmlMapResponse response = new HerokuCommandXmlMapResponse(xml.getBytes(), true);
+        XmlMapResponse response = new XmlMapResponse(xml.getBytes(), true);
         Assert.assertEquals(response.get("name"), "fierce-rain-7019");
     }
 }

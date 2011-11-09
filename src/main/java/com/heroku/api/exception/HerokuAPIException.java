@@ -1,4 +1,4 @@
-package com.heroku.api.connection;
+package com.heroku.api.exception;
 
 /**
  * TODO: Enter JavaDoc

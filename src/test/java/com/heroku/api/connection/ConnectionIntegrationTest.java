@@ -2,6 +2,7 @@ package com.heroku.api.connection;
 
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
+import com.heroku.api.exception.HerokuAPIException;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -21,8 +22,8 @@ public class ConnectionIntegrationTest {
 
     @Test(groups = "integration")
     public void testValidUsernameAndPassword() throws IOException {
-        HerokuConnectionProvider connectionProvider = new HerokuBasicAuthConnectionProvider(cred.username, cred.password);
-        HerokuConnection conn = connectionProvider.getConnection();
+        ConnectionProvider connectionProvider = new BasicAuthConnectionProvider(cred.username, cred.password);
+        Connection conn = connectionProvider.getConnection();
         Assert.assertNotNull(conn.getApiKey(), "Expected an API key from login, but it doesn't exist.");
     }
 
@@ -40,7 +41,7 @@ public class ConnectionIntegrationTest {
           expectedExceptions = HerokuAPIException.class,
           expectedExceptionsMessageRegExp = "Invalid username and password combination.")
     public void testInvalidUsernameAndPassword(String username, String password) throws IOException {
-        HerokuConnectionProvider auth = new HerokuBasicAuthConnectionProvider(username, password);
-        HerokuConnection conn = auth.getConnection();
+        ConnectionProvider auth = new BasicAuthConnectionProvider(username, password);
+        Connection conn = auth.getConnection();
     }
 }

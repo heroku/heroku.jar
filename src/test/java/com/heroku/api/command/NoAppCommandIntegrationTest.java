@@ -2,9 +2,10 @@ package com.heroku.api.command;
 
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
+import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuStack;
-import com.heroku.api.connection.HerokuAPIException;
-import com.heroku.api.connection.HerokuConnection;
+import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.connection.Connection;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -30,13 +31,11 @@ public class NoAppCommandIntegrationTest {
     private static final String PUBLIC_KEY_COMMENT = "foo@bar";
 
     @Inject
-    HerokuConnection connection;
+    Connection connection;
 
     // doesn't need an app
     @Test
     public void testKeysAddCommand() throws IOException, HerokuAPIException, JSchException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
-
         JSch jsch = new JSch();
         KeyPair keyPair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
 
@@ -45,9 +44,12 @@ public class NoAppCommandIntegrationTest {
         publicKeyOutputStream.close();
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
-        config.set(HerokuRequestKey.sshkey, sshPublicKey);
-        HerokuCommand cmd = new HerokuKeysAddCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        CommandConfig config = new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .with(HerokuRequestKey.sshkey, sshPublicKey);
+
+        Command cmd = new KeysAddCommand(config);
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
@@ -55,11 +57,12 @@ public class NoAppCommandIntegrationTest {
     // doesn't need an app
     @Test(dependsOnMethods = {"testKeysAddCommand"})
     public void testKeysRemoveCommand() throws IOException, HerokuAPIException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
+        CommandConfig config = new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .with(HerokuRequestKey.name, PUBLIC_KEY_COMMENT);
 
-        config.set(HerokuRequestKey.name, PUBLIC_KEY_COMMENT);
-        HerokuCommand cmd = new HerokuKeysRemoveCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        Command cmd = new KeysRemoveCommand(config);
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
@@ -70,11 +73,15 @@ public class NoAppCommandIntegrationTest {
     // but this depends on having two users in auth-test.properties
     @Test
     public void testKeysAddCommandWithDuplicateKey() throws IOException, HerokuAPIException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
-        config.set(HerokuRequestKey.sshkey, sshkey);
-        HerokuCommand cmd = new HerokuKeysAddCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+
+        CommandConfig config = new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .with(HerokuRequestKey.sshkey, sshkey);
+
+        Command cmd = new KeysAddCommand(config);
+        CommandResponse response = connection.executeCommand(cmd);
+
         assertFalse(response.isSuccess());
     }
 

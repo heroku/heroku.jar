@@ -1,15 +1,12 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuStack;
-
-import static org.testng.Assert.*;
-
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 
 /**
@@ -24,10 +21,8 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
-
-        HerokuCommand cmd = new HerokuAppCreateCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        Command cmd = new AppCreateCommand(new CommandConfig().onStack(HerokuStack.Cedar));
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
         assertNotNull(response.get("id"));
@@ -35,45 +30,40 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testAppCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig()
+    public void testAppCommand(CommandResponse app) throws IOException {
+        Command cmd = new AppCommand(new CommandConfig()
                 .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString());
+                .app(app.get("name").toString()));
 
-        HerokuCommand cmd = new HerokuAppCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertEquals(response.get("name"), app.get("name"));
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
-
-        HerokuCommand cmd = new HerokuAppsCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+    public void testListAppsCommand(CommandResponse app) throws IOException {
+        Command cmd = new AppsCommand(new CommandConfig());
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertNotNull(response.get(app.get("name").toString()));
     }
 
     @Test(dataProvider = "app")
-    public void testDestroyAppCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
+    public void testDestroyAppCommand(CommandResponse app) throws IOException {
+        Command cmd = new AppDestroyCommand(new CommandConfig()
+                .app(app.get("name").toString()));
 
-        HerokuCommand cmd = new HerokuAppDestroyCommand(config);
-
-        HerokuCommandResponse response = cmd.execute(connection);
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertEquals(response.isSuccess(), true);
     }
 
     @Test(dataProvider = "app")
-    public void testSharingAddCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
-        config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
-
-        HerokuCommand cmd = new HerokuSharingAddCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+    public void testSharingAddCommand(CommandResponse app) throws IOException {
+        Command cmd = new SharingAddCommand(new CommandConfig()
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
@@ -82,42 +72,48 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
-    public void testSharingTransferCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
-        config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
+    public void testSharingTransferCommand(CommandResponse app) throws IOException {
 
-        HerokuCommand sharingAddCommand = new HerokuSharingAddCommand(config);
-        sharingAddCommand.execute(connection);
+        Command sharingAddCommand = new SharingAddCommand(new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+        connection.executeCommand(sharingAddCommand);
 
-        config.set(HerokuRequestKey.transferOwner, DEMO_EMAIL);
-
-        HerokuCommand sharingTransferCommand = new HerokuSharingTransferCommand(config);
-        HerokuCommandResponse sharingTransferCommandResponse = sharingTransferCommand.execute(connection);
+        Command sharingTransferCommand = new SharingTransferCommand(new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.collaborator, DEMO_EMAIL)
+                .with(HerokuRequestKey.transferOwner, DEMO_EMAIL));
+        CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
         assertTrue(sharingTransferCommandResponse.isSuccess());
     }
 
     @Test(dataProvider = "app")
-    public void testSharingRemoveCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
-        config.set(HerokuRequestKey.collaborator, DEMO_EMAIL);
+    public void testSharingRemoveCommand(CommandResponse app) throws IOException {
 
-        HerokuCommand sharingAddCommand = new HerokuSharingAddCommand(config);
-        sharingAddCommand.execute(connection);
+        Command sharingAddCommand = new SharingAddCommand(new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+        connection.executeCommand(sharingAddCommand);
 
-        HerokuCommand cmd = new HerokuSharingRemoveCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+        Command cmd = new SharingRemoveCommand(new CommandConfig()
+                .onStack(HerokuStack.Cedar)
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
 
     @Test(dataProvider = "app")
-    public void testConfigAddCommand(HerokuCommandResponse app) throws IOException {
-        HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar).app(app.get("name").toString());
-        config.set(HerokuRequestKey.configvars, "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
-
-        HerokuCommand cmd = new HerokuConfigAddCommand(config);
-        HerokuCommandResponse response = cmd.execute(connection);
+    public void testConfigAddCommand(CommandResponse app) throws IOException {
+        Command cmd = new ConfigAddCommand(new CommandConfig()
+                .app(app.get("name").toString())
+                .with(HerokuRequestKey.configvars, "{\"FOO\":\"bar\", \"BAR\":\"foo\"}"));
+        CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
