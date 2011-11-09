@@ -30,4 +30,8 @@ public class HttpUtil {
         }
         return new String(encodedParameters);
     }
+
+    public static UnsupportedOperationException noBody() {
+        return new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
+    }
 }

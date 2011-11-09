@@ -6,6 +6,7 @@ import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.Method;
+import com.heroku.api.util.HttpUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -50,7 +51,7 @@ public class SharingRemoveCommand implements Command {
 
     @Override
     public String getBody() {
-        throw new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
+        throw HttpUtil.noBody();
     }
 
      @Override

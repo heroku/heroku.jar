@@ -4,6 +4,7 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.Method;
+import com.heroku.api.util.HttpUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class AppsCommand implements Command {
 
     @Override
     public String getBody() {
-        throw new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
+        throw HttpUtil.noBody();
     }
 
     @Override
