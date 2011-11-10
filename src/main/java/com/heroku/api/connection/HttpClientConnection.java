@@ -92,7 +92,7 @@ public class HttpClientConnection implements Connection {
     }
 
 
-    public HttpClient getHttpClient() {
+    private HttpClient getHttpClient() {
         DefaultHttpClient client = new DefaultHttpClient();
         if (loggedIn) {
             client.getCredentialsProvider().setCredentials(
