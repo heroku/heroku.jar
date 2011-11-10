@@ -24,6 +24,6 @@ public class EmptyResponse implements CommandResponse {
 
     @Override
     public byte[] getRawData() {
-        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new byte[0];
     }
 }

@@ -2,8 +2,10 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class AppDestroyCommand implements Command<EmptyResponse> {
 
     @Override
     public String getBody() {
-        throw new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
+        throw HttpUtil.noBody();
     }
 
     @Override
@@ -53,12 +55,10 @@ public class AppDestroyCommand implements Command<EmptyResponse> {
     }
 
     @Override
-    public int getSuccessCode() {
-        return HttpStatus.OK.statusCode;
-    }
-
-    @Override
-    public EmptyResponse getResponse(byte[] bytes, boolean success) {
-        return new EmptyResponse(success);
+    public EmptyResponse getResponse(byte[] bytes, int code) {
+        if (code == HttpStatus.OK.statusCode)
+            return new EmptyResponse(true);
+        else
+            throw new RequestFailedException("AppDestroy failed", code, bytes);
     }
 }

@@ -2,11 +2,9 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
-import com.heroku.api.http.HttpUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -60,12 +58,10 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
     }
 
     @Override
-    public int getSuccessCode() {
-        return HttpStatus.ACCEPTED.statusCode;
-    }
-
-    @Override
-    public JsonMapResponse getResponse(byte[] bytes, boolean success) {
-        return new JsonMapResponse(bytes, success);
+    public JsonMapResponse getResponse(byte[] bytes, int code) {
+        if (code == HttpStatus.ACCEPTED.statusCode)
+            return new JsonMapResponse(bytes, true);
+        else
+            throw new RequestFailedException("Failed to create app", code, bytes);
     }
 }

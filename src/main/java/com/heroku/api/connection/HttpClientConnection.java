@@ -6,19 +6,18 @@ import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.LoginResponse;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.HerokuApiVersion;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.*;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -37,12 +36,8 @@ public class HttpClientConnection implements Connection {
 
     public HttpClientConnection(LoginCommand login) {
         this.loginCommand = login;
-        try {
-            this.endpoint = new URL(loginCommand.getApiEndpoint());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("The endpoint URL was malformed", e);
-        }
-        loginResponse = executeCommand(loginCommand);
+        this.endpoint = HttpUtil.toURL(loginCommand.getApiEndpoint());
+        this.loginResponse = executeCommand(loginCommand);
         if (loginResponse.isSuccess()) {
             httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
                     // the Basic Authentication scheme only expects an API key.
@@ -65,16 +60,12 @@ public class HttpClientConnection implements Connection {
             }
 
             if (command.hasBody()) {
-                ((HttpEntityEnclosingRequestBase) message).setEntity(
-                        new StringEntity(command.getBody())
-                );
+                ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(command.getBody()));
             }
 
             HttpResponse httpResponse = httpClient.execute(message);
 
-            boolean success = (httpResponse.getStatusLine().getStatusCode() == command.getSuccessCode());
-
-            return command.getResponse(EntityUtils.toByteArray(httpResponse.getEntity()), success);
+            return command.getResponse(EntityUtils.toByteArray(httpResponse.getEntity()), httpResponse.getStatusLine().getStatusCode());
         } catch (IOException e) {
             throw new RuntimeException("exception while executing command", e);
         }

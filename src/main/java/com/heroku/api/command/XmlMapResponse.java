@@ -19,7 +19,8 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
     private final byte[] rawData;
     private final boolean success;
-    private boolean rawDataIsProcessed = false;
+    private volatile boolean rawDataIsProcessed = false;
+    private Object lock = new Object();
     private final HashMap<String, String> data = new HashMap<String, String>();
     private String lastKey;
     private StringBuffer charBuffer;
@@ -63,12 +64,17 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
     @Override
     public String get(String key) {
         if (!rawDataIsProcessed) {
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            try {
-                SAXParser parser = parserFactory.newSAXParser();
-                parser.parse(new ByteArrayInputStream(rawData), this);
-            } catch (Exception e) {
-                throw new HerokuAPIException("Unable to parse XML response.", e);
+            synchronized (lock) {
+                if (!rawDataIsProcessed) {
+                    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+                    try {
+                        SAXParser parser = parserFactory.newSAXParser();
+                        parser.parse(new ByteArrayInputStream(rawData), this);
+                    } catch (Exception e) {
+                        throw new HerokuAPIException("Unable to parse XML response.", e);
+                    }
+                    rawDataIsProcessed = true;
+                }
             }
         }
         return data.get(key);

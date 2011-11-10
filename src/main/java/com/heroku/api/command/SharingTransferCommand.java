@@ -2,13 +2,12 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,12 +59,10 @@ public class SharingTransferCommand implements Command<EmptyResponse> {
     }
 
     @Override
-    public int getSuccessCode() {
-        return HttpStatus.OK.statusCode;
-    }
-
-    @Override
-    public EmptyResponse getResponse(byte[] bytes, boolean success) {
-        return new EmptyResponse(success);
+    public EmptyResponse getResponse(byte[] bytes, int code) {
+        if (code == HttpStatus.OK.statusCode)
+            return new EmptyResponse(true);
+        else
+            throw new RequestFailedException("SharingTransfer failed", code, bytes);
     }
 }

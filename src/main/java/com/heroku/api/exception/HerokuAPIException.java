@@ -6,7 +6,13 @@ package com.heroku.api.exception;
  * @author Naaman Newbold
  */
 public class HerokuAPIException extends RuntimeException {
+
+
     public HerokuAPIException(String msg) {
+        super(msg);
+    }
+
+    public HerokuAPIException(String msg, int statusCode, String body) {
         super(msg);
     }
 
@@ -17,4 +23,6 @@ public class HerokuAPIException extends RuntimeException {
     public HerokuAPIException(String msg, Throwable throwable) {
         super(msg, throwable);
     }
+
+
 }

@@ -2,8 +2,8 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
@@ -54,12 +54,10 @@ public class AppCommand implements Command<XmlMapResponse> {
     }
 
     @Override
-    public int getSuccessCode() {
-        return HttpStatus.OK.statusCode;
-    }
-
-    @Override
-    public XmlMapResponse getResponse(byte[] bytes, boolean success) {
-        return new XmlMapResponse(bytes, success);
+    public XmlMapResponse getResponse(byte[] bytes, int code) {
+        if (code == 200)
+            return new XmlMapResponse(bytes, true);
+        else
+            throw new RequestFailedException("AppCommand failed", code, bytes);
     }
 }

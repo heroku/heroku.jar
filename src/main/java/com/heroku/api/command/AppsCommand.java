@@ -1,8 +1,8 @@
 package com.heroku.api.command;
 
 import com.heroku.api.HerokuResource;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
@@ -53,12 +53,10 @@ public class AppsCommand implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public int getSuccessCode() {
-        return HttpStatus.OK.statusCode;
-    }
-
-    @Override
-    public JsonArrayResponse getResponse(byte[] bytes, boolean success) {
-        return new JsonArrayResponse(bytes,  success);
+    public JsonArrayResponse getResponse(byte[] bytes, int code) {
+        if (code == 200)
+            return new JsonArrayResponse(bytes, true);
+        else
+            throw new RequestFailedException("Apps Command Failed", code, bytes);
     }
 }
