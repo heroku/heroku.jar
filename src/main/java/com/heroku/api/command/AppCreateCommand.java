@@ -37,14 +37,11 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
 
     @Override
     public String getBody() {
-
         return HttpUtil.encodeParameters(config,
                 HerokuRequestKey.stack,
                 HerokuRequestKey.remote,
                 HerokuRequestKey.timeout,
-                HerokuRequestKey.addons
-        );
-
+                HerokuRequestKey.addons);
     }
 
     @Override

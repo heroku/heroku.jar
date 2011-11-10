@@ -45,4 +45,8 @@ public class HerokuAppAPI {
         connection.executeCommand(new SharingTransferCommand(baseConfig.with(HerokuRequestKey.collaborator, to)));
     }
 
+    public HerokuAPI api() {
+        return new HerokuAPI(connection);
+    }
+
 }
