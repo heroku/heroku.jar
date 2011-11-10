@@ -4,15 +4,17 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.LoginResponse;
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.Method;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class HttpClientConnection implements Connection {
     private LoginCommand loginCommand;
     private LoginResponse loginResponse;
     private URL endpoint;
-    private boolean loggedIn = false;
+    private DefaultHttpClient httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager());
 
 
     public HttpClientConnection(LoginCommand login) {
@@ -42,7 +44,11 @@ public class HttpClientConnection implements Connection {
         }
         loginResponse = executeCommand(loginCommand);
         if (loginResponse.isSuccess()) {
-            loggedIn = true;
+            httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
+                    // the Basic Authentication scheme only expects an API key.
+                    new UsernamePasswordCredentials("", loginResponse.api_key()));
+        } else {
+            throw new HerokuAPIException("Unable to login");
         }
     }
 
@@ -64,8 +70,7 @@ public class HttpClientConnection implements Connection {
                 );
             }
 
-            HttpClient client = getHttpClient();
-            HttpResponse httpResponse = client.execute(message);
+            HttpResponse httpResponse = httpClient.execute(message);
 
             boolean success = (httpResponse.getStatusLine().getStatusCode() == command.getSuccessCode());
 
@@ -91,18 +96,6 @@ public class HttpClientConnection implements Connection {
         }
     }
 
-
-    private HttpClient getHttpClient() {
-        DefaultHttpClient client = new DefaultHttpClient();
-        if (loggedIn) {
-            client.getCredentialsProvider().setCredentials(
-                    new AuthScope(endpoint.getHost(), endpoint.getPort()),
-                    // the Basic Authentication scheme only expects an API key.
-                    new UsernamePasswordCredentials("", loginResponse.api_key())
-            );
-        }
-        return client;
-    }
 
     @Override
     public URL getEndpoint() {
