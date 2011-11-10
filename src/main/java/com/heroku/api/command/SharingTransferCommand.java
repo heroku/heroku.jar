@@ -2,13 +2,11 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +23,8 @@ public class SharingTransferCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public SharingTransferCommand(CommandConfig config) {
-        this.config = config;
+    public SharingTransferCommand(String appName, String newOwnerEmail) {
+        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.transferOwner, newOwnerEmail);
     }
 
     @Override

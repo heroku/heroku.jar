@@ -21,8 +21,8 @@ public class KeysRemoveCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public KeysRemoveCommand(CommandConfig config) {
-        this.config = config;
+    public KeysRemoveCommand(String keyName) {
+        this.config = new CommandConfig().with(HerokuRequestKey.name, keyName);
     }
 
     @Override

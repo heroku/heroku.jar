@@ -21,50 +21,39 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws IOException {
-        Command cmd = new AppCreateCommand(new CommandConfig().onStack(HerokuStack.Cedar));
+        Command cmd = new AppCreateCommand("Cedar");
         CommandResponse response = connection.executeCommand(cmd);
-
+        
         assertTrue(response.isSuccess());
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
     }
 
     @Test(dataProvider = "app")
-    public void testAppCommand(CommandResponse app) throws IOException {
-        Command cmd = new AppCommand(new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString()));
-
+    public void testAppCommand(JsonMapResponse app) throws IOException {
+        Command cmd = new AppCommand(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
-
         assertEquals(response.get("name"), app.get("name"));
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(CommandResponse app) throws IOException {
-        Command cmd = new AppsCommand(new CommandConfig());
+    public void testListAppsCommand(JsonMapResponse app) throws IOException {
+        Command cmd = new AppsCommand();
         CommandResponse response = connection.executeCommand(cmd);
-
-        assertNotNull(response.get(app.get("name").toString()));
+        assertNotNull(response.get(app.get("name")));
     }
 
     @Test(dataProvider = "app")
-    public void testDestroyAppCommand(CommandResponse app) throws IOException {
-        Command cmd = new AppDestroyCommand(new CommandConfig()
-                .app(app.get("name").toString()));
-
+    public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
+        Command cmd = new AppDestroyCommand(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
-
         assertEquals(response.isSuccess(), true);
     }
 
     @Test(dataProvider = "app")
-    public void testSharingAddCommand(CommandResponse app) throws IOException {
-        Command cmd = new SharingAddCommand(new CommandConfig()
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+    public void testSharingAddCommand(JsonMapResponse app) throws IOException {
+        Command cmd = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
-
         assertTrue(response.isSuccess());
     }
 
@@ -72,47 +61,30 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
-    public void testSharingTransferCommand(CommandResponse app) throws IOException {
-
-        Command sharingAddCommand = new SharingAddCommand(new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+    public void testSharingTransferCommand(JsonMapResponse app) throws IOException {
+        Command sharingAddCommand = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command sharingTransferCommand = new SharingTransferCommand(new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.collaborator, DEMO_EMAIL)
-                .with(HerokuRequestKey.transferOwner, DEMO_EMAIL));
+        Command sharingTransferCommand = new SharingTransferCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
         assertTrue(sharingTransferCommandResponse.isSuccess());
     }
 
     @Test(dataProvider = "app")
-    public void testSharingRemoveCommand(CommandResponse app) throws IOException {
-
-        Command sharingAddCommand = new SharingAddCommand(new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+    public void testSharingRemoveCommand(JsonMapResponse app) throws IOException {
+        Command sharingAddCommand = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command cmd = new SharingRemoveCommand(new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.collaborator, DEMO_EMAIL));
+        Command cmd = new SharingRemoveCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
     }
 
     @Test(dataProvider = "app")
-    public void testConfigAddCommand(CommandResponse app) throws IOException {
-        Command cmd = new ConfigAddCommand(new CommandConfig()
-                .app(app.get("name").toString())
-                .with(HerokuRequestKey.configvars, "{\"FOO\":\"bar\", \"BAR\":\"foo\"}"));
+    public void testConfigAddCommand(JsonMapResponse app) throws IOException {
+        Command cmd = new ConfigAddCommand(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());

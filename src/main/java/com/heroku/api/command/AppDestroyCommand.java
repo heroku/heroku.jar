@@ -18,8 +18,8 @@ public class AppDestroyCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public AppDestroyCommand(CommandConfig config) {
-        this.config = config;
+    public AppDestroyCommand(String appName) {
+        this.config = new CommandConfig().app(appName);
     }
 
     @Override

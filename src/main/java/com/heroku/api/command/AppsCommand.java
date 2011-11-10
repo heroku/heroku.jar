@@ -16,12 +16,6 @@ import java.util.Map;
  */
 public class AppsCommand implements Command<JsonArrayResponse> {
 
-    private final CommandConfig config;
-
-    public AppsCommand(CommandConfig config) {
-        this.config = config;
-    }
-
     @Override
     public Method getHttpMethod() {
         return Method.GET;

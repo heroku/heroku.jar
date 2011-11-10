@@ -2,6 +2,7 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.*;
 
 import java.util.Map;
@@ -65,6 +66,9 @@ public class BasicAuthLoginCommand implements LoginCommand {
 
     @Override
     public LoginResponse getResponse(byte[] bytes, boolean success) {
+        if (!success) {
+            throw HttpUtil.invalidLogin();
+        }
         return new LoginResponse(bytes, success);
     }
 }

@@ -19,8 +19,8 @@ public class AppCommand implements Command<XmlMapResponse> {
 
     private final CommandConfig config;
 
-    public AppCommand(CommandConfig config) {
-        this.config = config;
+    public AppCommand(String appName) {
+        this.config = new CommandConfig().app(appName);
     }
 
     @Override

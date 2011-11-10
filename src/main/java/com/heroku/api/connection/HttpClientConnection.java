@@ -92,7 +92,7 @@ public class HttpClientConnection implements Connection {
             case DELETE:
                 return new HttpDelete(endpoint);
             default:
-                throw new UnsupportedOperationException(httpMethod + " is not a support request type.");
+                throw new UnsupportedOperationException(httpMethod + " is not a supported request type.");
         }
     }
 

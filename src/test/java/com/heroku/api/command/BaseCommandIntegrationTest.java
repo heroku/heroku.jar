@@ -23,14 +23,14 @@ public abstract class BaseCommandIntegrationTest {
     @Inject
     Connection connection;
 
-    private List<CommandResponse> apps = new ArrayList<CommandResponse>();
+    private List<JsonMapResponse> apps = new ArrayList<JsonMapResponse>();
 
     @DataProvider
     public Object[][] app() throws IOException {
         CommandConfig config = new CommandConfig().onStack(HerokuStack.Cedar);
 
-        Command cmd = new AppCreateCommand(config);
-        CommandResponse response = connection.executeCommand(cmd);
+        AppCreateCommand cmd = new AppCreateCommand("Cedar");
+        JsonMapResponse response = connection.executeCommand(cmd);
 
         apps.add(response);
 
@@ -39,14 +39,14 @@ public abstract class BaseCommandIntegrationTest {
 
     @AfterTest
     public void deleteTestApps() throws IOException {
-        for (CommandResponse res : apps) {
+        for (JsonMapResponse res : apps) {
             CommandConfig config = new CommandConfig()
                     .onStack(HerokuStack.Cedar)
-                    .app(res.get("name").toString());
+                    .app(res.get("name"));
 
             // quietly clean up apps created. if the destroy fails, it's ok because it might
             // have been deleted before we get to it here.
-            Command cmd = new AppDestroyCommand(config);
+            Command cmd = new AppDestroyCommand(res.get("name"));
             connection.executeCommand(cmd);
         }
     }

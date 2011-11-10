@@ -17,8 +17,8 @@ public class KeysAddCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public KeysAddCommand(CommandConfig config) {
-        this.config = config;
+    public KeysAddCommand(String sshkey) {
+        this.config = new CommandConfig().with(HerokuRequestKey.sshkey, sshkey);
     }
 
     @Override
@@ -58,6 +58,9 @@ public class KeysAddCommand implements Command<EmptyResponse> {
 
     @Override
     public EmptyResponse getResponse(byte[] bytes, boolean success) {
+        if (!success) {
+            throw HttpUtil.invalidKeys();
+        }
         return new EmptyResponse(success);
     }
 }

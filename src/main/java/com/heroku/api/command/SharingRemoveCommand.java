@@ -24,8 +24,8 @@ public class SharingRemoveCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public SharingRemoveCommand(CommandConfig config) {
-        this.config = config;
+    public SharingRemoveCommand(String appName, String collaboratorEmail) {
+        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.collaborator, collaboratorEmail);
     }
 
     @Override

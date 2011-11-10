@@ -20,8 +20,8 @@ public class ConfigAddCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public ConfigAddCommand(CommandConfig config) {
-        this.config = config;
+    public ConfigAddCommand(String appName, String jsonConfigVars) {
+        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.configvars, jsonConfigVars);
     }
 
     @Override

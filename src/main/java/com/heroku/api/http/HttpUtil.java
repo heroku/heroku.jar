@@ -2,6 +2,7 @@ package com.heroku.api.http;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.command.CommandConfig;
+import com.heroku.api.exception.HerokuAPIException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -50,4 +51,11 @@ public class HttpUtil {
         }
     }
 
+    public static HerokuAPIException invalidLogin() {
+        return new HerokuAPIException("Unable to login");
+    }
+
+    public static HerokuAPIException invalidKeys() {
+        return new HerokuAPIException("Unable to add keys.");
+    }
 }

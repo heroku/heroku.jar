@@ -35,7 +35,7 @@ public class NoAppCommandIntegrationTest {
 
     // doesn't need an app
     @Test
-    public void testKeysAddCommand() throws IOException, HerokuAPIException, JSchException {
+    public void testKeysAddCommand() throws JSchException, IOException {
         JSch jsch = new JSch();
         KeyPair keyPair = KeyPair.genKeyPair(jsch, KeyPair.RSA);
 
@@ -44,11 +44,7 @@ public class NoAppCommandIntegrationTest {
         publicKeyOutputStream.close();
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
-        CommandConfig config = new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .with(HerokuRequestKey.sshkey, sshPublicKey);
-
-        Command cmd = new KeysAddCommand(config);
+        Command cmd = new KeysAddCommand(sshPublicKey);
         CommandResponse response = connection.executeCommand(cmd);
 
         assertTrue(response.isSuccess());
@@ -56,14 +52,9 @@ public class NoAppCommandIntegrationTest {
 
     // doesn't need an app
     @Test(dependsOnMethods = {"testKeysAddCommand"})
-    public void testKeysRemoveCommand() throws IOException, HerokuAPIException {
-        CommandConfig config = new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .with(HerokuRequestKey.name, PUBLIC_KEY_COMMENT);
-
-        Command cmd = new KeysRemoveCommand(config);
+    public void testKeysRemoveCommand() {
+        Command cmd = new KeysRemoveCommand(PUBLIC_KEY_COMMENT);
         CommandResponse response = connection.executeCommand(cmd);
-
         assertTrue(response.isSuccess());
     }
 
@@ -71,18 +62,11 @@ public class NoAppCommandIntegrationTest {
     // currently uses a key associated with another user but really should do the following:
     // add a key to one user, then try to add the same key to another user
     // but this depends on having two users in auth-test.properties
-    @Test
-    public void testKeysAddCommandWithDuplicateKey() throws IOException, HerokuAPIException {
+    @Test(expectedExceptions = HerokuAPIException.class)
+    public void testKeysAddCommandWithDuplicateKey() throws IOException {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
-
-        CommandConfig config = new CommandConfig()
-                .onStack(HerokuStack.Cedar)
-                .with(HerokuRequestKey.sshkey, sshkey);
-
-        Command cmd = new KeysAddCommand(config);
+        Command cmd = new KeysAddCommand(sshkey);
         CommandResponse response = connection.executeCommand(cmd);
-
-        assertFalse(response.isSuccess());
     }
 
 }

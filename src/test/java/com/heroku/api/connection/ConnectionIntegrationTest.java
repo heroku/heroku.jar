@@ -40,7 +40,7 @@ public class ConnectionIntegrationTest {
     @Test(groups = "integration",
             dataProvider = "invalidUsernamesAndPasswords",
             expectedExceptions = HerokuAPIException.class,
-            expectedExceptionsMessageRegExp = "Invalid username and password combination.")
+            expectedExceptionsMessageRegExp = "Unable to login")
     public void testInvalidUsernameAndPassword(String username, String password) throws IOException {
         new HttpClientConnection(new BasicAuthLoginCommand(username, password));
     }

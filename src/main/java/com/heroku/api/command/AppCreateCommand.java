@@ -2,11 +2,10 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.HerokuStack;
 import com.heroku.api.http.*;
 import com.heroku.api.http.HttpUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -17,9 +16,9 @@ import java.util.Map;
 public class AppCreateCommand implements Command<JsonMapResponse> {
 
     private final CommandConfig config;
-
-    public AppCreateCommand(CommandConfig config) {
-        this.config = config;
+    
+    public AppCreateCommand(String stack) {
+        config = new CommandConfig().onStack(HerokuStack.valueOf(stack));
     }
 
     @Override
@@ -41,10 +40,7 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
     public String getBody() {
 
         return HttpUtil.encodeParameters(config,
-                HerokuRequestKey.stack,
-                HerokuRequestKey.remote,
-                HerokuRequestKey.timeout,
-                HerokuRequestKey.addons
+                HerokuRequestKey.stack
         );
 
     }
