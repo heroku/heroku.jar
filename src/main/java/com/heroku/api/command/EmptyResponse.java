@@ -26,4 +26,9 @@ public class EmptyResponse implements CommandResponse {
     public byte[] getRawData() {
         return new byte[0];
     }
+
+    @Override
+    public Object getData() {
+        return null;
+    }
 }

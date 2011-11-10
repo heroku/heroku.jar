@@ -9,6 +9,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TODO: Javadoc
@@ -83,5 +84,9 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
     @Override
     public byte[] getRawData() {
         return rawData;
+    }
+
+    public Map<String, String> getData() {
+        return new HashMap<String, String>(data);
     }
 }

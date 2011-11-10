@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO: Javadoc
@@ -22,7 +19,8 @@ public class JsonArrayResponse implements CommandResponse {
 
     public JsonArrayResponse(byte[] data, boolean success) {
         this.rawData = data;
-        Type listType = new TypeToken<List<HashMap<String, String>>>(){}.getType();
+        Type listType = new TypeToken<List<HashMap<String, String>>>() {
+        }.getType();
         this.data = Collections.unmodifiableList(new Gson().<List<Map<String, String>>>fromJson(new String(data), listType));
         this.success = success;
     }
@@ -47,5 +45,14 @@ public class JsonArrayResponse implements CommandResponse {
     @Override
     public byte[] getRawData() {
         return rawData;
+    }
+
+    @Override
+    public List<Map<String, String>> getData() {
+        List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+        for (Map<String, String> map : data) {
+            ret.add(new HashMap<String, String>(map));
+        }
+        return ret;
     }
 }
