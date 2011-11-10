@@ -36,7 +36,7 @@ public class HttpClientConnection implements Connection {
     public HttpClientConnection(LoginCommand login) {
         this.loginCommand = login;
         try {
-            this.endpoint = new URL(loginCommand.getEndpoint());
+            this.endpoint = new URL(loginCommand.getApiEndpoint());
         } catch (MalformedURLException e) {
             throw new RuntimeException("The endpoint URL was malformed", e);
         }
@@ -50,7 +50,7 @@ public class HttpClientConnection implements Connection {
     @Override
     public <T extends CommandResponse> T executeCommand(Command<T> command) {
         try {
-            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), command.getEndpoint());
+            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), endpoint + command.getEndpoint());
             message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
             message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 

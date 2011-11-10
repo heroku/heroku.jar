@@ -23,6 +23,10 @@ public class BasicAuthLoginCommand implements LoginCommand {
         this.endpoint = endpoint;
     }
 
+    @Override
+    public String getApiEndpoint() {
+        return endpoint;
+    }
 
     @Override
     public Method getHttpMethod() {
@@ -31,7 +35,7 @@ public class BasicAuthLoginCommand implements LoginCommand {
 
     @Override
     public String getEndpoint() {
-        return endpoint.toString() + HerokuResource.Login.value;
+        return HerokuResource.Login.value;
     }
 
     @Override
