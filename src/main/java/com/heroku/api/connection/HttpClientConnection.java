@@ -91,7 +91,7 @@ public class HttpClientConnection implements Connection {
         }
     }
 
-    @Override
+
     public HttpClient getHttpClient() {
         DefaultHttpClient client = new DefaultHttpClient();
         if (loggedIn) {
