@@ -13,7 +13,7 @@ import java.net.URL;
  */
 public interface Connection {
 
-    <T extends CommandResponse> T executeCommand(Command<T> command) throws IOException;
+    <T extends CommandResponse> T executeCommand(Command<T> command);
 
     URL getEndpoint();
 

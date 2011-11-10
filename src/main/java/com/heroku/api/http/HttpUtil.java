@@ -4,6 +4,8 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.command.CommandConfig;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 
 /**
@@ -12,6 +14,7 @@ import java.net.URLEncoder;
  * @author Naaman Newbold
  */
 public class HttpUtil {
+
     public static String encodeParameters(CommandConfig config, HerokuRequestKey... keys) {
         try {
             StringBuilder encodedParameters = new StringBuilder();
@@ -38,4 +41,13 @@ public class HttpUtil {
     public static UnsupportedOperationException noBody() {
         return new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
     }
+
+    public static URL toURL(String url){
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("The URL was malformed");
+        }
+    }
+
 }
