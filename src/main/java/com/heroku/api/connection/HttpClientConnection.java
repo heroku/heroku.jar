@@ -21,19 +21,24 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * TODO: Enter JavaDoc
  *
  * @author Naaman Newbold
  */
-public class HttpClientConnection implements Connection {
+public class HttpClientConnection implements Connection<HttpClientFutureWrapper> {
 
     private LoginCommand loginCommand;
     private LoginResponse loginResponse;
     private URL endpoint;
     private DefaultHttpClient httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager());
-
+    private volatile ExecutorService executorService;
+    private Object lock = new Object();
 
     public HttpClientConnection(LoginCommand login) {
         this.loginCommand = login;
@@ -48,6 +53,17 @@ public class HttpClientConnection implements Connection {
         }
     }
 
+    @Override
+    public <T extends CommandResponse> HttpClientFutureWrapper<T> executeCommandAsync(final Command<T> command) {
+        Callable<T> callable = new Callable<T>() {
+            @Override
+            public T call() throws Exception {
+                return executeCommand(command);
+            }
+        };
+        Future<T> future = getExecutorService().submit(callable);
+        return new HttpClientFutureWrapper<T>(future);
+    }
 
     @Override
     public <T extends CommandResponse> T executeCommand(Command<T> command) {
@@ -106,5 +122,20 @@ public class HttpClientConnection implements Connection {
     @Override
     public String getApiKey() {
         return loginResponse.api_key();
+    }
+
+    private ExecutorService getExecutorService() {
+        if (executorService == null) {
+            synchronized (lock) {
+                if (executorService == null) {
+                    executorService = createExecutorService();
+                }
+            }
+        }
+        return executorService;
+    }
+
+    protected ExecutorService createExecutorService() {
+        return Executors.newCachedThreadPool();
     }
 }

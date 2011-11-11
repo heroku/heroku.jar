@@ -11,9 +11,12 @@ import java.net.URL;
  *
  * @author Naaman Newbold
  */
-public interface Connection {
+public interface Connection<F extends FutureWrapper> {
+
 
     <T extends CommandResponse> T executeCommand(Command<T> command);
+
+    <T extends CommandResponse> F executeCommandAsync(Command<T> command);
 
     URL getEndpoint();
 
