@@ -18,8 +18,12 @@ public class HerokuAppAPI {
         this.baseConfig = new CommandConfig().onStack(HerokuStack.Cedar).app(appName);
     }
 
-    public HerokuAppAPI create() {
-        connection.executeCommand(new AppCreateCommand(baseConfig.get(HerokuRequestKey.stack)));
+    public Map<String, String> create() {
+        return connection.executeCommand(new AppCreateCommand(baseConfig)).getData();
+    }
+
+    public HerokuAppAPI createAnd() {
+        create();
         return this;
     }
 
@@ -48,5 +52,6 @@ public class HerokuAppAPI {
     public HerokuAPI api() {
         return new HerokuAPI(connection);
     }
+
 
 }

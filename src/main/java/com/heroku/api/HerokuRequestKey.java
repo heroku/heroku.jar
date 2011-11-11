@@ -7,6 +7,7 @@ package com.heroku.api;
 */
 public enum HerokuRequestKey {
     stack ("app[stack]"),
+    appname ("app[name]"),
     remote ("remote"),
     timeout ("timeout"),
     addons ("addons"),
