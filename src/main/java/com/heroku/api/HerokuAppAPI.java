@@ -3,15 +3,17 @@ package com.heroku.api;
 
 import com.heroku.api.command.*;
 import com.heroku.api.connection.Connection;
+import com.heroku.api.connection.FutureWrapper;
+import com.heroku.api.connection.HttpClientConnection;
 
 import java.util.Map;
 
 public class HerokuAppAPI {
 
-    final Connection connection;
+    final Connection<? extends FutureWrapper> connection;
     final String appName;
 
-    public HerokuAppAPI(Connection connection, String name) {
+    public HerokuAppAPI(Connection<? extends FutureWrapper> connection, String name) {
         this.connection = connection;
         this.appName = name;
     }
