@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.connection.Connection;
+import com.heroku.api.exception.HerokuAPIException;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -44,10 +45,13 @@ public abstract class BaseCommandIntegrationTest {
                     .onStack(HerokuStack.Cedar)
                     .app(res.get("name"));
 
-            // quietly clean up apps created. if the destroy fails, it's ok because it might
-            // have been deleted before we get to it here.
-            Command cmd = new AppDestroyCommand(res.get("name"));
-            connection.executeCommand(cmd);
+            try {
+                Command cmd = new AppDestroyCommand(res.get("name"));
+                connection.executeCommand(cmd);
+            } catch (HerokuAPIException e) {
+                // quietly clean up apps created. if the destroy fails, it's ok because it might
+                // have been deleted before we get to it here.
+            }
         }
     }
 

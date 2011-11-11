@@ -6,8 +6,7 @@ package com.heroku.api.http;
  * @author Naaman Newbold
  */
 public enum HttpStatus {
-    OK (200),
-    ACCEPTED (202);
+    OK(200), ACCEPTED(202);
 
     public final int statusCode;
 

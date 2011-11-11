@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.command.BasicAuthLoginCommand;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -39,8 +40,7 @@ public class ConnectionIntegrationTest {
 
     @Test(groups = "integration",
             dataProvider = "invalidUsernamesAndPasswords",
-            expectedExceptions = HerokuAPIException.class,
-            expectedExceptionsMessageRegExp = "Unable to login")
+            expectedExceptions = RequestFailedException.class)
     public void testInvalidUsernameAndPassword(String username, String password) throws IOException {
         new HttpClientConnection(new BasicAuthLoginCommand(username, password));
     }

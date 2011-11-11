@@ -1,9 +1,5 @@
 package com.heroku.api.http;
 
-import com.heroku.api.http.HttpHeader;
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
-
 /**
  * TODO: Javadoc
  *
@@ -11,8 +7,7 @@ import org.apache.http.message.BasicHeader;
  */
 public enum HerokuApiVersion implements HttpHeader {
 
-    v2(2),
-    v3(3);
+    v2(2), v3(3);
 
     public static final String HEADER = "X-Heroku-API-Version";
 
@@ -21,7 +16,6 @@ public enum HerokuApiVersion implements HttpHeader {
     HerokuApiVersion(int version) {
         this.version = version;
     }
-
 
     @Override
     public String getHeaderName() {

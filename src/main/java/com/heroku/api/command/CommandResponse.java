@@ -7,6 +7,10 @@ package com.heroku.api.command;
  */
 public interface CommandResponse {
     boolean isSuccess();
+
     Object get(String key);
+
     byte[] getRawData();
+
+    Object getData();
 }

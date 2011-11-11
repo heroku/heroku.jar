@@ -3,7 +3,6 @@ package com.heroku.api.connection;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
 
-import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -20,5 +19,4 @@ public interface Connection {
     String getEmail();
 
     String getApiKey();
-
 }

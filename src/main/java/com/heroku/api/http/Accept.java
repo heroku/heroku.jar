@@ -5,7 +5,7 @@ public enum Accept implements HttpHeader {
     JSON("application/json"),
     XML("text/xml");
 
-    String value;
+    private String value;
     static String ACCEPT = "Accept";
 
     Accept(String val) {

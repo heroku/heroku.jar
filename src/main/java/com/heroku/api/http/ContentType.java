@@ -5,7 +5,7 @@ public enum ContentType implements HttpHeader {
     FORM_URLENCODED("application/x-www-form-urlencoded"),
     SSH_AUTHKEY("text/ssh-authkey");
 
-    String value;
+    private String value;
     static String CONTENT_TYPE = "Content-Type";
 
     ContentType(String val) {

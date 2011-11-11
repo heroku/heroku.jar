@@ -25,8 +25,6 @@ public interface Command<T extends CommandResponse> {
 
     Map<String, String> getHeaders();
 
-    int getSuccessCode();
-
-    T getResponse(byte[] bytes, boolean success);
+    T getResponse(byte[] bytes, int status);
 
 }

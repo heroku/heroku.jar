@@ -2,6 +2,7 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
 import java.util.Map;
@@ -41,7 +42,7 @@ public class KeysAddCommand implements Command<EmptyResponse> {
         return config.get(HerokuRequestKey.sshkey);
     }
 
-     @Override
+    @Override
     public Accept getResponseType() {
         return Accept.JSON;
     }
@@ -51,16 +52,11 @@ public class KeysAddCommand implements Command<EmptyResponse> {
         return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
     }
 
-    @Override
-    public int getSuccessCode() {
-        return HttpStatus.OK.statusCode;
+    public EmptyResponse getResponse(byte[] bytes, int code) {
+        if (code == HttpStatus.OK.statusCode)
+            return new EmptyResponse(true);
+        else
+            throw new RequestFailedException("KeysAdd failed", code, bytes);
     }
 
-    @Override
-    public EmptyResponse getResponse(byte[] bytes, boolean success) {
-        if (!success) {
-            throw HttpUtil.invalidKeys();
-        }
-        return new EmptyResponse(success);
-    }
 }

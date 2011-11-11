@@ -43,7 +43,7 @@ public class HttpUtil {
         return new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
     }
 
-    public static URL toURL(String url){
+    public static URL toURL(String url) {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {

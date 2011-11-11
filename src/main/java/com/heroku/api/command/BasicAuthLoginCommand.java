@@ -2,7 +2,7 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
 import java.util.Map;
@@ -59,18 +59,16 @@ public class BasicAuthLoginCommand implements LoginCommand {
         return HttpHeader.Util.setHeaders(HerokuApiVersion.v2, ContentType.FORM_URLENCODED);
     }
 
-    @Override
-    public int getSuccessCode() {
-        return 200;
-    }
 
     @Override
-    public LoginResponse getResponse(byte[] bytes, boolean success) {
-        if (!success) {
-            throw HttpUtil.invalidLogin();
+    public LoginResponse getResponse(byte[] bytes, int code) {
+        if (code == 200) {
+            return new LoginResponse(bytes, true);
+        } else if (code == 404) {
+            throw new RequestFailedException("Invalid username and password combination.", code, bytes);
+        } else {
+            throw new RequestFailedException("Unknown error occurred while connecting to Heroku.", code, bytes);
         }
-        return new LoginResponse(bytes, success);
     }
 }
-
 
