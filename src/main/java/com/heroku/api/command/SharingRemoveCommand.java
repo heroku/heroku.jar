@@ -2,15 +2,12 @@ package com.heroku.api.command;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
-import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,13 +33,9 @@ public class SharingRemoveCommand implements Command<EmptyResponse> {
 
     @Override
     public String getEndpoint() {
-        try {
-            return String.format(HerokuResource.Collaborator.value,
-                    config.get(HerokuRequestKey.name),
-                    URLEncoder.encode(config.get(HerokuRequestKey.collaborator), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new HerokuAPIException("Unable to encode the endpoint.", e);
-        }
+        return String.format(HerokuResource.Collaborator.value,
+                config.get(HerokuRequestKey.name),
+                HttpUtil.urlencode(config.get(HerokuRequestKey.collaborator), "Unable to encode the endpoint"));
     }
 
     @Override

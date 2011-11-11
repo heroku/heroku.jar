@@ -21,10 +21,8 @@ public class JsonMapResponse implements CommandResponse {
 
     public JsonMapResponse(byte[] data, boolean success) {
         this.rawData = data;
-        Type listType = new TypeToken<HashMap<String, String>>() {
-        }.getType();
+        Type listType = new TypeToken<HashMap<String, String>>(){}.getType();
         this.data = Collections.unmodifiableMap(new Gson().<Map<String, String>>fromJson(new String(data), listType));
-
         this.success = success;
     }
 

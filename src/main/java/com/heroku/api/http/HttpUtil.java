@@ -16,28 +16,34 @@ import java.net.URLEncoder;
  */
 public class HttpUtil {
 
+    private static String ENCODE_FAIL = "Unsupported encoding exception while encoding parameters";
+
     public static String encodeParameters(CommandConfig config, HerokuRequestKey... keys) {
-        try {
-            StringBuilder encodedParameters = new StringBuilder();
-            String separator = "";
-            for (HerokuRequestKey key : keys) {
-                if (config.get(key) != null) {
-                    encodedParameters.append(separator);
-                    encodedParameters.append(
-                            URLEncoder.encode(key.queryParameter, "UTF-8")
-                    );
-                    encodedParameters.append("=");
-                    encodedParameters.append(
-                            URLEncoder.encode(config.get(key), "UTF-8")
-                    );
-                    separator = "&";
-                }
+
+        StringBuilder encodedParameters = new StringBuilder();
+        String separator = "";
+        for (HerokuRequestKey key : keys) {
+            if (config.get(key) != null) {
+                encodedParameters.append(separator);
+                encodedParameters.append(urlencode(key.queryParameter, ENCODE_FAIL));
+                encodedParameters.append("=");
+                encodedParameters.append(urlencode(config.get(key), ENCODE_FAIL));
+                separator = "&";
             }
-            return new String(encodedParameters);
+        }
+        return new String(encodedParameters);
+
+    }
+
+
+    public static String urlencode(String toEncode, String messageIfFails) {
+        try {
+            return URLEncoder.encode(toEncode, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Unsupported encoding exception while encoding parameters", e);
+            throw new RuntimeException(messageIfFails, e);
         }
     }
+
 
     public static UnsupportedOperationException noBody() {
         return new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");

@@ -36,7 +36,6 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
         // only supports single level xml documents. overwriting the previous element name and data is ok in this case.
         lastKey = qualifiedName;
         data.put(lastKey, null);
-
         charBuffer = null;
     }
 

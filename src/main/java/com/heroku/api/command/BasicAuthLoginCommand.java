@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class BasicAuthLoginCommand implements LoginCommand {
 
-    String username;
-    String password;
-    String endpoint;
+    private String username;
+    private String password;
+    private String endpoint;
 
     public BasicAuthLoginCommand(String username, String password) {
         this(username, password, DEFAULT_ENDPOINT);

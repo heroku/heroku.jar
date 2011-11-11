@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class HerokuAppAPI {
 
-    public final Connection connection;
-    public final String appName;
+    final Connection connection;
+    final String appName;
 
     public HerokuAppAPI(Connection connection, String name) {
         this.connection = connection;
@@ -51,5 +51,11 @@ public class HerokuAppAPI {
         return new HerokuAPI(connection);
     }
 
+    public String getAppName() {
+        return appName;
+    }
 
+    public Connection getConnection() {
+        return connection;
+    }
 }

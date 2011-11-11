@@ -32,10 +32,7 @@ public class ConfigAddCommand implements Command<EmptyResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(
-                HerokuResource.ConfigVars.value,
-                config.get(HerokuRequestKey.name)
-        );
+        return String.format(HerokuResource.ConfigVars.value, config.get(HerokuRequestKey.name));
     }
 
     @Override
