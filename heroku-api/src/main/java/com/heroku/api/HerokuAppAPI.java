@@ -4,7 +4,6 @@ package com.heroku.api;
 import com.heroku.api.command.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.FutureWrapper;
-import com.heroku.api.connection.HttpClientConnection;
 
 import java.util.Map;
 
