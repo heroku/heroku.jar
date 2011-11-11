@@ -16,9 +16,17 @@ import java.util.Map;
 public class AppCreateCommand implements Command<JsonMapResponse> {
 
     private final CommandConfig config;
-    
+
     public AppCreateCommand(String stack) {
         config = new CommandConfig().onStack(HerokuStack.valueOf(stack));
+    }
+
+    public AppCreateCommand withName(String name) {
+        return new AppCreateCommand(config.with(HerokuRequestKey.appname, name));
+    }
+
+    private AppCreateCommand(CommandConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -38,10 +46,7 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config,
-                HerokuRequestKey.stack
-        );
-
+        return HttpUtil.encodeParameters(config, HerokuRequestKey.stack, HerokuRequestKey.appname);
     }
 
     @Override

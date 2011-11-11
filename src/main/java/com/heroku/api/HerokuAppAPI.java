@@ -10,43 +10,41 @@ public class HerokuAppAPI {
 
     public final Connection connection;
     public final String appName;
-    public final CommandConfig baseConfig;
 
     public HerokuAppAPI(Connection connection, String name) {
         this.connection = connection;
         this.appName = name;
-        this.baseConfig = new CommandConfig().onStack(HerokuStack.Cedar).app(appName);
     }
 
-    public Map<String, String> create() {
-        return connection.executeCommand(new AppCreateCommand(baseConfig)).getData();
+    public Map<String, String> create(HerokuStack stack) {
+        return connection.executeCommand(new AppCreateCommand(stack.value).withName(appName)).getData();
     }
 
-    public HerokuAppAPI createAnd() {
-        create();
+    public HerokuAppAPI createAnd(HerokuStack stack) {
+        create(stack);
         return this;
     }
 
     public void destroy() {
-        connection.executeCommand(new AppDestroyCommand(baseConfig.get(HerokuRequestKey.name)));
+        connection.executeCommand(new AppDestroyCommand(appName));
     }
 
     public Map<String, String> info() {
-        return connection.executeCommand(new AppCommand(baseConfig.get(HerokuRequestKey.name))).getData();
+        return connection.executeCommand(new AppCommand(appName)).getData();
     }
 
     public HerokuAppAPI addCollaborator(String collaborator) {
-        connection.executeCommand(new SharingAddCommand(baseConfig.get(HerokuRequestKey.name), collaborator));
+        connection.executeCommand(new SharingAddCommand(appName, collaborator));
         return this;
     }
 
     public HerokuAppAPI removeCollaborator(String collaborator) {
-        connection.executeCommand(new SharingRemoveCommand(baseConfig.get(HerokuRequestKey.name), collaborator));
+        connection.executeCommand(new SharingRemoveCommand(appName, collaborator));
         return this;
     }
 
     public void transferApp(String to) {
-        connection.executeCommand(new SharingTransferCommand(baseConfig.get(HerokuRequestKey.name), to));
+        connection.executeCommand(new SharingTransferCommand(appName, to));
     }
 
     public HerokuAPI api() {

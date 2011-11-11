@@ -1,10 +1,9 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.CommandConfig;
+import com.heroku.api.command.AppCreateCommand;
 import com.heroku.api.command.KeysAddCommand;
 import com.heroku.api.command.KeysRemoveCommand;
-import com.heroku.api.command.SharingAddCommand;
 import com.heroku.api.connection.Connection;
 
 public class HerokuAPI {
@@ -25,6 +24,14 @@ public class HerokuAPI {
 
     public HerokuAppAPI app(String name) {
         return new HerokuAppAPI(connection, name);
+    }
+
+    public HerokuAppAPI newapp(HerokuStack stack) {
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreateCommand(stack.value)).get("name"));
+    }
+    
+    public HerokuAppAPI newapp(HerokuStack stack, String appName) {
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreateCommand(stack.value).withName(appName)).get("name"));
     }
 
 
