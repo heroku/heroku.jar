@@ -1,5 +1,6 @@
 package com.heroku.api.connection;
 
+import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
 
@@ -19,4 +20,6 @@ public interface Connection {
     String getEmail();
 
     String getApiKey();
+
+    HerokuAPI getApi();
 }

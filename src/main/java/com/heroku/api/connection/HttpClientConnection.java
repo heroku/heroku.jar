@@ -1,5 +1,6 @@
 package com.heroku.api.connection;
 
+import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
 import com.heroku.api.command.LoginCommand;
@@ -87,6 +88,10 @@ public class HttpClientConnection implements Connection {
         }
     }
 
+    @Override
+    public HerokuAPI getApi() {
+        return new HerokuAPI(this);
+    }
 
     @Override
     public URL getEndpoint() {
