@@ -11,6 +11,7 @@
     <modules>
         <module>heroku-api</module>
         <module>heroku-httpclient</module>
+        <module>heroku-finagle</module>
     </modules>
 
     <properties>

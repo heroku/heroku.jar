@@ -5,7 +5,7 @@ import com.heroku.api.command.CommandResponse;
 import java.util.concurrent.Future;
 
 
-public class HttpClientFutureWrapper<R extends CommandResponse> extends FutureWrapper<Future<R>, R> {
+public class HttpClientFutureWrapper<R extends CommandResponse> extends FutureWrapper<R, Future<R>> {
 
     public HttpClientFutureWrapper(Future<R> toWrap) {
         super(toWrap);
