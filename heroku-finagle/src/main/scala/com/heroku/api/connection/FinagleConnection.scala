@@ -13,7 +13,7 @@ import com.heroku.api.http._
 import collection.JavaConversions._
 
 
-class TwitterFutureWrapper[T <: CommandResponse](f: Future[T]) extends FutureWrapper[T, Future[T]](f) {
+class TwitterFutureWrapper[T <: CommandResponse](f: Future[T]) extends FutureWrapper[Future[T]](f) {
   def getFuture = future;
 }
 

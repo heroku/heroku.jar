@@ -1,9 +1,7 @@
 package com.heroku.api.connection;
 
 
-import com.heroku.api.command.CommandResponse;
-
-public abstract class FutureWrapper<R extends CommandResponse, F> {
+public abstract class FutureWrapper<F> {
 
     protected F future;
 
