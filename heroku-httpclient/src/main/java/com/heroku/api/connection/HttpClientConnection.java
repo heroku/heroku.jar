@@ -1,10 +1,7 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
-import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.LoginResponse;
+import com.heroku.api.command.*;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
@@ -31,7 +28,7 @@ import java.util.concurrent.Future;
  *
  * @author Naaman Newbold
  */
-public class HttpClientConnection implements Connection<HttpClientFutureWrapper> {
+public class HttpClientConnection implements Connection<Future<?>> {
 
     private LoginCommand loginCommand;
     private LoginResponse loginResponse;
@@ -54,15 +51,15 @@ public class HttpClientConnection implements Connection<HttpClientFutureWrapper>
     }
 
     @Override
-    public <T extends CommandResponse> HttpClientFutureWrapper<T> executeCommandAsync(final Command<T> command) {
+    public <T extends CommandResponse> Future<T> executeCommandAsync(final Command<T> command) {
         Callable<T> callable = new Callable<T>() {
             @Override
             public T call() throws Exception {
                 return executeCommand(command);
             }
         };
-        Future<T> future = getExecutorService().submit(callable);
-        return new HttpClientFutureWrapper<T>(future);
+        return getExecutorService().submit(callable);
+
     }
 
     @Override
@@ -138,4 +135,6 @@ public class HttpClientConnection implements Connection<HttpClientFutureWrapper>
     protected ExecutorService createExecutorService() {
         return Executors.newCachedThreadPool();
     }
+
+
 }

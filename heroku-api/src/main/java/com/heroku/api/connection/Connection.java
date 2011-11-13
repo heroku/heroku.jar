@@ -11,7 +11,7 @@ import java.net.URL;
  *
  * @author Naaman Newbold
  */
-public interface Connection<F extends FutureWrapper> {
+public interface Connection<F> {
 
 
     <T extends CommandResponse> T executeCommand(Command<T> command);

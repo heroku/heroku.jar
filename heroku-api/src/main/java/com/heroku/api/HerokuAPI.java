@@ -5,13 +5,12 @@ import com.heroku.api.command.AppCreateCommand;
 import com.heroku.api.command.KeysAddCommand;
 import com.heroku.api.command.KeysRemoveCommand;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.connection.FutureWrapper;
 
 public class HerokuAPI {
 
-    Connection<? extends FutureWrapper> connection;
+    Connection<?> connection;
 
-    public HerokuAPI(Connection<? extends FutureWrapper> connection) {
+    public HerokuAPI(Connection<?> connection) {
         this.connection = connection;
     }
 

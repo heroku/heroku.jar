@@ -22,7 +22,7 @@ public class ConnectionTestModule extends AbstractModule {
     }
 
     @Provides
-    Connection getConnection() throws IOException {
+    Connection<?> getConnection() throws IOException {
         AuthenticationTestCredentials cred = getCredentials();
         return new HttpClientConnection(new BasicAuthLoginCommand(cred.username, cred.password));
     }

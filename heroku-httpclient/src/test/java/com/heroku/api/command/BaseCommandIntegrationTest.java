@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.connection.FutureWrapper;
 import com.heroku.api.exception.HerokuAPIException;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
@@ -23,7 +22,7 @@ import java.util.List;
 public abstract class BaseCommandIntegrationTest {
 
     @Inject
-    Connection<? extends FutureWrapper> connection;
+    Connection<?> connection;
 
     private List<JsonMapResponse> apps = new ArrayList<JsonMapResponse>();
 

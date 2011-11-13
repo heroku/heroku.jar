@@ -13,11 +13,7 @@ import com.heroku.api.http._
 import collection.JavaConversions._
 
 
-class TwitterFutureWrapper[T <: CommandResponse](f: Future[T]) extends FutureWrapper[Future[T]](f) {
-  def getFuture = future;
-}
-
-class FinagleConnection(val loginCommand: LoginCommand) extends Connection[TwitterFutureWrapper[_ <: CommandResponse]] {
+class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
 
   val client = ClientBuilder()
     .codec(Http())
@@ -27,12 +23,10 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Twitt
 
   val loginResponse = executeCommand(loginCommand)
 
-  def executeCommand[T <: CommandResponse](command: Command[T]): T = executeCommandAsync(command).getFuture.get()
+  def executeCommand[T <: CommandResponse](command: Command[T]): T = executeCommandAsync(command).get()
 
-  def executeCommandAsync[T <: CommandResponse](command: Command[T]): TwitterFutureWrapper[T] = {
-    val req = toReq(command)
-    val future = client(req).map(resp => command.getResponse(resp.getContent.array(), resp.getStatus.getCode))
-    new TwitterFutureWrapper(future)
+  def executeCommandAsync[T <: CommandResponse](command: Command[T]): Future[T] = {
+    client(toReq(command)).map(resp => command.getResponse(resp.getContent.array(), resp.getStatus.getCode))
   }
 
   def toReq(cmd: Command[_]): HttpRequest = {
