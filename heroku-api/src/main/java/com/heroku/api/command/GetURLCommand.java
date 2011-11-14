@@ -8,6 +8,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Base Command for Commands that simply do a get on a URL and do something with the response
+ *
+ * @param <T> the type of the response, probably TextResponse or StreamResponse
+ */
 public abstract class GetURLCommand<T extends CommandResponse> implements Command<T> {
 
     protected URL get;
