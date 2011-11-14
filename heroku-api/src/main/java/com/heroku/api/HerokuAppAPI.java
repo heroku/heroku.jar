@@ -47,6 +47,10 @@ public class HerokuAppAPI {
         connection.executeCommand(new SharingTransferCommand(appName, to));
     }
 
+    public String getLogChunk() {
+        return connection.executeCommand(connection.executeCommand(new LogsCommand(appName)).getData()).getData();
+    }
+
     public HerokuAPI api() {
         return new HerokuAPI(connection);
     }

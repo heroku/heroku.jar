@@ -1,5 +1,7 @@
 package com.heroku.api;
 
+import com.heroku.api.command.AppCommand;
+
 /**
  * TODO: Enter JavaDoc
  *
@@ -14,7 +16,8 @@ public enum HerokuResource {
     Keys(User.value + "/keys"),
     Collaborators(App.value + "/collaborators"),
     Collaborator(Collaborators.value + "/%s"),
-    ConfigVars(App.value + "/config_vars");
+    ConfigVars(App.value + "/config_vars"),
+    Logs(App.value + "/logs");
 
     public final String value;
     

@@ -1,10 +1,7 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
-import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.LoginResponse;
+import com.heroku.api.command.*;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
@@ -63,7 +60,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     @Override
     public <T extends CommandResponse> T executeCommand(Command<T> command) {
         try {
-            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), endpoint + command.getEndpoint());
+            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), CommandUtil.getCommandEndpoint(endpoint, command.getEndpoint()).toString());
             message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
             message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 

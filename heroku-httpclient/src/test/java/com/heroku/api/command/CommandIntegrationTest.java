@@ -3,9 +3,9 @@ package com.heroku.api.command;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 
 /**
@@ -25,6 +25,27 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
+    }
+
+    @Test(dataProvider = "app")
+    public void testLogCommand(JsonMapResponse app) throws IOException, InterruptedException {
+        System.out.println("Sleeping to wait for logplex provisioning");
+        Thread.sleep(10000);
+        LogsCommand logs = new LogsCommand(app.get("name"));
+        LogsResponse logsResponse = connection.executeCommand(logs);
+        String logChunk = connection.executeCommand(logsResponse.getData()).getData();
+        assertTrue(logChunk.length() > 0, "No Logs Returned");
+    }
+
+    @Test(dataProvider = "app")
+    public void testLogStreamCommand(JsonMapResponse app) throws IOException, InterruptedException {
+        System.out.println("Sleeping to wait for logplex provisioning");
+        Thread.sleep(10000);
+        LogStreamCommand logs = new LogStreamCommand(app.get("name"));
+        LogStreamResponse logsResponse = connection.executeCommand(logs);
+        InputStream in = connection.executeCommand(logsResponse.getData()).getData();
+        byte[] read = new byte[1024];
+        assertTrue(in.read(read) > -1, "No Logs Returned");
     }
 
     @Test(dataProvider = "app")
@@ -80,7 +101,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testConfigAddCommand(JsonMapResponse app) throws IOException {
         Command cmd = new ConfigAddCommand(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         CommandResponse response = connection.executeCommand(cmd);
-
     }
+
 
 }

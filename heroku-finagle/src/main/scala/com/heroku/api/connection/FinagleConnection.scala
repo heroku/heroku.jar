@@ -2,7 +2,6 @@ package com.heroku.api.connection
 
 import com.twitter.util.Future
 import java.lang.String
-import com.heroku.api.command.{LoginCommand, Command, CommandResponse}
 import com.heroku.api.HerokuAPI
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
@@ -13,6 +12,7 @@ import collection.mutable.HashMap
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
 import sun.misc.BASE64Encoder
+import com.heroku.api.command.{CommandUtil, LoginCommand, Command, CommandResponse}
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -46,11 +46,11 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
       case Method.POST => HttpMethod.POST
       case Method.DELETE => HttpMethod.DELETE
     }
-    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, getEndpoint.toString + cmd.getEndpoint)
+    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, CommandUtil.getCommandEndpoint(getEndpoint, cmd.getEndpoint).toString)
     req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2)
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     if (loginResponse != null) {
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode(loginResponse.email() + ":" + loginResponse.api_key()))
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode((loginResponse.email() + ":" + loginResponse.api_key()).getBytes))
     }
     req.
       cmd.getHeaders.foreach {
@@ -64,7 +64,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req
   }
 
-  def getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
+  val getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
 
   def getEmail: String = loginResponse.email()
 

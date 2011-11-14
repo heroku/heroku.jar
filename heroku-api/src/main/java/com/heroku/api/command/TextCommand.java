@@ -1,22 +1,20 @@
 package com.heroku.api.command;
 
-
 import com.heroku.api.exception.RequestFailedException;
 
 import java.io.InputStream;
 import java.net.URL;
 
-public class StreamCommand extends GetURLCommand<StreamResponse> {
 
-
-    public StreamCommand(URL toStream) {
-        super(toStream);
+public class TextCommand extends GetURLCommand<TextResponse> {
+    public TextCommand(URL toGet) {
+        super(toGet);
     }
 
     @Override
-    public StreamResponse getResponse(InputStream inputStream, int status) {
+    public TextResponse getResponse(InputStream inputStream, int status) {
         if (status == 200)
-            return new StreamResponse(inputStream);
+            return new TextResponse(inputStream);
         else
             throw new RequestFailedException("Unable to open stream", status, inputStream);
     }
