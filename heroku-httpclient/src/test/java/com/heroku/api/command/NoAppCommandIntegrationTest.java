@@ -31,7 +31,7 @@ public class NoAppCommandIntegrationTest {
     private static final String PUBLIC_KEY_COMMENT = "foo@bar";
 
     @Inject
-    Connection connection;
+    Connection<?> connection;
 
     // doesn't need an app
     @Test
