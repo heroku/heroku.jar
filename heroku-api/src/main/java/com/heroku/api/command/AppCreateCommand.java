@@ -5,7 +5,6 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
-import com.sun.corba.se.spi.orbutil.fsm.Input;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
     }
 
     public AppCreateCommand withName(String name) {
-        return new AppCreateCommand(config.with(HerokuRequestKey.appname, name));
+        return new AppCreateCommand(config.with(HerokuRequestKey.createAppName, name));
     }
 
     private AppCreateCommand(CommandConfig config) {
@@ -48,7 +47,7 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, HerokuRequestKey.stack, HerokuRequestKey.appname);
+        return HttpUtil.encodeParameters(config, HerokuRequestKey.stack, HerokuRequestKey.createAppName);
     }
 
     @Override

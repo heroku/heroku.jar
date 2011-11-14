@@ -24,7 +24,7 @@ public class KeysRemoveCommand implements Command<EmptyResponse> {
     private final CommandConfig config;
 
     public KeysRemoveCommand(String keyName) {
-        this.config = new CommandConfig().with(HerokuRequestKey.name, keyName);
+        this.config = new CommandConfig().with(HerokuRequestKey.appName, keyName);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class KeysRemoveCommand implements Command<EmptyResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.name));
+        return String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override

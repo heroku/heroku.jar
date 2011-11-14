@@ -31,7 +31,7 @@ public class AppCommand implements Command<XmlMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.name));
+        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class SharingTransferCommand implements Command<EmptyResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.name));
+        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override

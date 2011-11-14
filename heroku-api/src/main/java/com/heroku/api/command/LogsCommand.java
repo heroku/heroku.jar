@@ -29,7 +29,7 @@ public class LogsCommand implements Command<LogsResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Logs.value, config.get(HerokuRequestKey.name)) + "?logplex=true";
+        return String.format(HerokuResource.Logs.value, config.get(HerokuRequestKey.appName)) + "?logplex=true";
     }
 
     @Override

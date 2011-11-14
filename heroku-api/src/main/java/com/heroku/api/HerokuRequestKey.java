@@ -7,13 +7,13 @@ package com.heroku.api;
 */
 public enum HerokuRequestKey {
     stack ("app[stack]"),
-    appname ("app[name]"),
+    createAppName("app[name]"),
     remote ("remote"),
     timeout ("timeout"),
     addons ("addons"),
     requested ("requested"),
     beta ("beta"),
-    name ("name"),
+    appName("name"),
     sshkey ("sshkey"),
     config("config"),
     collaborator("collaborator[email]"),

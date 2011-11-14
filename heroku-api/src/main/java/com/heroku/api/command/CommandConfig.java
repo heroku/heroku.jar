@@ -19,7 +19,7 @@ public class CommandConfig {
     }
 
     public CommandConfig app(String appName) {
-        return with(HerokuRequestKey.name, appName);
+        return with(HerokuRequestKey.appName, appName);
     }
 
     public CommandConfig with(HerokuRequestKey key, String value) {

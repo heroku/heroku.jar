@@ -35,7 +35,7 @@ public class SharingRemoveCommand implements Command<EmptyResponse> {
     @Override
     public String getEndpoint() {
         return String.format(HerokuResource.Collaborator.value,
-                config.get(HerokuRequestKey.name),
+                config.get(HerokuRequestKey.appName),
                 HttpUtil.urlencode(config.get(HerokuRequestKey.collaborator), "Unable to encode the endpoint"));
     }
 
