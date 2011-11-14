@@ -15,7 +15,7 @@
          <dependency>
             <groupId>com.heroku.api</groupId>
             <artifactId>heroku-api</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
