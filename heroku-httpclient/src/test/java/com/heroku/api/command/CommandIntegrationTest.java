@@ -1,12 +1,11 @@
 package com.heroku.api.command;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuStack;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 
 /**
@@ -23,8 +22,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testCreateAppCommand() throws IOException {
         Command cmd = new AppCreateCommand("Cedar");
         CommandResponse response = connection.executeCommand(cmd);
-        
-        assertTrue(response.isSuccess());
+
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
     }
@@ -47,14 +45,12 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
         Command cmd = new AppDestroyCommand(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
-        assertEquals(response.isSuccess(), true);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(JsonMapResponse app) throws IOException {
         Command cmd = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
-        assertTrue(response.isSuccess());
     }
 
     // if we do this then we will no longer be able to remove the app
@@ -68,7 +64,6 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command sharingTransferCommand = new SharingTransferCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
-        assertTrue(sharingTransferCommandResponse.isSuccess());
     }
 
     @Test(dataProvider = "app")
@@ -79,7 +74,6 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command cmd = new SharingRemoveCommand(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
 
-        assertTrue(response.isSuccess());
     }
 
     @Test(dataProvider = "app")
@@ -87,7 +81,6 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command cmd = new ConfigAddCommand(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         CommandResponse response = connection.executeCommand(cmd);
 
-        assertTrue(response.isSuccess());
     }
 
 }

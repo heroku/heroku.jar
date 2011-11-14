@@ -8,9 +8,9 @@ import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
 import java.net.{InetSocketAddress, URL}
 import org.jboss.netty.handler.codec.http.{HttpMethod, HttpVersion, DefaultHttpRequest, HttpRequest}
-import org.jboss.netty.buffer.ChannelBuffers
 import com.heroku.api.http._
 import collection.JavaConversions._
+import org.jboss.netty.buffer.{ChannelBufferInputStream, ChannelBuffers}
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -26,7 +26,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
   def executeCommand[T <: CommandResponse](command: Command[T]): T = executeCommandAsync(command).get()
 
   def executeCommandAsync[T <: CommandResponse](command: Command[T]): Future[T] = {
-    client(toReq(command)).map(resp => command.getResponse(resp.getContent.array(), resp.getStatus.getCode))
+    client(toReq(command)).map(resp => command.getResponse(new ChannelBufferInputStream(resp.getContent), resp.getStatus.getCode))
   }
 
   def toReq(cmd: Command[_]): HttpRequest = {

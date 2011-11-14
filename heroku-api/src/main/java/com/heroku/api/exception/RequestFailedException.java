@@ -1,21 +1,34 @@
 package com.heroku.api.exception;
 
 
+import com.heroku.api.command.CommandUtil;
+
+import java.io.InputStream;
+
 public class RequestFailedException extends HerokuAPIException {
 
     String responseBody;
     int statusCode;
 
-    public RequestFailedException(String msg, int code, byte[] body) {
-        super(failMessage(msg, code, body));
-        responseBody = new String(body);
+    public RequestFailedException(String msg, int code, InputStream in) {
+        this(msg, code, getBodyFromInput(in));
+
+    }
+
+    private static String getBodyFromInput(InputStream in) {
+        try {
+            return CommandUtil.getString(in);
+        } catch (Exception e) {
+            return "There was also an error reading the response body.";
+        }
+    }
+
+    public RequestFailedException(String msg, int code, String body) {
+        super(msg);
+        responseBody = body;
         statusCode = code;
     }
 
-    public static String failMessage(String msg, int code, byte[] body) {
-        String bodyStr = new String(body);
-        return String.format("%s code %d, body => %s", msg, code, bodyStr);
-    }
 
     public String getResponseBody() {
         return responseBody;

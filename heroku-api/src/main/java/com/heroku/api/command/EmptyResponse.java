@@ -1,21 +1,18 @@
 package com.heroku.api.command;
 
+import java.io.InputStream;
+
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
 public class EmptyResponse implements CommandResponse {
-    private final boolean success;
 
-    public EmptyResponse(boolean success) {
-        this.success = success;
+    public EmptyResponse(InputStream in) {
+        CommandUtil.closeQuietly(in);
     }
 
-    @Override
-    public boolean isSuccess() {
-        return success;
-    }
 
     @Override
     public String get(String key) {

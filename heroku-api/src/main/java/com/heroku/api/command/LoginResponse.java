@@ -1,10 +1,12 @@
 package com.heroku.api.command;
 
 
+import java.io.InputStream;
+
 public class LoginResponse extends JsonMapResponse {
 
-    public LoginResponse(byte[] data, boolean success) {
-        super(data, success);
+    public LoginResponse(InputStream in) {
+        super(in);
     }
 
     public String api_key() {

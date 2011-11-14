@@ -7,6 +7,7 @@ import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.Method;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,10 +57,10 @@ public class ConfigAddCommand implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(byte[] bytes, int code) {
+    public EmptyResponse getResponse(InputStream in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse(true);
+            return new EmptyResponse(in);
         else
-            throw new RequestFailedException("AppDestroy failed", code, bytes);
+            throw new RequestFailedException("AppDestroy failed", code, in);
     }
 }

@@ -5,6 +5,7 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
+import java.io.InputStream;
 import java.util.Map;
 
 
@@ -61,13 +62,13 @@ public class BasicAuthLoginCommand implements LoginCommand {
 
 
     @Override
-    public LoginResponse getResponse(byte[] bytes, int code) {
+    public LoginResponse getResponse(InputStream in, int code) {
         if (code == 200) {
-            return new LoginResponse(bytes, true);
+            return new LoginResponse(in);
         } else if (code == 404) {
-            throw new RequestFailedException("Invalid username and password combination.", code, bytes);
+            throw new RequestFailedException("Invalid username and password combination.", code, in);
         } else {
-            throw new RequestFailedException("Unknown error occurred while connecting to Heroku.", code, bytes);
+            throw new RequestFailedException("Unknown error occurred while connecting to Heroku.", code, in);
         }
     }
 }

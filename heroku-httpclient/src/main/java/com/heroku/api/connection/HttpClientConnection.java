@@ -1,8 +1,10 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.command.*;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.command.Command;
+import com.heroku.api.command.CommandResponse;
+import com.heroku.api.command.LoginCommand;
+import com.heroku.api.command.LoginResponse;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
@@ -13,7 +15,6 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,13 +42,10 @@ public class HttpClientConnection implements Connection<Future<?>> {
         this.loginCommand = login;
         this.endpoint = HttpUtil.toURL(loginCommand.getApiEndpoint());
         this.loginResponse = executeCommand(loginCommand);
-        if (loginResponse.isSuccess()) {
-            httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
-                    // the Basic Authentication scheme only expects an API key.
-                    new UsernamePasswordCredentials("", loginResponse.api_key()));
-        } else {
-            throw new HerokuAPIException("Unable to login");
-        }
+        httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
+                // the Basic Authentication scheme only expects an API key.
+                new UsernamePasswordCredentials("", loginResponse.api_key()));
+
     }
 
     @Override
@@ -79,7 +77,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
 
             HttpResponse httpResponse = httpClient.execute(message);
 
-            return command.getResponse(EntityUtils.toByteArray(httpResponse.getEntity()), httpResponse.getStatusLine().getStatusCode());
+            return command.getResponse(httpResponse.getEntity().getContent(), httpResponse.getStatusLine().getStatusCode());
         } catch (IOException e) {
             throw new RuntimeException("exception while executing command", e);
         }

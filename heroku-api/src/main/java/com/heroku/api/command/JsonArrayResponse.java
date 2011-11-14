@@ -3,6 +3,7 @@ package com.heroku.api.command;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -14,20 +15,13 @@ import java.util.*;
 public class JsonArrayResponse implements CommandResponse {
 
     private final List<Map<String, String>> data;
-    private final boolean success;
     private final byte[] rawData;
 
-    public JsonArrayResponse(byte[] data, boolean success) {
-        this.rawData = data;
+    public JsonArrayResponse(InputStream in) {
+        this.rawData = CommandUtil.getBytes(in);
         Type listType = new TypeToken<List<HashMap<String, String>>>() {
         }.getType();
-        this.data = Collections.unmodifiableList(new Gson().<List<Map<String, String>>>fromJson(new String(data), listType));
-        this.success = success;
-    }
-
-    @Override
-    public boolean isSuccess() {
-        return success;
+        this.data = Collections.unmodifiableList(new Gson().<List<Map<String, String>>>fromJson(CommandUtil.bytesReader(this.rawData), listType));
     }
 
     @Override

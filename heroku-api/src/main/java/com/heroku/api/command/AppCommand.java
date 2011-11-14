@@ -7,6 +7,7 @@ import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,10 +55,10 @@ public class AppCommand implements Command<XmlMapResponse> {
     }
 
     @Override
-    public XmlMapResponse getResponse(byte[] bytes, int code) {
+    public XmlMapResponse getResponse(InputStream in, int code) {
         if (code == 200)
-            return new XmlMapResponse(bytes, true);
+            return new XmlMapResponse(in);
         else
-            throw new RequestFailedException("AppCommand failed", code, bytes);
+            throw new RequestFailedException("AppCommand failed", code, in);
     }
 }

@@ -1,21 +1,22 @@
 package com.heroku.api.command;
 
-import com.heroku.api.HerokuResource;
+
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * TODO: Javadoc
- *
- * @author Naaman Newbold
- */
-public class AppsCommand implements Command<JsonArrayResponse> {
+public class StreamCommand implements Command<StreamResponse> {
+
+    public URL stream;
+
+    public StreamCommand(URL toStream) {
+        stream = toStream;
+    }
 
     @Override
     public Method getHttpMethod() {
@@ -24,7 +25,7 @@ public class AppsCommand implements Command<JsonArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Apps.value;
+        return stream.toString();
     }
 
     @Override
@@ -34,12 +35,12 @@ public class AppsCommand implements Command<JsonArrayResponse> {
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        return null;
     }
 
     @Override
     public Accept getResponseType() {
-        return Accept.JSON;
+        return Accept.TEXT;
     }
 
     @Override
@@ -48,10 +49,10 @@ public class AppsCommand implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream in, int code) {
-        if (code == 200)
-            return new JsonArrayResponse(in);
+    public StreamResponse getResponse(InputStream inputStream, int status) {
+        if (status == 200)
+            return new StreamResponse(inputStream);
         else
-            throw new RequestFailedException("Apps Command Failed", code, in);
+            throw new RequestFailedException("Unable to open stream", status, inputStream);
     }
 }

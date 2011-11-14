@@ -8,6 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,16 +20,14 @@ import java.util.Map;
 public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
     private final byte[] rawData;
-    private final boolean success;
     private volatile boolean rawDataIsProcessed = false;
     private Object lock = new Object();
     private final HashMap<String, String> data = new HashMap<String, String>();
     private String lastKey;
     private StringBuffer charBuffer;
 
-    public XmlMapResponse(byte[] data, boolean success) {
-        this.rawData = data;
-        this.success = success;
+    public XmlMapResponse(InputStream in) {
+        this.rawData = CommandUtil.getBytes(in);
     }
 
     @Override
@@ -56,10 +55,7 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
         charBuffer.append(chars, offset, offsetLen);
     }
 
-    @Override
-    public boolean isSuccess() {
-        return success;
-    }
+
 
     @Override
     public String get(String key) {

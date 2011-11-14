@@ -3,9 +3,9 @@ package com.heroku.api.command;
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -54,10 +54,10 @@ public class SharingAddCommand implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(byte[] bytes, int code) {
+    public EmptyResponse getResponse(InputStream in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse(true);
+            return new EmptyResponse(in);
         else
-            throw new RequestFailedException("SharingAdd failed", code, bytes);
+            throw new RequestFailedException("SharingAdd failed", code, in);
     }
 }

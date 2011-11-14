@@ -5,7 +5,9 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
+import com.sun.corba.se.spi.orbutil.fsm.Input;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -60,10 +62,10 @@ public class AppCreateCommand implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(byte[] bytes, int code) {
+    public JsonMapResponse getResponse(InputStream in, int code) {
         if (code == HttpStatus.ACCEPTED.statusCode)
-            return new JsonMapResponse(bytes, true);
+            return new JsonMapResponse(in);
         else
-            throw new RequestFailedException("Failed to create app", code, bytes);
+            throw new RequestFailedException("Failed to create app", code, in);
     }
 }

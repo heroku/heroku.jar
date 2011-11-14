@@ -3,6 +3,7 @@ package com.heroku.api.command;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.Method;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -25,6 +26,6 @@ public interface Command<T extends CommandResponse> {
 
     Map<String, String> getHeaders();
 
-    T getResponse(byte[] bytes, int status);
+    T getResponse(InputStream inputStream, int status);
 
 }
