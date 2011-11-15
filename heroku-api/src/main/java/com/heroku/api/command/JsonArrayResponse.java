@@ -1,11 +1,12 @@
 package com.heroku.api.command;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.heroku.api.json.Json;
 
 import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO: Javadoc
@@ -19,9 +20,7 @@ public class JsonArrayResponse implements CommandResponse {
 
     public JsonArrayResponse(InputStream in) {
         this.rawData = CommandUtil.getBytes(in);
-        Type listType = new TypeToken<List<HashMap<String, String>>>() {
-        }.getType();
-        this.data = Collections.unmodifiableList(new Gson().<List<Map<String, String>>>fromJson(CommandUtil.bytesReader(this.rawData), listType));
+        this.data = Json.getJsonParser().parseArray(this.rawData);
     }
 
     @Override
