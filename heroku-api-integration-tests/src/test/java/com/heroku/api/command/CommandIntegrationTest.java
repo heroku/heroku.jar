@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -152,5 +153,14 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command<JsonArrayResponse> cmd = new AddonCommand();
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
+    }
+    
+    @Test(dataProvider = "app")
+    public void testListAppAddons(JsonMapResponse app) {
+        Command<JsonArrayResponse> cmd = new AppAddonCommand(app.get("name"));
+        JsonArrayResponse response = connection.executeCommand(cmd);
+        assertNotNull(response);
+        assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
+        assertNotNull(response.get("logging:basic"));
     }
 }
