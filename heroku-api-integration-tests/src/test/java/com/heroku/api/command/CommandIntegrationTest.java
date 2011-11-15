@@ -139,6 +139,11 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testScaleCommand(JsonMapResponse app) {
         Command<EmptyResponse> cmd = new ScaleCommand(app.get("name"), "web", 1);
         EmptyResponse response = connection.executeCommand(cmd);
-        byte[] bytes = response.getRawData();
+    }
+    
+    @Test(dataProvider = "app")
+    public void testRestartCommand(JsonMapResponse app) {
+        Command<EmptyResponse> cmd = new RestartCommand(app.get("name"));
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 }

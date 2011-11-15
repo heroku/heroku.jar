@@ -6,7 +6,6 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,7 +18,7 @@ public class ScaleCommand implements Command<EmptyResponse> {
     private final CommandConfig config;
 
     public ScaleCommand(String appName, String processType, int quantity) {
-        config = new CommandConfig().app(appName).with(HerokuRequestKey.scaleType, processType).with(HerokuRequestKey.quantity, String.valueOf(quantity));
+        config = new CommandConfig().app(appName).with(HerokuRequestKey.processType, processType).with(HerokuRequestKey.quantity, String.valueOf(quantity));
     }
 
     @Override
@@ -39,7 +38,7 @@ public class ScaleCommand implements Command<EmptyResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, HerokuRequestKey.scaleType, HerokuRequestKey.quantity);
+        return HttpUtil.encodeParameters(config, HerokuRequestKey.processType, HerokuRequestKey.quantity);
     }
 
     @Override
