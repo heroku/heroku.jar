@@ -134,4 +134,11 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         assertNotNull(response.getData(), "Expected a non-null response for a new app, but the data was null.");
         assertEquals(response.getData().size(), 1);
     }
+
+    @Test(dataProvider = "app")
+    public void testScaleCommand(JsonMapResponse app) {
+        Command<EmptyResponse> cmd = new ScaleCommand(app.get("name"), "web", 1);
+        EmptyResponse response = connection.executeCommand(cmd);
+        byte[] bytes = response.getRawData();
+    }
 }

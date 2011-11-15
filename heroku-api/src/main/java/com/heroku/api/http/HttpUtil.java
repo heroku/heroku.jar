@@ -3,7 +3,9 @@ package com.heroku.api.http;
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -63,6 +65,10 @@ public class HttpUtil {
 
     public static HerokuAPIException invalidKeys() {
         return new HerokuAPIException("Unable to add keys.");
+    }
+
+    public static RequestFailedException insufficientPrivileges(int code, InputStream in) {
+        return new RequestFailedException("Insufficient privileges.", code, in);
     }
 
 }

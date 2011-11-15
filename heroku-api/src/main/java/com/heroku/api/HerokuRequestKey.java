@@ -20,6 +20,8 @@ public enum HerokuRequestKey {
     transferOwner("app[transfer_owner]"),
     configvars("config_vars"),
     configVarName("key"),
+    scaleType("type"),
+    quantity("qty"),
     username("username"),
     password("password");
 
