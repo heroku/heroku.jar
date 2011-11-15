@@ -4,7 +4,6 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.response.LoginResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 

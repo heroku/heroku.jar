@@ -8,7 +8,6 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.CommandUtil;
 import com.heroku.api.command.TextCommand;
-import com.heroku.api.command.response.LogsResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpUtil;

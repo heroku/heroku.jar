@@ -1,5 +1,7 @@
-package com.heroku.api.command.response;
+package com.heroku.api.command.login;
 
+
+import com.heroku.api.command.response.JsonMapResponse;
 
 import java.io.InputStream;
 
