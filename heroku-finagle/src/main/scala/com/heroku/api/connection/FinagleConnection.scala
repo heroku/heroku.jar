@@ -5,7 +5,6 @@ import java.lang.String
 import com.heroku.api.HerokuAPI
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
-import java.net.{InetSocketAddress, URL}
 import com.heroku.api.http._
 import org.jboss.netty.buffer.{ChannelBufferInputStream, ChannelBuffers}
 import collection.mutable.HashMap
@@ -14,6 +13,7 @@ import org.jboss.netty.handler.codec.http._
 import sun.misc.BASE64Encoder
 import com.heroku.api.command.{CommandUtil, LoginCommand, Command, CommandResponse}
 import collection.JavaConversions._
+import java.net.{InetSocketAddress, URL}
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -24,11 +24,21 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
 
   val encoder = new BASE64Encoder
 
+  val getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
+
   val client = ClientBuilder()
     .codec(Http())
-    .hosts(new InetSocketAddress(getEndpoint.getHost, getEndpoint.getPort))
+    .hosts(new InetSocketAddress(getEndpoint.getHost, getPort(getEndpoint)))
     .hostConnectionLimit(10)
     .build()
+
+  def getPort(endpoint: URL): Int = {
+    if (endpoint.getPort == -1) {
+      endpoint.getDefaultPort
+    } else {
+      endpoint.getPort
+    }
+  }
 
   val loginResponse = executeCommand(loginCommand)
 
@@ -46,7 +56,8 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
       case Method.DELETE => HttpMethod.DELETE
     }
     val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, CommandUtil.getCommandEndpoint(getEndpoint, cmd.getEndpoint).toString)
-    req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2)
+    req.addHeader(HttpHeaders.Names.HOST, getEndpoint.getHost)
+    req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2.getHeaderValue)
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     if (loginResponse != null) {
       req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode((loginResponse.email() + ":" + loginResponse.api_key()).getBytes))
@@ -63,7 +74,6 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req
   }
 
-  val getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
 
   def getEmail: String = loginResponse.email()
 

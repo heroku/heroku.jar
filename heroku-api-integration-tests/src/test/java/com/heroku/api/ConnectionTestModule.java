@@ -2,11 +2,10 @@ package com.heroku.api;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.heroku.api.command.BasicAuthLoginCommand;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.connection.HttpClientConnection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -14,23 +13,20 @@ import java.util.Properties;
  *
  * @author Naaman Newbold
  */
-public class ConnectionTestModule extends AbstractModule {
+public abstract class ConnectionTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
         // not implemented
     }
 
-    @Provides
-    Connection<?> getConnection() throws IOException {
-        AuthenticationTestCredentials cred = getCredentials();
-        return new HttpClientConnection(new BasicAuthLoginCommand(cred.username, cred.password));
-    }
+    abstract Connection<?> getConnection() throws IOException;
 
     @Provides
     Properties getProperties() throws IOException {
         Properties properties = new Properties();
-        properties.load(ConnectionTestModule.class.getResourceAsStream("/auth-test.properties"));
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("auth-test.properties");
+        properties.load(inputStream);
         return properties;
     }
 

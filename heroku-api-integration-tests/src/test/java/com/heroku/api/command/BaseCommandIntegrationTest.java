@@ -1,8 +1,8 @@
 package com.heroku.api.command;
 
 import com.google.inject.Inject;
-import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.HerokuStack;
+import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.HerokuAPIException;
 import org.testng.annotations.AfterTest;
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Naaman Newbold
  */
-@Guice(modules = ConnectionTestModule.class)
+@Guice(moduleFactory = TestModuleFactory.class)
 public abstract class BaseCommandIntegrationTest {
 
     @Inject
