@@ -1,1 +1,14 @@
-![Alright people, move along. There's nothing to see here.](http://1.bp.blogspot.com/__jFgOqdirRY/S15Op3mhS9I/AAAAAAAACoo/m63diQmeer8/s400/nothing_to_see_here.jpg)
+#Heroku JAR
+The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
+
+##Usage
+1. git clone git@github.com:heroku/heroku-jar.git
+2. mvn install -DskipTests
+3. Write some code:
+
+    ```java
+    Connection<?> connection = new HttpClientConnection(new BasicAuthLoginCommand('username', 'password'));
+    HerokuAPI api = new HerokuAPI(connection);
+    HerokuAppAPI appApi = HerokuAPI.newapp(HerokuStack.Cedar);
+    ```
+    
