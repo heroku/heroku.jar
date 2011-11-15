@@ -12,7 +12,7 @@
     <artifactId>heroku-finagle</artifactId>
 
     <dependencies>
-         <dependency>
+        <dependency>
             <groupId>com.heroku.api</groupId>
             <artifactId>heroku-api</artifactId>
             <version>${project.parent.version}</version>
@@ -39,12 +39,6 @@
             <groupId>com.twitter</groupId>
             <artifactId>util-logging</artifactId>
             <version>1.11.4</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.8.1</artifactId>
-            <version>1.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

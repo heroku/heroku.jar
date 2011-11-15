@@ -12,6 +12,7 @@
         <module>heroku-api</module>
         <module>heroku-httpclient</module>
         <module>heroku-finagle</module>
+        <module>heroku-api-integration-tests</module>
     </modules>
 
     <properties>

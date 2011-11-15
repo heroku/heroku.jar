@@ -2,8 +2,7 @@ package com.heroku.api.command;
 
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuStack;
+import com.heroku.api.TestModuleFactory;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.connection.Connection;
 import com.jcraft.jsch.JSch;
@@ -25,7 +24,7 @@ import static org.testng.Assert.assertTrue;
  *
  * @author Naaman Newbold
  */
-@Guice(modules = ConnectionTestModule.class)
+@Guice(moduleFactory = TestModuleFactory.class)
 public class NoAppCommandIntegrationTest {
 
     private static final String PUBLIC_KEY_COMMENT = "foo@bar";

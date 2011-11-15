@@ -57,7 +57,7 @@ public class BasicAuthLoginCommand implements LoginCommand {
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(HerokuApiVersion.v2, ContentType.FORM_URLENCODED);
+        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
     }
 
 
