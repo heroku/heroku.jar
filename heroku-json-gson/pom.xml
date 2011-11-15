@@ -9,30 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>heroku-api-integration-tests</artifactId>
+    <artifactId>heroku-json-gson</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.heroku.api</groupId>
             <artifactId>heroku-api</artifactId>
+            <groupId>com.heroku.api</groupId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-json-gson</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.7.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-httpclient</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-finagle</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
         <!-- Test Deps -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -46,21 +35,6 @@
             <version>${guice.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- ssh key generator -->
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.45</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
 
 </project>

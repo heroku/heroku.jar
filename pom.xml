@@ -13,6 +13,7 @@
         <module>heroku-httpclient</module>
         <module>heroku-finagle</module>
         <module>heroku-api-integration-tests</module>
+        <module>heroku-json-gson</module>
     </modules>
 
     <properties>

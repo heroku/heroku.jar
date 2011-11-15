@@ -1,11 +1,8 @@
 package com.heroku.api.command;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.heroku.api.json.Json;
 
 import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,10 +18,7 @@ public class JsonMapResponse implements CommandResponse {
 
     public JsonMapResponse(InputStream in) {
         this.rawData = CommandUtil.getBytes(in);
-        Type listType = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-        this.data = Collections.unmodifiableMap(new Gson().<Map<String, String>>fromJson(CommandUtil.bytesReader(this.rawData), listType));
-
+        this.data = Json.getJsonParser().parseMap(this.rawData);
     }
 
 

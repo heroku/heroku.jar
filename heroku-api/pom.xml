@@ -11,25 +11,6 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>heroku-api</artifactId>
 
+    <!-- no dependencies -->
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>1.7.1</version>
-        </dependency>
-        <!-- Test Deps -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
