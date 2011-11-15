@@ -1,7 +1,10 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.command.*;
+import com.heroku.api.command.Command;
+import com.heroku.api.command.CommandResponse;
+import com.heroku.api.command.LoginCommand;
+import com.heroku.api.command.LoginResponse;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
@@ -60,7 +63,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     @Override
     public <T extends CommandResponse> T executeCommand(Command<T> command) {
         try {
-            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), CommandUtil.getCommandEndpoint(endpoint, command.getEndpoint()).toString());
+            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), getCommandEndpoint(endpoint, command.getEndpoint()).toString());
             message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
             message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 
@@ -130,6 +133,16 @@ public class HttpClientConnection implements Connection<Future<?>> {
     protected ExecutorService createExecutorService() {
         return Executors.newCachedThreadPool();
     }
+
+    private static URL getCommandEndpoint(URL connectionEndpoint, String commandEndpoint) {
+        if (commandEndpoint.startsWith("http://") || commandEndpoint.startsWith("https://")) {
+            return HttpUtil.toURL(commandEndpoint);
+        } else {
+            return HttpUtil.toURL(connectionEndpoint.toString() + commandEndpoint);
+        }
+
+    }
+
 
 
 }

@@ -53,14 +53,7 @@ public class CommandUtil {
         return new ByteArrayInputStream(bytes);
     }
 
-    public static URL getCommandEndpoint(URL connectionEndpoint, String commandEndpoint) {
-        if (commandEndpoint.startsWith("http://") || commandEndpoint.startsWith("https://")) {
-            return HttpUtil.toURL(commandEndpoint);
-        } else {
-            return HttpUtil.toURL(connectionEndpoint.toString() + commandEndpoint);
-        }
 
-    }
 
 
 }
