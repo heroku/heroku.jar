@@ -129,6 +129,9 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testProcessCommand(JsonMapResponse app) {
-
+        Command<JsonArrayResponse> cmd = new ProcessCommand(app.get("name"));
+        JsonArrayResponse response = connection.executeCommand(cmd);
+        assertNotNull(response.getData(), "Expected a non-null response for a new app, but the data was null.");
+        assertEquals(response.getData().size(), 1);
     }
 }
