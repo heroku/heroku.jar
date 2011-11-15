@@ -11,6 +11,7 @@ public enum HerokuResource {
     Login("/login"),
     Apps("/apps"),
     App("/apps/%s"),
+    Addons("/addons"),
     User("/user"),
     Key(User.value + "/keys/%s"),
     Keys(User.value + "/keys"),

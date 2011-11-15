@@ -146,4 +146,11 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command<EmptyResponse> cmd = new RestartCommand(app.get("name"));
         EmptyResponse response = connection.executeCommand(cmd);
     }
+    
+    @Test
+    public void testListAddons() {
+        Command<JsonArrayResponse> cmd = new AddonCommand();
+        JsonArrayResponse response = connection.executeCommand(cmd);
+        assertNotNull(response, "Expected a response from listing addons, but the result is null.");
+    }
 }
