@@ -112,4 +112,23 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         assertEquals(response.get("FOO"), "BAR");
     }
 
+    @Test(dataProvider = "app",
+            expectedExceptions = IllegalArgumentException.class,
+            expectedExceptionsMessageRegExp = "FOO is not present.")
+    public void testConfigRemoveCommand(JsonMapResponse app) {
+        addConfig(app, "FOO", "BAR", "JOHN", "DOE");
+        Command<JsonMapResponse> removeCommand = new ConfigRemoveCommand(app.get("name"), "FOO");
+        connection.executeCommand(removeCommand);
+
+        Command<JsonMapResponse> listCommand = new ConfigCommand(app.get("name"));
+        JsonMapResponse response = connection.executeCommand(listCommand);
+
+        assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
+        response.get("FOO");
+    }
+
+    @Test(dataProvider = "app")
+    public void testProcessCommand(JsonMapResponse app) {
+
+    }
 }

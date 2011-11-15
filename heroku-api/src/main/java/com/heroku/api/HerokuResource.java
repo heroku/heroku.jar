@@ -17,6 +17,7 @@ public enum HerokuResource {
     Collaborators(App.value + "/collaborators"),
     Collaborator(Collaborators.value + "/%s"),
     ConfigVars(App.value + "/config_vars"),
+    ConfigVar(ConfigVars.value + "/%s"),
     Logs(App.value + "/logs"),
     Process(App.value + "/ps"),
     Restart(Process.value + "/restart"),

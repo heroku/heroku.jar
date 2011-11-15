@@ -19,6 +19,7 @@ public enum HerokuRequestKey {
     collaborator("collaborator[email]"),
     transferOwner("app[transfer_owner]"),
     configvars("config_vars"),
+    configVarName("key"),
     username("username"),
     password("password");
 
