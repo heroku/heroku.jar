@@ -11,6 +11,7 @@ public enum HerokuRequestKey {
     remote ("remote"),
     timeout ("timeout"),
     addons ("addons"),
+    addonName ("addon"),
     requested ("requested"),
     beta ("beta"),
     appName("name"),

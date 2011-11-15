@@ -13,6 +13,7 @@ public enum HerokuResource {
     App("/apps/%s"),
     Addons("/addons"),
     AppAddons(App.value + "/addons"),
+    AppAddon(AppAddons.value + "/%s"),
     User("/user"),
     Key(User.value + "/keys/%s"),
     Keys(User.value + "/keys"),

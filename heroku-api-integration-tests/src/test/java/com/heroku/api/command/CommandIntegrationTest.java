@@ -163,4 +163,11 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
         assertNotNull(response.get("logging:basic"));
     }
+
+    @Test(dataProvider = "app")
+    public void testAddAddonToApp(JsonMapResponse app) {
+        Command<JsonMapResponse> cmd = new AppAddAddonCommand(app.get("name"), "shared-database:5mb");
+        JsonMapResponse response = connection.executeCommand(cmd);
+        assertEquals(response.get("status"), "Installed");
+    }
 }
