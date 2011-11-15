@@ -4,7 +4,7 @@ import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandResponse;
 import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.LoginResponse;
+import com.heroku.api.command.response.LoginResponse;
 import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;

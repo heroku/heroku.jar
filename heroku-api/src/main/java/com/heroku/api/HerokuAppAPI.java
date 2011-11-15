@@ -1,7 +1,13 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.*;
+import com.heroku.api.command.app.AppCommand;
+import com.heroku.api.command.app.AppCreateCommand;
+import com.heroku.api.command.app.AppDestroyCommand;
+import com.heroku.api.command.log.LogsCommand;
+import com.heroku.api.command.sharing.SharingAddCommand;
+import com.heroku.api.command.sharing.SharingRemoveCommand;
+import com.heroku.api.command.sharing.SharingTransferCommand;
 import com.heroku.api.connection.Connection;
 
 import java.util.Map;

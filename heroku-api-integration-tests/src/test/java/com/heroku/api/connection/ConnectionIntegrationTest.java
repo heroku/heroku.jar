@@ -3,7 +3,7 @@ package com.heroku.api.connection;
 import com.google.inject.Inject;
 import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.TestModuleFactory;
-import com.heroku.api.command.BasicAuthLoginCommand;
+import com.heroku.api.command.login.BasicAuthLoginCommand;
 import com.heroku.api.exception.RequestFailedException;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;

@@ -1,8 +1,9 @@
 package com.heroku.api.command;
 
 import com.google.inject.Inject;
-import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.TestModuleFactory;
+import com.heroku.api.command.key.KeysAddCommand;
+import com.heroku.api.command.key.KeysRemoveCommand;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.connection.Connection;
 import com.jcraft.jsch.JSch;

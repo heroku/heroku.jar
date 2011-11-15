@@ -1,10 +1,29 @@
 package com.heroku.api.command;
 
+import com.heroku.api.command.addon.AddonCommand;
+import com.heroku.api.command.addon.AppAddAddonCommand;
+import com.heroku.api.command.addon.AppAddonCommand;
+import com.heroku.api.command.app.*;
+import com.heroku.api.command.config.ConfigAddCommand;
+import com.heroku.api.command.config.ConfigCommand;
+import com.heroku.api.command.config.ConfigRemoveCommand;
+import com.heroku.api.command.log.LogStreamCommand;
+import com.heroku.api.command.log.LogStreamResponse;
+import com.heroku.api.command.log.LogsCommand;
+import com.heroku.api.command.log.LogsResponse;
+import com.heroku.api.command.ps.ProcessCommand;
+import com.heroku.api.command.ps.RestartCommand;
+import com.heroku.api.command.ps.ScaleCommand;
+import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.sharing.SharingAddCommand;
+import com.heroku.api.command.sharing.SharingRemoveCommand;
+import com.heroku.api.command.sharing.SharingTransferCommand;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 import static org.testng.Assert.*;
 

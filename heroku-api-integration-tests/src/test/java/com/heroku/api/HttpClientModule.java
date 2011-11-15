@@ -1,7 +1,7 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
-import com.heroku.api.command.BasicAuthLoginCommand;
+import com.heroku.api.command.login.BasicAuthLoginCommand;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.HttpClientConnection;
 

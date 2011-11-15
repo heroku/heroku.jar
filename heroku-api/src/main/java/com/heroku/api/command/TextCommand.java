@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.command.response.TextResponse;
 import com.heroku.api.exception.RequestFailedException;
 
 import java.io.InputStream;

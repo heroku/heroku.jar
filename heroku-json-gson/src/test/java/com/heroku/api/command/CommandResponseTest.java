@@ -1,5 +1,8 @@
 package com.heroku.api.command;
 
+import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.response.XmlMapResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;

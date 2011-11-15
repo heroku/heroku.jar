@@ -1,7 +1,5 @@
 package com.heroku.api;
 
-import com.heroku.api.command.AppCommand;
-
 /**
  * TODO: Enter JavaDoc
  *

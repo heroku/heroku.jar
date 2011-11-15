@@ -1,9 +1,9 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.AppCreateCommand;
-import com.heroku.api.command.KeysAddCommand;
-import com.heroku.api.command.KeysRemoveCommand;
+import com.heroku.api.command.app.AppCreateCommand;
+import com.heroku.api.command.key.KeysAddCommand;
+import com.heroku.api.command.key.KeysRemoveCommand;
 import com.heroku.api.connection.Connection;
 
 public class HerokuAPI {
