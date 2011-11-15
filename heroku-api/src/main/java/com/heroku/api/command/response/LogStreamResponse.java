@@ -1,4 +1,4 @@
-package com.heroku.api.command.log;
+package com.heroku.api.command.response;
 
 
 import com.heroku.api.command.response.ChainedResponse;

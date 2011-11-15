@@ -1,13 +1,12 @@
-package com.heroku.api.command.config;
+package com.heroku.api.command.app;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.response.XmlMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
@@ -20,26 +19,22 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class ConfigRemoveCommand implements Command<JsonMapResponse> {
+public class AppInfo implements Command<XmlMapResponse> {
 
     private final CommandConfig config;
 
-    public ConfigRemoveCommand(String appName, String configVarName) {
-        config = new CommandConfig().app(appName).with(HerokuRequestKey.configVarName, configVarName);
+    public AppInfo(String appName) {
+        this.config = new CommandConfig().app(appName);
     }
 
     @Override
     public Method getHttpMethod() {
-        return Method.DELETE;
+        return Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(
-                HerokuResource.ConfigVar.value,
-                config.get(HerokuRequestKey.appName),
-                config.get(HerokuRequestKey.configVarName
-        ));
+        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override
@@ -54,7 +49,7 @@ public class ConfigRemoveCommand implements Command<JsonMapResponse> {
 
     @Override
     public Accept getResponseType() {
-        return Accept.JSON;
+        return Accept.XML;
     }
 
     @Override
@@ -63,11 +58,10 @@ public class ConfigRemoveCommand implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(InputStream inputStream, int status) {
-        if (status == HttpStatus.OK.statusCode) {
-            return new JsonMapResponse(inputStream);
-        } else {
-            throw new RequestFailedException("Config removal failed.", status, inputStream);
-        }
+    public XmlMapResponse getResponse(InputStream in, int code) {
+        if (code == 200)
+            return new XmlMapResponse(in);
+        else
+            throw new RequestFailedException("Unable to get app info", code, in);
     }
 }

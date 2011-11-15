@@ -1,12 +1,13 @@
-package com.heroku.api.command.app;
+package com.heroku.api.command.addon;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.XmlMapResponse;
+import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
+import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
@@ -19,14 +20,14 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppCommand implements Command<XmlMapResponse> {
+public class AppAddonsList implements Command<JsonArrayResponse> {
 
     private final CommandConfig config;
 
-    public AppCommand(String appName) {
-        this.config = new CommandConfig().app(appName);
+    public AppAddonsList(String appName) {
+        config = new CommandConfig().app(appName);
     }
-
+    
     @Override
     public Method getHttpMethod() {
         return Method.GET;
@@ -34,9 +35,9 @@ public class AppCommand implements Command<XmlMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
+        return String.format(HerokuResource.AppAddons.value, config.get(HerokuRequestKey.appName));
     }
-
+    
     @Override
     public boolean hasBody() {
         return false;
@@ -49,7 +50,7 @@ public class AppCommand implements Command<XmlMapResponse> {
 
     @Override
     public Accept getResponseType() {
-        return Accept.XML;
+        return Accept.JSON;
     }
 
     @Override
@@ -58,10 +59,11 @@ public class AppCommand implements Command<XmlMapResponse> {
     }
 
     @Override
-    public XmlMapResponse getResponse(InputStream in, int code) {
-        if (code == 200)
-            return new XmlMapResponse(in);
-        else
-            throw new RequestFailedException("AppCommand failed", code, in);
+    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
+        if (status == HttpStatus.OK.statusCode) {
+            return new JsonArrayResponse(inputStream);
+        }
+        throw new RequestFailedException(
+                "Unable to get addons for " + config.get(HerokuRequestKey.appName), status, inputStream);
     }
 }

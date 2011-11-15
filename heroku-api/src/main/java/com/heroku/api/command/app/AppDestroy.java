@@ -1,10 +1,10 @@
-package com.heroku.api.command.addon;
+package com.heroku.api.command.app;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
@@ -20,24 +20,24 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppAddonCommand implements Command<JsonArrayResponse> {
+public class AppDestroy implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public AppAddonCommand(String appName) {
-        config = new CommandConfig().app(appName);
+    public AppDestroy(String appName) {
+        this.config = new CommandConfig().app(appName);
     }
-    
+
     @Override
     public Method getHttpMethod() {
-        return Method.GET;
+        return Method.DELETE;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.AppAddons.value, config.get(HerokuRequestKey.appName));
+        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
     }
-    
+
     @Override
     public boolean hasBody() {
         return false;
@@ -59,11 +59,10 @@ public class AppAddonCommand implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
-        if (status == HttpStatus.OK.statusCode) {
-            return new JsonArrayResponse(inputStream);
-        }
-        throw new RequestFailedException(
-                "Unable to get addons for " + config.get(HerokuRequestKey.appName), status, inputStream);
+    public EmptyResponse getResponse(InputStream in, int code) {
+        if (code == HttpStatus.OK.statusCode)
+            return new EmptyResponse(in);
+        else
+            throw new RequestFailedException("AppDestroy failed", code, in);
     }
 }

@@ -1,10 +1,10 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.app.AppCommand;
-import com.heroku.api.command.app.AppCreateCommand;
-import com.heroku.api.command.app.AppDestroyCommand;
-import com.heroku.api.command.log.LogsCommand;
+import com.heroku.api.command.app.AppInfo;
+import com.heroku.api.command.app.AppCreate;
+import com.heroku.api.command.app.AppDestroy;
+import com.heroku.api.command.log.Log;
 import com.heroku.api.command.sharing.SharingAddCommand;
 import com.heroku.api.command.sharing.SharingRemoveCommand;
 import com.heroku.api.command.sharing.SharingTransferCommand;
@@ -23,7 +23,7 @@ public class HerokuAppAPI {
     }
 
     public Map<String, String> create(HerokuStack stack) {
-        return connection.executeCommand(new AppCreateCommand(stack.value).withName(appName)).getData();
+        return connection.executeCommand(new AppCreate(stack.value).withName(appName)).getData();
     }
 
     public HerokuAppAPI createAnd(HerokuStack stack) {
@@ -32,11 +32,11 @@ public class HerokuAppAPI {
     }
 
     public void destroy() {
-        connection.executeCommand(new AppDestroyCommand(appName));
+        connection.executeCommand(new AppDestroy(appName));
     }
 
     public Map<String, String> info() {
-        return connection.executeCommand(new AppCommand(appName)).getData();
+        return connection.executeCommand(new AppInfo(appName)).getData();
     }
 
     public HerokuAppAPI addCollaborator(String collaborator) {
@@ -54,7 +54,7 @@ public class HerokuAppAPI {
     }
 
     public String getLogChunk() {
-        return connection.executeCommand(connection.executeCommand(new LogsCommand(appName)).getData()).getData();
+        return connection.executeCommand(connection.executeCommand(new Log(appName)).getData()).getData();
     }
 
     public HerokuAPI api() {

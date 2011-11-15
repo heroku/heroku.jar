@@ -12,17 +12,17 @@ import java.io.InputStream;
 import java.util.Map;
 
 
-public class BasicAuthLoginCommand implements LoginCommand {
+public class BasicAuthLogin implements LoginCommand {
 
     private String username;
     private String password;
     private String endpoint;
 
-    public BasicAuthLoginCommand(String username, String password) {
+    public BasicAuthLogin(String username, String password) {
         this(username, password, DEFAULT_ENDPOINT);
     }
 
-    public BasicAuthLoginCommand(String username, String password, String endpoint) {
+    public BasicAuthLogin(String username, String password, String endpoint) {
         this.username = username;
         this.password = password;
         this.endpoint = endpoint;
@@ -50,7 +50,11 @@ public class BasicAuthLoginCommand implements LoginCommand {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(new CommandConfig().with(HerokuRequestKey.username, username).with(HerokuRequestKey.password, password), HerokuRequestKey.username, HerokuRequestKey.password);
+        return HttpUtil.encodeParameters(
+                new CommandConfig().with(HerokuRequestKey.username, username)
+                        .with(HerokuRequestKey.password, password),
+                HerokuRequestKey.username, HerokuRequestKey.password
+        );
     }
 
     @Override

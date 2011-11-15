@@ -17,19 +17,19 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppCreateCommand implements Command<JsonMapResponse> {
+public class AppCreate implements Command<JsonMapResponse> {
 
     private final CommandConfig config;
 
-    public AppCreateCommand(String stack) {
+    public AppCreate(String stack) {
         config = new CommandConfig().onStack(HerokuStack.valueOf(stack));
     }
 
-    public AppCreateCommand withName(String name) {
-        return new AppCreateCommand(config.with(HerokuRequestKey.createAppName, name));
+    public AppCreate withName(String name) {
+        return new AppCreate(config.with(HerokuRequestKey.createAppName, name));
     }
 
-    private AppCreateCommand(CommandConfig config) {
+    private AppCreate(CommandConfig config) {
         this.config = config;
     }
 

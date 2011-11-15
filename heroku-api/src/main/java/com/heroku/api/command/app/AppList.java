@@ -1,11 +1,10 @@
-package com.heroku.api.command.addon;
+package com.heroku.api.command.app;
 
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
@@ -18,7 +17,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AddonCommand implements Command<JsonArrayResponse> {
+public class AppList implements Command<JsonArrayResponse> {
 
     @Override
     public Method getHttpMethod() {
@@ -27,7 +26,7 @@ public class AddonCommand implements Command<JsonArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Addons.value;
+        return HerokuResource.Apps.value;
     }
 
     @Override
@@ -51,11 +50,10 @@ public class AddonCommand implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
-        if (status == HttpStatus.OK.statusCode) {
-            return new JsonArrayResponse(inputStream);
-        } else {
-            throw new RequestFailedException("Unable to list addons.", status, inputStream);
-        }
+    public JsonArrayResponse getResponse(InputStream in, int code) {
+        if (code == 200)
+            return new JsonArrayResponse(in);
+        else
+            throw new RequestFailedException("Apps Command Failed", code, in);
     }
 }

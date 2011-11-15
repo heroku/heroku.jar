@@ -1,4 +1,4 @@
-package com.heroku.api.command.config;
+package com.heroku.api.command.key;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
@@ -6,12 +6,9 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
-import com.heroku.api.http.Method;
+import com.heroku.api.http.*;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,24 +16,24 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class ConfigAddCommand implements Command<EmptyResponse> {
+public class KeyAdd implements Command<EmptyResponse> {
 
-    // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
+    // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
 
     private final CommandConfig config;
 
-    public ConfigAddCommand(String appName, String jsonConfigVars) {
-        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.configvars, jsonConfigVars);
+    public KeyAdd(String sshkey) {
+        this.config = new CommandConfig().with(HerokuRequestKey.sshkey, sshkey);
     }
 
     @Override
     public Method getHttpMethod() {
-        return Method.PUT;
+        return Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.ConfigVars.value, config.get(HerokuRequestKey.appName));
+        return HerokuResource.Keys.value;
     }
 
     @Override
@@ -46,24 +43,24 @@ public class ConfigAddCommand implements Command<EmptyResponse> {
 
     @Override
     public String getBody() {
-        return config.get(HerokuRequestKey.configvars);
+        return config.get(HerokuRequestKey.sshkey);
     }
 
     @Override
     public Accept getResponseType() {
-        return Accept.XML;
+        return Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
     }
 
-    @Override
     public EmptyResponse getResponse(InputStream in, int code) {
         if (code == HttpStatus.OK.statusCode)
             return new EmptyResponse(in);
         else
-            throw new RequestFailedException("AppDestroy failed", code, in);
+            throw new RequestFailedException("KeysAdd failed", code, in);
     }
+
 }

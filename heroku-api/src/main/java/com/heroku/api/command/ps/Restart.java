@@ -16,15 +16,15 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class RestartCommand implements Command<EmptyResponse> {
+public class Restart implements Command<EmptyResponse> {
 
     private final CommandConfig config;
     
-    public RestartCommand(String appName) {
+    public Restart(String appName) {
         this(new CommandConfig().app(appName));
     }
 
-    RestartCommand(CommandConfig config) {
+    Restart(CommandConfig config) {
         this.config = config;
     }
 
@@ -67,14 +67,14 @@ public class RestartCommand implements Command<EmptyResponse> {
         }
     }
 
-    public static class NamedProcessRestartCommand extends RestartCommand {
-        public NamedProcessRestartCommand(String appName, String processName) {
+    public static class NamedProcessRestart extends Restart {
+        public NamedProcessRestart(String appName, String processName) {
             super(new CommandConfig().app(appName).with(HerokuRequestKey.processName, processName));
         }
     }
 
-    public static class ProcessTypeRestartCommand extends RestartCommand {
-        public ProcessTypeRestartCommand(String appName, String processType) {
+    public static class ProcessTypeRestart extends Restart {
+        public ProcessTypeRestart(String appName, String processType) {
             super(new CommandConfig().app(appName).with(HerokuRequestKey.processType, processType));
         }
     }

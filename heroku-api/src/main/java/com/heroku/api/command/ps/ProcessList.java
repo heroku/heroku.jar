@@ -1,10 +1,10 @@
-package com.heroku.api.command.app;
+package com.heroku.api.command.ps;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
@@ -20,22 +20,22 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppDestroyCommand implements Command<EmptyResponse> {
+public class ProcessList implements Command<JsonArrayResponse> {
 
     private final CommandConfig config;
 
-    public AppDestroyCommand(String appName) {
-        this.config = new CommandConfig().app(appName);
+    public ProcessList(String appName) {
+        config = new CommandConfig().app(appName);
     }
-
+    
     @Override
     public Method getHttpMethod() {
-        return Method.DELETE;
+        return Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
+        return String.format(HerokuResource.Process.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override
@@ -59,10 +59,11 @@ public class AppDestroyCommand implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(InputStream in, int code) {
-        if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse(in);
-        else
-            throw new RequestFailedException("AppDestroy failed", code, in);
+    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
+        if (status == HttpStatus.OK.statusCode) {
+            return new JsonArrayResponse(inputStream);
+        } else {
+            throw new RequestFailedException("Process command failed.", status, inputStream);
+        }
     }
 }

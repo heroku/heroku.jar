@@ -16,11 +16,11 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class ScaleCommand implements Command<EmptyResponse> {
+public class Scale implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public ScaleCommand(String appName, String processType, int quantity) {
+    public Scale(String appName, String processType, int quantity) {
         config = new CommandConfig().app(appName).with(HerokuRequestKey.processType, processType).with(HerokuRequestKey.quantity, String.valueOf(quantity));
     }
 

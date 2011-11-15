@@ -1,9 +1,9 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.app.AppCreateCommand;
-import com.heroku.api.command.key.KeysAddCommand;
-import com.heroku.api.command.key.KeysRemoveCommand;
+import com.heroku.api.command.app.AppCreate;
+import com.heroku.api.command.key.KeyAdd;
+import com.heroku.api.command.key.KeyRemove;
 import com.heroku.api.connection.Connection;
 
 public class HerokuAPI {
@@ -15,11 +15,11 @@ public class HerokuAPI {
     }
 
     public void addKey(String sshKey) {
-        connection.executeCommand(new KeysAddCommand(sshKey));
+        connection.executeCommand(new KeyAdd(sshKey));
     }
 
     public void removeKey(String sshKey) {
-        connection.executeCommand(new KeysRemoveCommand(sshKey));
+        connection.executeCommand(new KeyRemove(sshKey));
     }
 
     public HerokuAppAPI app(String name) {
@@ -27,11 +27,11 @@ public class HerokuAPI {
     }
 
     public HerokuAppAPI newapp(HerokuStack stack) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreateCommand(stack.value)).get("name"));
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack.value)).get("name"));
     }
 
     public HerokuAppAPI newapp(HerokuStack stack, String appName) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreateCommand(stack.value).withName(appName)).get("name"));
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack.value).withName(appName)).get("name"));
     }
 
 

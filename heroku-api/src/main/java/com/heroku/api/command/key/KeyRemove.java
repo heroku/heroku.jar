@@ -6,9 +6,13 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Accept;
+import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
+import com.heroku.api.http.Method;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,34 +20,34 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class KeysAddCommand implements Command<EmptyResponse> {
+public class KeyRemove implements Command<EmptyResponse> {
 
-    // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
+    // delete("/user/keys/#{escape(key)}").to_s
 
     private final CommandConfig config;
 
-    public KeysAddCommand(String sshkey) {
-        this.config = new CommandConfig().with(HerokuRequestKey.sshkey, sshkey);
+    public KeyRemove(String keyName) {
+        this.config = new CommandConfig().with(HerokuRequestKey.appName, keyName);
     }
 
     @Override
     public Method getHttpMethod() {
-        return Method.POST;
+        return Method.DELETE;
     }
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Keys.value;
+        return String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override
     public boolean hasBody() {
-        return true;
+        return false;
     }
 
     @Override
     public String getBody() {
-        return config.get(HerokuRequestKey.sshkey);
+        throw HttpUtil.noBody();
     }
 
     @Override
@@ -53,14 +57,14 @@ public class KeysAddCommand implements Command<EmptyResponse> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
+        return new HashMap<String, String>();
     }
 
+    @Override
     public EmptyResponse getResponse(InputStream in, int code) {
         if (code == HttpStatus.OK.statusCode)
             return new EmptyResponse(in);
         else
-            throw new RequestFailedException("KeysAdd failed", code, in);
+            throw new RequestFailedException("KeysRemove failed", code, in);
     }
-
 }

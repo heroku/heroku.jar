@@ -1,4 +1,4 @@
-package com.heroku.api.command.key;
+package com.heroku.api.command.config;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
@@ -8,7 +8,6 @@ import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
 import java.io.InputStream;
@@ -20,39 +19,39 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class KeysRemoveCommand implements Command<EmptyResponse> {
+public class ConfigAdd implements Command<EmptyResponse> {
 
-    // delete("/user/keys/#{escape(key)}").to_s
+    // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
     private final CommandConfig config;
 
-    public KeysRemoveCommand(String keyName) {
-        this.config = new CommandConfig().with(HerokuRequestKey.appName, keyName);
+    public ConfigAdd(String appName, String jsonConfigVars) {
+        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.configvars, jsonConfigVars);
     }
 
     @Override
     public Method getHttpMethod() {
-        return Method.DELETE;
+        return Method.PUT;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.appName));
+        return String.format(HerokuResource.ConfigVars.value, config.get(HerokuRequestKey.appName));
     }
 
     @Override
     public boolean hasBody() {
-        return false;
+        return true;
     }
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        return config.get(HerokuRequestKey.configvars);
     }
 
     @Override
     public Accept getResponseType() {
-        return Accept.JSON;
+        return Accept.XML;
     }
 
     @Override
@@ -65,6 +64,6 @@ public class KeysRemoveCommand implements Command<EmptyResponse> {
         if (code == HttpStatus.OK.statusCode)
             return new EmptyResponse(in);
         else
-            throw new RequestFailedException("KeysRemove failed", code, in);
+            throw new RequestFailedException("AppDestroy failed", code, in);
     }
 }

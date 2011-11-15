@@ -1,4 +1,4 @@
-package com.heroku.api.command.addon;
+package com.heroku.api.command.config;
 
 import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
@@ -6,9 +6,13 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Accept;
+import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.HttpUtil;
+import com.heroku.api.http.Method;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,22 +20,26 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppAddAddonCommand implements Command<JsonMapResponse> {
+public class ConfigRemove implements Command<JsonMapResponse> {
 
     private final CommandConfig config;
 
-    public AppAddAddonCommand(String appName, String addonName) {
-        config = new CommandConfig().app(appName).with(HerokuRequestKey.addonName, addonName);
+    public ConfigRemove(String appName, String configVarName) {
+        config = new CommandConfig().app(appName).with(HerokuRequestKey.configVarName, configVarName);
     }
 
     @Override
     public Method getHttpMethod() {
-        return Method.POST;
+        return Method.DELETE;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.AppAddon.value, config.get(HerokuRequestKey.appName), config.get(HerokuRequestKey.addonName));
+        return String.format(
+                HerokuResource.ConfigVar.value,
+                config.get(HerokuRequestKey.appName),
+                config.get(HerokuRequestKey.configVarName
+        ));
     }
 
     @Override
@@ -51,7 +59,7 @@ public class AppAddAddonCommand implements Command<JsonMapResponse> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return new HashMap<String, String>();
     }
 
     @Override
@@ -59,7 +67,7 @@ public class AppAddAddonCommand implements Command<JsonMapResponse> {
         if (status == HttpStatus.OK.statusCode) {
             return new JsonMapResponse(inputStream);
         } else {
-            throw new RequestFailedException("Unable to add addon " + config.get(HerokuRequestKey.addonName), status, inputStream);
+            throw new RequestFailedException("Config removal failed.", status, inputStream);
         }
     }
 }

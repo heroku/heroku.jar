@@ -1,22 +1,19 @@
 package com.heroku.api.command;
 
-import com.heroku.api.command.addon.AddonCommand;
-import com.heroku.api.command.addon.AppAddAddonCommand;
-import com.heroku.api.command.addon.AppAddonCommand;
+import com.heroku.api.command.addon.AddonList;
+import com.heroku.api.command.addon.AddonInstall;
+import com.heroku.api.command.addon.AppAddonsList;
 import com.heroku.api.command.app.*;
-import com.heroku.api.command.config.ConfigAddCommand;
-import com.heroku.api.command.config.ConfigCommand;
-import com.heroku.api.command.config.ConfigRemoveCommand;
-import com.heroku.api.command.log.LogStreamCommand;
-import com.heroku.api.command.log.LogStreamResponse;
-import com.heroku.api.command.log.LogsCommand;
-import com.heroku.api.command.log.LogsResponse;
-import com.heroku.api.command.ps.ProcessCommand;
-import com.heroku.api.command.ps.RestartCommand;
-import com.heroku.api.command.ps.ScaleCommand;
-import com.heroku.api.command.response.EmptyResponse;
-import com.heroku.api.command.response.JsonArrayResponse;
-import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.config.ConfigAdd;
+import com.heroku.api.command.config.ConfigList;
+import com.heroku.api.command.config.ConfigRemove;
+import com.heroku.api.command.log.LogStream;
+import com.heroku.api.command.response.LogStreamResponse;
+import com.heroku.api.command.log.Log;
+import com.heroku.api.command.response.*;
+import com.heroku.api.command.ps.ProcessList;
+import com.heroku.api.command.ps.Restart;
+import com.heroku.api.command.ps.Scale;
 import com.heroku.api.command.sharing.SharingAddCommand;
 import com.heroku.api.command.sharing.SharingRemoveCommand;
 import com.heroku.api.command.sharing.SharingTransferCommand;
@@ -40,7 +37,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws IOException {
-        Command cmd = new AppCreateCommand("Cedar");
+        Command cmd = new AppCreate("Cedar");
         CommandResponse response = connection.executeCommand(cmd);
 
         assertNotNull(response.get("id"));
@@ -51,7 +48,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testLogCommand(JsonMapResponse app) throws IOException, InterruptedException {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
-        LogsCommand logs = new LogsCommand(app.get("name"));
+        Log logs = new Log(app.get("name"));
         LogsResponse logsResponse = connection.executeCommand(logs);
         String logChunk = connection.executeCommand(logsResponse.getData()).getData();
         assertTrue(logChunk.length() > 0, "No Logs Returned");
@@ -61,7 +58,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     public void testLogStreamCommand(JsonMapResponse app) throws IOException, InterruptedException {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
-        LogStreamCommand logs = new LogStreamCommand(app.get("name"));
+        LogStream logs = new LogStream(app.get("name"));
         LogStreamResponse logsResponse = connection.executeCommand(logs);
         InputStream in = connection.executeCommand(logsResponse.getData()).getData();
         byte[] read = new byte[1024];
@@ -70,21 +67,21 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testAppCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppCommand(app.get("name"));
+        Command cmd = new AppInfo(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
         assertEquals(response.get("name"), app.get("name"));
     }
 
     @Test(dataProvider = "app")
     public void testListAppsCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppsCommand();
+        Command cmd = new AppList();
         CommandResponse response = connection.executeCommand(cmd);
         assertNotNull(response.get(app.get("name")));
     }
 
     @Test(dataProvider = "app")
     public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppDestroyCommand(app.get("name"));
+        Command cmd = new AppDestroy(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
     }
 
@@ -119,14 +116,14 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new ConfigAddCommand(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
+        Command cmd = new ConfigAdd(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         CommandResponse response = connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testConfigCommand(JsonMapResponse app) {
         addConfig(app, "FOO", "BAR");
-        Command<JsonMapResponse> cmd = new ConfigCommand(app.get("name"));
+        Command<JsonMapResponse> cmd = new ConfigList(app.get("name"));
         JsonMapResponse response = connection.executeCommand(cmd);
         assertNotNull(response.get("FOO"));
         assertEquals(response.get("FOO"), "BAR");
@@ -137,10 +134,10 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
             expectedExceptionsMessageRegExp = "FOO is not present.")
     public void testConfigRemoveCommand(JsonMapResponse app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
-        Command<JsonMapResponse> removeCommand = new ConfigRemoveCommand(app.get("name"), "FOO");
+        Command<JsonMapResponse> removeCommand = new ConfigRemove(app.get("name"), "FOO");
         connection.executeCommand(removeCommand);
 
-        Command<JsonMapResponse> listCommand = new ConfigCommand(app.get("name"));
+        Command<JsonMapResponse> listCommand = new ConfigList(app.get("name"));
         JsonMapResponse response = connection.executeCommand(listCommand);
 
         assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
@@ -149,7 +146,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testProcessCommand(JsonMapResponse app) {
-        Command<JsonArrayResponse> cmd = new ProcessCommand(app.get("name"));
+        Command<JsonArrayResponse> cmd = new ProcessList(app.get("name"));
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response.getData(), "Expected a non-null response for a new app, but the data was null.");
         assertEquals(response.getData().size(), 1);
@@ -157,26 +154,26 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testScaleCommand(JsonMapResponse app) {
-        Command<EmptyResponse> cmd = new ScaleCommand(app.get("name"), "web", 1);
+        Command<EmptyResponse> cmd = new Scale(app.get("name"), "web", 1);
         EmptyResponse response = connection.executeCommand(cmd);
     }
     
     @Test(dataProvider = "app")
     public void testRestartCommand(JsonMapResponse app) {
-        Command<EmptyResponse> cmd = new RestartCommand(app.get("name"));
+        Command<EmptyResponse> cmd = new Restart(app.get("name"));
         EmptyResponse response = connection.executeCommand(cmd);
     }
     
     @Test
     public void testListAddons() {
-        Command<JsonArrayResponse> cmd = new AddonCommand();
+        Command<JsonArrayResponse> cmd = new AddonList();
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
     
     @Test(dataProvider = "app")
     public void testListAppAddons(JsonMapResponse app) {
-        Command<JsonArrayResponse> cmd = new AppAddonCommand(app.get("name"));
+        Command<JsonArrayResponse> cmd = new AppAddonsList(app.get("name"));
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response);
         assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
@@ -185,7 +182,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testAddAddonToApp(JsonMapResponse app) {
-        Command<JsonMapResponse> cmd = new AppAddAddonCommand(app.get("name"), "shared-database:5mb");
+        Command<JsonMapResponse> cmd = new AddonInstall(app.get("name"), "shared-database:5mb");
         JsonMapResponse response = connection.executeCommand(cmd);
         assertEquals(response.get("status"), "Installed");
     }

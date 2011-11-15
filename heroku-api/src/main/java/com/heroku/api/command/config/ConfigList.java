@@ -20,10 +20,10 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class ConfigCommand implements Command<JsonMapResponse> {
+public class ConfigList implements Command<JsonMapResponse> {
     private final CommandConfig config;
     
-    public ConfigCommand(String appName) {
+    public ConfigList(String appName) {
         config = new CommandConfig().app(appName);
     }
     
@@ -70,7 +70,7 @@ public class ConfigCommand implements Command<JsonMapResponse> {
                     inputStream
             );
         } else {
-            throw new RequestFailedException("ConfigCommand failed.", status, inputStream);
+            throw new RequestFailedException("Unable to list config failed.", status, inputStream);
         }
     }
 }

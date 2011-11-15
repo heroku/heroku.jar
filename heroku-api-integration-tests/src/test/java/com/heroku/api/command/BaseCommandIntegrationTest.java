@@ -3,9 +3,9 @@ package com.heroku.api.command;
 import com.google.inject.Inject;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.TestModuleFactory;
-import com.heroku.api.command.app.AppCreateCommand;
-import com.heroku.api.command.app.AppDestroyCommand;
-import com.heroku.api.command.config.ConfigAddCommand;
+import com.heroku.api.command.app.AppCreate;
+import com.heroku.api.command.app.AppDestroy;
+import com.heroku.api.command.config.ConfigAdd;
 import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.connection.Connection;
@@ -35,7 +35,7 @@ public abstract class BaseCommandIntegrationTest {
     public Object[][] app() throws IOException {
         CommandConfig config = new CommandConfig().onStack(HerokuStack.Cedar);
 
-        AppCreateCommand cmd = new AppCreateCommand("Cedar");
+        AppCreate cmd = new AppCreate("Cedar");
         JsonMapResponse response = connection.executeCommand(cmd);
 
         apps.add(response);
@@ -51,7 +51,7 @@ public abstract class BaseCommandIntegrationTest {
                     .app(res.get("name"));
 
             try {
-                Command cmd = new AppDestroyCommand(res.get("name"));
+                Command cmd = new AppDestroy(res.get("name"));
                 connection.executeCommand(cmd);
             } catch (HerokuAPIException e) {
                 // quietly clean up apps created. if the destroy fails, it's ok because it might
@@ -78,7 +78,7 @@ public abstract class BaseCommandIntegrationTest {
         
         jsonConfig = jsonConfig.append("}");
         
-        Command<EmptyResponse> cmd = new ConfigAddCommand(app.get("name").toString(), new String(jsonConfig));
+        Command<EmptyResponse> cmd = new ConfigAdd(app.get("name").toString(), new String(jsonConfig));
         connection.executeCommand(cmd);
     }
 }
