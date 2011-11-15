@@ -103,5 +103,13 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         CommandResponse response = connection.executeCommand(cmd);
     }
 
+    @Test(dataProvider = "app")
+    public void testConfigCommand(JsonMapResponse app) {
+        addConfig(app, "FOO", "BAR");
+        Command<JsonMapResponse> cmd = new ConfigCommand(app.get("name"));
+        JsonMapResponse response = connection.executeCommand(cmd);
+        assertNotNull(response.get("FOO"));
+        assertEquals(response.get("FOO"), "BAR");
+    }
 
 }

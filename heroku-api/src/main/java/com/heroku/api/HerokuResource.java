@@ -17,7 +17,11 @@ public enum HerokuResource {
     Collaborators(App.value + "/collaborators"),
     Collaborator(Collaborators.value + "/%s"),
     ConfigVars(App.value + "/config_vars"),
-    Logs(App.value + "/logs");
+    Logs(App.value + "/logs"),
+    Process(App.value + "/ps"),
+    Restart(Process.value + "/restart"),
+    Stop(Process.value + "/stop"),
+    Scale(Process.value + "/scale");
 
     public final String value;
     

@@ -55,4 +55,25 @@ public abstract class BaseCommandIntegrationTest {
         }
     }
 
+    protected void addConfig(CommandResponse app, String... nameValuePairs) {
+        if (nameValuePairs.length != 0 && (nameValuePairs.length % 2) != 0) {
+            throw new RuntimeException("Config must have an equal number of name and value pairs.");
+        }
+        
+        StringBuffer jsonConfig = new StringBuffer();
+        jsonConfig = jsonConfig.append("{");
+        String separator = "";
+        
+        for (int i = 0; i < nameValuePairs.length; i=i+2) {
+            jsonConfig = jsonConfig.append(
+                    String.format("%s\"%s\":\"%s\"", separator, nameValuePairs[i], nameValuePairs[i+1])
+            );
+            separator = ",";
+        }
+        
+        jsonConfig = jsonConfig.append("}");
+        
+        Command<EmptyResponse> cmd = new ConfigAddCommand(app.get("name").toString(), new String(jsonConfig));
+        connection.executeCommand(cmd);
+    }
 }
