@@ -4,9 +4,7 @@ import com.twitter.util.Future
 import java.lang.String
 import com.heroku.api.HerokuAPI
 import com.twitter.finagle.builder.ClientBuilder
-import com.twitter.finagle.http.Http
 import com.heroku.api.http._
-import org.jboss.netty.buffer.{ChannelBufferInputStream, ChannelBuffers}
 import collection.mutable.HashMap
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
@@ -14,6 +12,8 @@ import sun.misc.BASE64Encoder
 import com.heroku.api.command.{LoginCommand, Command, CommandResponse}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
+import com.twitter.finagle.http.{ProxyCredentials, Http, Request}
+import org.jboss.netty.buffer.{ChannelBuffers, ChannelBufferInputStream}
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -48,8 +48,10 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req.addHeader(HttpHeaders.Names.HOST, getEndpoint.getHost)
     req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2.getHeaderValue)
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
+    req.addHeader(HttpHeaders.Names.HOST, getHostHeader(cmd.getEndpoint))
+
     if (loginResponse != null) {
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode((loginResponse.email() + ":" + loginResponse.api_key()).getBytes))
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, ProxyCredentials("", loginResponse.api_key()).basicAuthorization)
     }
 
     cmd.getHeaders.foreach {
@@ -76,9 +78,25 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     }
   }
 
+  def getPath(cmdEndpoint: String): String = {
+    if (cmdEndpoint.startsWith("https//") || cmdEndpoint.startsWith("http://")) {
+      HttpUtil.toURL(cmdEndpoint).getPath
+    } else {
+      cmdEndpoint
+    }
+  }
+
   def getPort(url: URL): Int = {
     if (url.getPort == -1) url.getDefaultPort
     else url.getPort
+  }
+
+  def getHostHeader(cmdEndpoint: String): String = {
+    val url = getUrl(cmdEndpoint)
+    val host = url.getHost
+    var port = ""
+    if (url.getPort != url.getDefaultPort) port = ":" + url.getPort.toString
+    host + port
   }
 
   def getClient(cmd: Command[_]): HttpService = {

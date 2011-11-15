@@ -26,31 +26,13 @@
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-core</artifactId>
-            <version>1.9.0</version>
+            <version>1.9.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-http</artifactId>
-            <version>1.9.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>util-logging</artifactId>
-            <version>1.11.4</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>3.2.5.Final</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>1.6.2</version>
+            <version>1.9.6</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -64,13 +46,6 @@
             <id>ScalaToolsMaven2Repository</id>
             <name>Scala-Tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases/</url>
-        </repository>
-        <repository>
-            <id>download.newrelic.com</id>
-            <url>http://download.newrelic.com</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
     <build>
