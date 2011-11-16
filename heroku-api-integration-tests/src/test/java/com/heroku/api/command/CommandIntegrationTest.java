@@ -16,6 +16,7 @@ import com.heroku.api.command.ps.Scale;
 import com.heroku.api.command.sharing.SharingAddCommand;
 import com.heroku.api.command.sharing.SharingRemoveCommand;
 import com.heroku.api.command.sharing.SharingTransferCommand;
+import com.heroku.api.connection.Connection;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

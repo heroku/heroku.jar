@@ -12,7 +12,7 @@ import sun.misc.BASE64Encoder
 import com.heroku.api.command.{LoginCommand, Command, CommandResponse}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
-import com.twitter.finagle.http.{ProxyCredentials, Http, Request}
+import com.twitter.finagle.http.{ProxyCredentials, Http}
 import org.jboss.netty.buffer.{ChannelBuffers, ChannelBufferInputStream}
 
 
@@ -45,9 +45,9 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
       case Method.DELETE => HttpMethod.DELETE
     }
     val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, cmd.getEndpoint)
+    req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, getEndpoint.getHost)
     req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2.getHeaderValue)
-    req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, getHostHeader(cmd.getEndpoint))
 
     if (loginResponse != null) {
@@ -59,7 +59,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
         case (k, v) => req.addHeader(k, v)
       }
     }
-    if (cmd.hasBody) req.setContent(ChannelBuffers.wrappedBuffer(cmd.getBody.getBytes))
+    if (cmd.hasBody) req.setContent(ChannelBuffers.wrappedBuffer(cmd.getBody.getBytes("UTF-8")))
 
     req
   }

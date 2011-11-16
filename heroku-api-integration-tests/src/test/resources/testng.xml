@@ -5,12 +5,14 @@
         <packages>
             <package name="com.heroku.api.command"/>
             <package name="com.heroku.api.connection"/>
+            <package name="com.heroku.api.httpclient"/>
         </packages>
     </test>
     <test name="finagle">
         <packages>
             <package name="com.heroku.api.command"/>
             <package name="com.heroku.api.connection"/>
+            <package name="com.heroku.api.finagle"/>
         </packages>
     </test>
 </suite>

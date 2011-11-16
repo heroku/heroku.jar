@@ -14,6 +14,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
 
+import javax.inject.Named;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

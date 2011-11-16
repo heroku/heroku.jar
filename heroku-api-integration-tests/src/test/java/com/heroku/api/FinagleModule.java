@@ -9,10 +9,10 @@ import com.heroku.api.exception.RequestFailedException;
 import java.io.IOException;
 
 
-public class FinagleModule extends ConnectionTestModule {
+public class FinagleModule extends ConnectionTestModule<FinagleConnection> {
 
     @Provides
-    Connection<?> getConnection() throws IOException {
+    FinagleConnection getConnectionImpl() throws IOException {
         AuthenticationTestCredentials cred = getCredentials();
 
         try {

@@ -13,14 +13,19 @@ import static com.heroku.api.TestConfig.*;
  *
  * @author Naaman Newbold
  */
-public abstract class ConnectionTestModule extends AbstractModule {
+public abstract class ConnectionTestModule<F extends Connection> extends AbstractModule {
 
     @Override
     protected void configure() {
         // not implemented
     }
 
-    abstract Connection<?> getConnection() throws IOException;
+    abstract F getConnectionImpl() throws IOException;
+
+    @Provides
+    public Connection<?> getConnection() throws IOException {
+        return (Connection<?>) getConnectionImpl();
+    }
 
 
     @Provides
