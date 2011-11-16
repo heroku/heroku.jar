@@ -18,8 +18,8 @@ public class Json {
                     if (iterator.hasNext()) {
                         parser = iterator.next();
                     } else {
-                        throw new IllegalStateException("Unable to load a JSONProvider, please make sure you have a JSONProvider on your classpath that" +
-                                "can be discovered and loaded via java.util.ServiceLoader");
+                        throw new IllegalStateException("Unable to load a JSONProvider, please make sure you have a com.heroku.api.json.JSONProvider implementation" +
+                                "on your classpath that can be discovered and loaded via java.util.ServiceLoader");
                     }
                 }
             }
