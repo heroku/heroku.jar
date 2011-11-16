@@ -12,7 +12,7 @@ import sun.misc.BASE64Encoder
 import com.heroku.api.command.{LoginCommand, Command, CommandResponse}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
-import com.twitter.finagle.http.{ProxyCredentials, Http}
+import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.{ChannelBuffers, ChannelBufferInputStream}
 
 
@@ -44,14 +44,14 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
       case Method.POST => HttpMethod.POST
       case Method.DELETE => HttpMethod.DELETE
     }
-    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, cmd.getEndpoint)
+    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, getPath(cmd.getEndpoint))
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
-    req.addHeader(HttpHeaders.Names.HOST, getEndpoint.getHost)
     req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, getHostHeader(cmd.getEndpoint))
 
-    if (loginResponse != null) {
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, ProxyCredentials("", loginResponse.api_key()).basicAuthorization)
+    if (loginResponse != null && cmd.getEndpoint.startsWith("/")) {
+      //send basic auth if we've logged in and we are hitting the api endpoint and not logplex etc...
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode((":" + loginResponse.api_key()).getBytes("UTF-8")))
     }
 
     cmd.getHeaders.foreach {
