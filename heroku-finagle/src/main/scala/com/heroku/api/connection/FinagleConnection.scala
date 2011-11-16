@@ -102,12 +102,15 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
   def getClient(cmd: Command[_]): HttpService = {
     val url = getUrl(cmd.getEndpoint)
     clients.getOrElseUpdate((url.getHost, getPort(url)), {
-      ClientBuilder()
+      var builder = ClientBuilder()
         .codec(Http())
         .hosts(new InetSocketAddress(url.getHost, getPort(url)))
         .hostConnectionLimit(10)
-        .tlsWithoutValidation()
-        .build()
+      if (url.getProtocol.equals("https")) {
+        builder = builder.tlsWithoutValidation()
+      }
+
+      builder.build()
     })
   }
 
