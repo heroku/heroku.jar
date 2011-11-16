@@ -16,13 +16,13 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class SharingAddCommand implements Command<EmptyResponse> {
+public class SharingAdd implements Command<EmptyResponse> {
 
     // xml(post("/apps/#{app_name}/collaborators", { 'collaborator[email]' => email }).to_s)
 
     private final CommandConfig config;
 
-    public SharingAddCommand(String appName, String collaboratorEmail) {
+    public SharingAdd(String appName, String collaboratorEmail) {
         this.config = new CommandConfig().app(appName).with(HerokuRequestKey.collaborator, collaboratorEmail);
     }
 

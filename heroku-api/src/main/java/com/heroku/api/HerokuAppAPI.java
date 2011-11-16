@@ -5,9 +5,9 @@ import com.heroku.api.command.app.AppInfo;
 import com.heroku.api.command.app.AppCreate;
 import com.heroku.api.command.app.AppDestroy;
 import com.heroku.api.command.log.Log;
-import com.heroku.api.command.sharing.SharingAddCommand;
-import com.heroku.api.command.sharing.SharingRemoveCommand;
-import com.heroku.api.command.sharing.SharingTransferCommand;
+import com.heroku.api.command.sharing.SharingAdd;
+import com.heroku.api.command.sharing.SharingRemove;
+import com.heroku.api.command.sharing.SharingTransfer;
 import com.heroku.api.connection.Connection;
 
 import java.util.Map;
@@ -40,17 +40,17 @@ public class HerokuAppAPI {
     }
 
     public HerokuAppAPI addCollaborator(String collaborator) {
-        connection.executeCommand(new SharingAddCommand(appName, collaborator));
+        connection.executeCommand(new SharingAdd(appName, collaborator));
         return this;
     }
 
     public HerokuAppAPI removeCollaborator(String collaborator) {
-        connection.executeCommand(new SharingRemoveCommand(appName, collaborator));
+        connection.executeCommand(new SharingRemove(appName, collaborator));
         return this;
     }
 
     public void transferApp(String to) {
-        connection.executeCommand(new SharingTransferCommand(appName, to));
+        connection.executeCommand(new SharingTransfer(appName, to));
     }
 
     public String getLogChunk() {

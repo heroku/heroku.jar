@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class SharingTransferCommand implements Command<EmptyResponse> {
+public class SharingTransfer implements Command<EmptyResponse> {
 
     // heroku.update(app, :transfer_owner => email)
     // put("/apps/#{name}", :app => attributes).to_s
@@ -28,7 +28,7 @@ public class SharingTransferCommand implements Command<EmptyResponse> {
 
     private final CommandConfig config;
 
-    public SharingTransferCommand(String appName, String newOwnerEmail) {
+    public SharingTransfer(String appName, String newOwnerEmail) {
         this.config = new CommandConfig().app(appName).with(HerokuRequestKey.transferOwner, newOwnerEmail);
     }
 

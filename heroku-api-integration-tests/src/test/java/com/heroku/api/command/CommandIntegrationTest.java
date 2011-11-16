@@ -13,10 +13,9 @@ import com.heroku.api.command.response.*;
 import com.heroku.api.command.ps.ProcessList;
 import com.heroku.api.command.ps.Restart;
 import com.heroku.api.command.ps.Scale;
-import com.heroku.api.command.sharing.SharingAddCommand;
-import com.heroku.api.command.sharing.SharingRemoveCommand;
-import com.heroku.api.command.sharing.SharingTransferCommand;
-import com.heroku.api.connection.Connection;
+import com.heroku.api.command.sharing.SharingAdd;
+import com.heroku.api.command.sharing.SharingRemove;
+import com.heroku.api.command.sharing.SharingTransfer;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
+        Command cmd = new SharingAdd(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
     }
 
@@ -96,20 +95,20 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
     public void testSharingTransferCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
+        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command sharingTransferCommand = new SharingTransferCommand(app.get("name"), DEMO_EMAIL);
+        Command sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
         CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
     }
 
     @Test(dataProvider = "app")
     public void testSharingRemoveCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAddCommand(app.get("name"), DEMO_EMAIL);
+        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command cmd = new SharingRemoveCommand(app.get("name"), DEMO_EMAIL);
+        Command cmd = new SharingRemove(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
 
     }

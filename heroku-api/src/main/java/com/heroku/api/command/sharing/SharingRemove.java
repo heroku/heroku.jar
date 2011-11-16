@@ -20,13 +20,13 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class SharingRemoveCommand implements Command<EmptyResponse> {
+public class SharingRemove implements Command<EmptyResponse> {
 
     // delete("/apps/#{app_name}/collaborators/#{escape(email)}").to_s
 
     private final CommandConfig config;
 
-    public SharingRemoveCommand(String appName, String collaboratorEmail) {
+    public SharingRemove(String appName, String collaboratorEmail) {
         this.config = new CommandConfig().app(appName).with(HerokuRequestKey.collaborator, collaboratorEmail);
     }
 
