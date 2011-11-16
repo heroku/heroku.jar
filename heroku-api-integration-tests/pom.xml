@@ -32,6 +32,11 @@
             <artifactId>heroku-finagle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.heroku.api</groupId>
+            <artifactId>heroku-async-httpclient</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <!-- Test Deps -->
         <dependency>

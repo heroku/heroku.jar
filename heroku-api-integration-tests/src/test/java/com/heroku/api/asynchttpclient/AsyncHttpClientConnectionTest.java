@@ -1,10 +1,10 @@
-package com.heroku.api.httpclient;
+package com.heroku.api.asynchttpclient;
 
 import com.google.inject.Inject;
 import com.heroku.api.AsyncHttpClientModule;
-import com.heroku.api.HttpClientModule;
 import com.heroku.api.command.app.AppList;
 import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.connection.AsyncHttpClientConnection;
 import com.heroku.api.connection.HttpClientConnection;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-@Guice(modules = HttpClientModule.class)
-public class HttpClientConnectionTest {
+@Guice(modules = AsyncHttpClientModule.class)
+public class AsyncHttpClientConnectionTest {
 
     @Inject
-    HttpClientConnection connection;
+    AsyncHttpClientConnection connection;
 
     @Test
     public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {

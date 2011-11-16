@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="integration" verbose="1">
+    <test name="asynchttpclient">
+        <packages>
+            <package name="com.heroku.api.command"/>
+            <package name="com.heroku.api.connection"/>
+            <package name="com.heroku.api.asynchttpclient"/>
+        </packages>
+    </test>
+</suite>
