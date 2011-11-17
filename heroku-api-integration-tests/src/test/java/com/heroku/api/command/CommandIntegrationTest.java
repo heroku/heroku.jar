@@ -1,18 +1,25 @@
 package com.heroku.api.command;
 
-import com.heroku.api.command.addon.AddonList;
 import com.heroku.api.command.addon.AddonInstall;
+import com.heroku.api.command.addon.AddonList;
 import com.heroku.api.command.addon.AppAddonsList;
-import com.heroku.api.command.app.*;
+import com.heroku.api.command.app.AppCreate;
+import com.heroku.api.command.app.AppDestroy;
+import com.heroku.api.command.app.AppInfo;
+import com.heroku.api.command.app.AppList;
 import com.heroku.api.command.config.ConfigAdd;
 import com.heroku.api.command.config.ConfigList;
 import com.heroku.api.command.config.ConfigRemove;
-import com.heroku.api.command.log.*;
+import com.heroku.api.command.log.Log;
+import com.heroku.api.command.log.LogStream;
 import com.heroku.api.command.log.LogStreamResponse;
-import com.heroku.api.command.response.*;
+import com.heroku.api.command.log.LogsResponse;
 import com.heroku.api.command.ps.ProcessList;
 import com.heroku.api.command.ps.Restart;
 import com.heroku.api.command.ps.Scale;
+import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.command.sharing.SharingAdd;
 import com.heroku.api.command.sharing.SharingRemove;
 import com.heroku.api.command.sharing.SharingTransfer;
@@ -59,7 +66,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Thread.sleep(10000);
         LogStream logs = new LogStream(app.get("name"));
         LogStreamResponse logsResponse = connection.executeCommand(logs);
-        InputStream in = connection.executeCommand(logsResponse.getData()).getData();
+        InputStream in = logsResponse.openStream();
         byte[] read = new byte[1024];
         assertTrue(in.read(read) > -1, "No Logs Returned");
     }
@@ -156,20 +163,20 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command<EmptyResponse> cmd = new Scale(app.get("name"), "web", 1);
         EmptyResponse response = connection.executeCommand(cmd);
     }
-    
+
     @Test(dataProvider = "app")
     public void testRestartCommand(JsonMapResponse app) {
         Command<EmptyResponse> cmd = new Restart(app.get("name"));
         EmptyResponse response = connection.executeCommand(cmd);
     }
-    
+
     @Test
     public void testListAddons() {
         Command<JsonArrayResponse> cmd = new AddonList();
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
-    
+
     @Test(dataProvider = "app")
     public void testListAppAddons(JsonMapResponse app) {
         Command<JsonArrayResponse> cmd = new AppAddonsList(app.get("name"));

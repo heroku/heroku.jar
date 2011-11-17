@@ -6,7 +6,7 @@ import com.heroku.api.connection.Connection;
 
 import java.io.IOException;
 
-import static com.heroku.api.TestConfig.*;
+import static com.heroku.api.IntegrationTestConfig.*;
 
 /**
  * Guice Module for providing tests with authentication information.

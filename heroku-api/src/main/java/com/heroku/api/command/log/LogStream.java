@@ -61,7 +61,7 @@ public class LogStream implements Command<LogStreamResponse> {
         if (status == 200) {
             byte[] raw = CommandUtil.getBytes(inputStream);
             URL logs = HttpUtil.toURL(new String(raw));
-            return new LogStreamResponse(new StreamCommand(logs), raw);
+            return new LogStreamResponse(logs);
         } else {
             throw new RequestFailedException("Unable to get logs", status, inputStream);
         }
