@@ -56,7 +56,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Thread.sleep(10000);
         Log logs = new Log(app.get("name"));
         LogsResponse logsResponse = connection.executeCommand(logs);
-        String logChunk = connection.executeCommand(logsResponse.getData()).getData();
+        String logChunk = connection.executeCommand(logsResponse.getData()).getText();
         assertTrue(logChunk.length() > 0, "No Logs Returned");
     }
 
@@ -88,13 +88,13 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     @Test(dataProvider = "app")
     public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
         AppDestroy cmd = new AppDestroy(app.get("name"));
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(JsonMapResponse app) throws IOException {
         SharingAdd cmd = new SharingAdd(app.get("name"), DEMO_EMAIL);
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 
     // if we do this then we will no longer be able to remove the app
@@ -106,24 +106,24 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         connection.executeCommand(sharingAddCommand);
 
         SharingTransfer sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
-        CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
+        EmptyResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
     }
 
     @Test(dataProvider = "app")
     public void testSharingRemoveCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
+        SharingAdd sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
         SharingRemove cmd = new SharingRemove(app.get("name"), DEMO_EMAIL);
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
 
     }
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(JsonMapResponse app) throws IOException {
         ConfigAdd cmd = new ConfigAdd(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")

@@ -2,7 +2,7 @@ package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
+import com.heroku.api.command.CommandUtil;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.login.LoginResponse;
 import com.heroku.api.http.HerokuApiVersion;
@@ -86,7 +86,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
 
             HttpResponse httpResponse = httpClient.execute(message);
 
-            return command.getResponse(httpResponse.getEntity().getContent(), httpResponse.getStatusLine().getStatusCode());
+            return command.getResponse(CommandUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
         } catch (IOException e) {
             throw new RuntimeException("exception while executing command", e);
         }

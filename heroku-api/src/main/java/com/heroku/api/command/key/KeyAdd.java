@@ -8,7 +8,6 @@ import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -56,9 +55,9 @@ public class KeyAdd implements Command<EmptyResponse> {
         return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
     }
 
-    public EmptyResponse getResponse(InputStream in, int code) {
+    public EmptyResponse getResponse(byte[] in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse(in);
+            return new EmptyResponse();
         else
             throw new RequestFailedException("KeysAdd failed", code, in);
     }

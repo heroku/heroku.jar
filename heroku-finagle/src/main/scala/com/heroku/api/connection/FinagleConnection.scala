@@ -9,11 +9,11 @@ import collection.mutable.HashMap
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
 import sun.misc.BASE64Encoder
-import com.heroku.api.command.{LoginCommand, Command, CommandResponse}
+import com.heroku.api.command.{LoginCommand, Command}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 import com.twitter.finagle.http.Http
-import org.jboss.netty.buffer.{ChannelBuffers, ChannelBufferInputStream}
+import org.jboss.netty.buffer.ChannelBuffers
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -33,7 +33,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
   def executeCommandAsync[T](command: Command[T]): Future[T] = {
     getClient(command).apply(toReq(command)).map {
       resp =>
-        command.getResponse(new ChannelBufferInputStream(resp.getContent), resp.getStatus.getCode)
+        command.getResponse(resp.getContent.toByteBuffer.array(), resp.getStatus.getCode)
     }
   }
 

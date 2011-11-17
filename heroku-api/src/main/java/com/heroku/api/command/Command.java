@@ -26,6 +26,6 @@ public interface Command<T> {
 
     Map<String, String> getHeaders();
 
-    T getResponse(InputStream inputStream, int status);
+    T getResponse(byte[] bytes, int status);
 
 }

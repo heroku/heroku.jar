@@ -3,11 +3,9 @@ package com.heroku.api.command.login;
 
 import com.heroku.api.command.response.JsonMapResponse;
 
-import java.io.InputStream;
-
 public class LoginResponse extends JsonMapResponse {
 
-    public LoginResponse(InputStream in) {
+    public LoginResponse(byte[] in) {
         super(in);
     }
 

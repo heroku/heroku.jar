@@ -6,14 +6,12 @@ import com.heroku.api.HerokuResource;
 import com.heroku.api.HerokuStack;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.CommandUtil;
 import com.heroku.api.command.TextCommand;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,13 +55,12 @@ public class Log implements Command<LogsResponse> {
     }
 
     @Override
-    public LogsResponse getResponse(InputStream inputStream, int status) {
+    public LogsResponse getResponse(byte[] bytes, int status) {
         if (status == 200) {
-            byte[] raw = CommandUtil.getBytes(inputStream);
-            URL logs = HttpUtil.toURL(new String(raw));
-            return new LogsResponse(new TextCommand(logs), raw);
+            URL logs = HttpUtil.toURL(new String(bytes));
+            return new LogsResponse(new TextCommand(logs), bytes);
         } else {
-            throw new RequestFailedException("Unable to get logs", status, inputStream);
+            throw new RequestFailedException("Unable to get logs", status, bytes);
         }
     }
 }

@@ -11,7 +11,6 @@ import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,19 +57,19 @@ public class ConfigList implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(InputStream inputStream, int status) {
+    public JsonMapResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new JsonMapResponse(inputStream);
+            return new JsonMapResponse(bytes);
         } else if (status == HttpStatus.NOT_FOUND.statusCode) {
-            throw new RequestFailedException("Application not found.", status, inputStream);
+            throw new RequestFailedException("Application not found.", status, bytes);
         } else if (status == HttpStatus.FORBIDDEN.statusCode) {
             throw new RequestFailedException(
                     "Insufficient privileges to \"" + config.get(HerokuRequestKey.appName) + "\"",
                     status,
-                    inputStream
+                    bytes
             );
         } else {
-            throw new RequestFailedException("Unable to list config failed.", status, inputStream);
+            throw new RequestFailedException("Unable to list config failed.", status, bytes);
         }
     }
 }

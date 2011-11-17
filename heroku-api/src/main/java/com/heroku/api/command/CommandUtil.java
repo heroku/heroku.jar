@@ -2,17 +2,17 @@ package com.heroku.api.command;
 
 
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HttpUtil;
 
-import java.io.*;
-import java.net.URL;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 public class CommandUtil {
-
 
     public static byte[] getBytes(InputStream in) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -33,27 +33,14 @@ public class CommandUtil {
         }
     }
 
-    public static String getString(InputStream in) {
-        return new String(getBytes(in));
-    }
 
-    public static void closeQuietly(Closeable c) {
+
+    public static String getUTF8String(byte[] in) {
         try {
-            c.close();
-        } catch (IOException e) {
-            //ignored
+            return new String(in, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Somehow UTF-8 is unsupported");
         }
     }
-
-    public static Reader bytesReader(byte[] bytes) {
-        return new InputStreamReader(bytesInputStream(bytes));
-    }
-
-    public static InputStream bytesInputStream(byte[] bytes) {
-        return new ByteArrayInputStream(bytes);
-    }
-
-
-
 
 }

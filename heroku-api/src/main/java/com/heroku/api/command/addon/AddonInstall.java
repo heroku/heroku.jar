@@ -8,7 +8,6 @@ import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -55,11 +54,11 @@ public class AddonInstall implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(InputStream inputStream, int status) {
+    public JsonMapResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new JsonMapResponse(inputStream);
+            return new JsonMapResponse(bytes);
         } else {
-            throw new RequestFailedException("Unable to add addon " + config.get(HerokuRequestKey.addonName), status, inputStream);
+            throw new RequestFailedException("Unable to add addon " + config.get(HerokuRequestKey.addonName), status, bytes);
         }
     }
 }

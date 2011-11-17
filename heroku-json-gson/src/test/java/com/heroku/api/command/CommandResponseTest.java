@@ -19,14 +19,14 @@ public class CommandResponseTest {
     @Test
     public void testArrayOfJsonElementsMapsToHerokuCommandMap() {
         String jsonArray = "[{\"name\":\"warm-frost-3139\",\"stack\":\"cedar\"},{\"name\":\"vivid-summer-2426\",\"stack\":\"cedar\"}]";
-        JsonArrayResponse res = new JsonArrayResponse(CommandUtil.bytesInputStream(jsonArray.getBytes()));
+        JsonArrayResponse res = new JsonArrayResponse(jsonArray.getBytes());
         Assert.assertNotNull(res.get("warm-frost-3139"));
     }
 
     @Test
     public void testSingleJsonElementMapsToHerokuCommandMap() {
         String json = "{\"name\":\"warm-frost-3139\",\"stack\":\"cedar\"}";
-        JsonMapResponse res = new JsonMapResponse(CommandUtil.bytesInputStream(json.getBytes()));
+        JsonMapResponse res = new JsonMapResponse(json.getBytes());
         Assert.assertEquals(res.get("name"), "warm-frost-3139");
     }
 
@@ -39,7 +39,7 @@ public class CommandResponseTest {
                 "  <repo-size type=\"integer\" nil=\"true\"></repo-size>\n" +
                 "  <id>app1681795@heroku.com</id>\n" +
                 "</app>";
-        XmlMapResponse response = new XmlMapResponse(CommandUtil.bytesInputStream(xml.getBytes()));
+        XmlMapResponse response = new XmlMapResponse(xml.getBytes());
         Assert.assertEquals(response.get("name"), "fierce-rain-7019");
     }
 }

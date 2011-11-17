@@ -9,7 +9,6 @@ import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,11 +50,11 @@ public class AddonList implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
+    public JsonArrayResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new JsonArrayResponse(inputStream);
+            return new JsonArrayResponse(bytes);
         } else {
-            throw new RequestFailedException("Unable to list addons.", status, inputStream);
+            throw new RequestFailedException("Unable to list addons.", status, bytes);
         }
     }
 }

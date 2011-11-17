@@ -11,7 +11,6 @@ import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,11 +58,11 @@ public class AppAddonsList implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream inputStream, int status) {
+    public JsonArrayResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new JsonArrayResponse(inputStream);
+            return new JsonArrayResponse(bytes);
         }
         throw new RequestFailedException(
-                "Unable to get addons for " + config.get(HerokuRequestKey.appName), status, inputStream);
+                "Unable to get addons for " + config.get(HerokuRequestKey.appName), status, bytes);
     }
 }

@@ -11,7 +11,6 @@ import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,9 +62,9 @@ public class SharingTransfer implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(InputStream in, int code) {
+    public EmptyResponse getResponse(byte[] in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse(in);
+            return new EmptyResponse();
         else
             throw new RequestFailedException("SharingTransfer failed", code, in);
     }

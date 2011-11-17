@@ -11,7 +11,6 @@ import com.heroku.api.http.HttpStatus;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,11 +62,11 @@ public class ConfigRemove implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(InputStream inputStream, int status) {
+    public JsonMapResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new JsonMapResponse(inputStream);
+            return new JsonMapResponse(bytes);
         } else {
-            throw new RequestFailedException("Config removal failed.", status, inputStream);
+            throw new RequestFailedException("Config removal failed.", status, bytes);
         }
     }
 }

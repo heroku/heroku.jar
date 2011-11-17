@@ -1,7 +1,6 @@
 package com.heroku.api.command.response;
 
 import com.heroku.api.command.CommandResponse;
-import com.heroku.api.command.CommandUtil;
 import com.heroku.api.exception.HerokuAPIException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -10,7 +9,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +26,8 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
     private String lastKey;
     private StringBuffer charBuffer;
 
-    public XmlMapResponse(InputStream in) {
-        this.rawData = CommandUtil.getBytes(in);
+    public XmlMapResponse(byte[] bytes) {
+        this.rawData = bytes;
     }
 
     @Override
@@ -56,7 +54,6 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
         charBuffer.append(chars, offset, offsetLen);
     }
-
 
 
     @Override

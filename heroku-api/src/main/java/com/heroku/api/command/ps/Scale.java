@@ -8,7 +8,6 @@ import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -55,18 +54,18 @@ public class Scale implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(InputStream inputStream, int status) {
+    public EmptyResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new EmptyResponse(inputStream);
+            return new EmptyResponse();
         } else if (status == HttpStatus.FORBIDDEN.statusCode) {
-            throw HttpUtil.insufficientPrivileges(status, inputStream);
+            throw HttpUtil.insufficientPrivileges(status, bytes);
         } else if (status == HttpStatus.UNPROCESSABLE_ENTITY.statusCode) {
-            throw new RequestFailedException("Invalid process type", status, inputStream);
+            throw new RequestFailedException("Invalid process type", status, bytes);
         } else if (status == HttpStatus.PAYMENT_REQUIRED.statusCode) {
             throw new RequestFailedException("Payment is required for scaling this process. " +
-                    "Please go to https://api.heroku.com and check your account details.", status, inputStream);
+                    "Please go to https://api.heroku.com and check your account details.", status, bytes);
         } else {
-            throw new RequestFailedException("Error occurred while scaling.", status, inputStream);
+            throw new RequestFailedException("Error occurred while scaling.", status, bytes);
         }
     }
 }
