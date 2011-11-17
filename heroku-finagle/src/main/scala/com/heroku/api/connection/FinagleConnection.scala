@@ -28,9 +28,9 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
 
   val loginResponse = executeCommand(loginCommand)
 
-  def executeCommand[T <: CommandResponse](command: Command[T]): T = executeCommandAsync(command).get()
+  def executeCommand[T](command: Command[T]): T = executeCommandAsync(command).get()
 
-  def executeCommandAsync[T <: CommandResponse](command: Command[T]): Future[T] = {
+  def executeCommandAsync[T](command: Command[T]): Future[T] = {
     getClient(command).apply(toReq(command)).map {
       resp =>
         command.getResponse(new ChannelBufferInputStream(resp.getContent), resp.getStatus.getCode)
@@ -120,3 +120,4 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     }
   }
 }
+

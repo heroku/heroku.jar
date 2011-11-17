@@ -69,7 +69,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public <T extends CommandResponse> T executeCommand(Command<T> command) {
+    public <T> T executeCommand(Command<T> command) {
         try {
             return executeCommandAsync(command).get(30L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -82,7 +82,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public <T extends CommandResponse> ListenableFuture<T> executeCommandAsync(final Command<T> command) {
+    public <T> ListenableFuture<T> executeCommandAsync(final Command<T> command) {
         Request req = buildRequest(command);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override

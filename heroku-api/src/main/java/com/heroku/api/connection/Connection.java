@@ -14,9 +14,9 @@ import java.net.URL;
 public interface Connection<F> {
 
 
-    <T extends CommandResponse> T executeCommand(Command<T> command);
+    <T> T executeCommand(Command<T> command);
 
-    <T extends CommandResponse> F executeCommandAsync(Command<T> command);
+    <T> F executeCommandAsync(Command<T> command);
 
     URL getEndpoint();
 

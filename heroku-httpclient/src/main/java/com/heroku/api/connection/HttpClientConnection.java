@@ -58,7 +58,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     @Override
-    public <T extends CommandResponse> Future<T> executeCommandAsync(final Command<T> command) {
+    public <T> Future<T> executeCommandAsync(final Command<T> command) {
         Callable<T> callable = new Callable<T>() {
             @Override
             public T call() throws Exception {
@@ -70,7 +70,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     @Override
-    public <T extends CommandResponse> T executeCommand(Command<T> command) {
+    public <T> T executeCommand(Command<T> command) {
         try {
             HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), getCommandEndpoint(endpoint, command.getEndpoint()).toString());
             message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));

@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public interface Command<T extends CommandResponse> {
+public interface Command<T> {
 
 
     Method getHttpMethod();

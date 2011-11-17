@@ -44,7 +44,7 @@ public class NoAppCommandIntegrationTest {
         publicKeyOutputStream.close();
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
-        Command cmd = new KeyAdd(sshPublicKey);
+        KeyAdd cmd = new KeyAdd(sshPublicKey);
         CommandResponse response = connection.executeCommand(cmd);
 
     }
@@ -52,7 +52,7 @@ public class NoAppCommandIntegrationTest {
     // doesn't need an app
     @Test(dependsOnMethods = {"testKeysAddCommand"})
     public void testKeysRemoveCommand() {
-        Command cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
+        Command<? extends CommandResponse> cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
         CommandResponse response = connection.executeCommand(cmd);
     }
 
@@ -63,7 +63,7 @@ public class NoAppCommandIntegrationTest {
     @Test(expectedExceptions = HerokuAPIException.class)
     public void testKeysAddCommandWithDuplicateKey() throws IOException {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
-        Command cmd = new KeyAdd(sshkey);
+        KeyAdd cmd = new KeyAdd(sshkey);
         CommandResponse response = connection.executeCommand(cmd);
     }
 
