@@ -56,7 +56,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Thread.sleep(10000);
         Log logs = new Log(app.get("name"));
         LogsResponse logsResponse = connection.executeCommand(logs);
-        String logChunk = connection.executeCommand(logsResponse.getData()).getText();
+        String logChunk = connection.executeCommand(logsResponse.getNextCommand()).getText();
         assertTrue(logChunk.length() > 0, "No Logs Returned");
     }
 

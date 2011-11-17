@@ -54,7 +54,7 @@ public class HerokuAppAPI {
     }
 
     public String getLogChunk() {
-        return connection.executeCommand(connection.executeCommand(new Log(appName)).getData()).getText();
+        return connection.executeCommand(connection.executeCommand(new Log(appName)).getNextCommand()).getText();
     }
 
     public HerokuAPI api() {

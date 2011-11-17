@@ -4,8 +4,9 @@ import com.google.inject.Inject;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.command.key.KeyAdd;
 import com.heroku.api.command.key.KeyRemove;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.connection.Connection;
+import com.heroku.api.exception.HerokuAPIException;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -16,9 +17,6 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 /**
  * TODO: Javadoc
@@ -45,15 +43,15 @@ public class NoAppCommandIntegrationTest {
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
         KeyAdd cmd = new KeyAdd(sshPublicKey);
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
 
     }
 
     // doesn't need an app
     @Test(dependsOnMethods = {"testKeysAddCommand"})
     public void testKeysRemoveCommand() {
-        Command<? extends CommandResponse> cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
-        CommandResponse response = connection.executeCommand(cmd);
+        KeyRemove cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 
     // doesn't need an app
@@ -64,7 +62,7 @@ public class NoAppCommandIntegrationTest {
     public void testKeysAddCommandWithDuplicateKey() throws IOException {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
         KeyAdd cmd = new KeyAdd(sshkey);
-        CommandResponse response = connection.executeCommand(cmd);
+        EmptyResponse response = connection.executeCommand(cmd);
     }
 
 }
