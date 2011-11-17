@@ -22,7 +22,11 @@ public class AppCreate implements Command<JsonMapResponse> {
     private final CommandConfig config;
 
     public AppCreate(String stack) {
-        config = new CommandConfig().onStack(HerokuStack.valueOf(stack));
+        this(HerokuStack.valueOf(stack));
+    }
+
+    public AppCreate(HerokuStack stack) {
+        config = new CommandConfig().onStack(stack);
     }
 
     public AppCreate withName(String name) {

@@ -23,7 +23,7 @@ public class HerokuAppAPI {
     }
 
     public Map<String, String> create(HerokuStack stack) {
-        return connection.executeCommand(new AppCreate(stack.value).withName(appName)).getData();
+        return connection.executeCommand(new AppCreate(stack).withName(appName)).getData();
     }
 
     public HerokuAppAPI createAnd(HerokuStack stack) {

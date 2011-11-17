@@ -1,5 +1,6 @@
 package com.heroku.api.command;
 
+import com.heroku.api.HerokuStack;
 import com.heroku.api.command.addon.AddonList;
 import com.heroku.api.command.addon.AddonInstall;
 import com.heroku.api.command.addon.AppAddonsList;
@@ -36,7 +37,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws IOException {
-        Command cmd = new AppCreate("Cedar");
+        Command<JsonMapResponse> cmd = new AppCreate(HerokuStack.Cedar);
         CommandResponse response = connection.executeCommand(cmd);
 
         assertNotNull(response.get("id"));
@@ -66,27 +67,27 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testAppCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppInfo(app.get("name"));
+        Command<XmlMapResponse> cmd = new AppInfo(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
         assertEquals(response.get("name"), app.get("name"));
     }
 
     @Test(dataProvider = "app")
     public void testListAppsCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppList();
+        Command<JsonArrayResponse> cmd = new AppList();
         CommandResponse response = connection.executeCommand(cmd);
         assertNotNull(response.get(app.get("name")));
     }
 
     @Test(dataProvider = "app")
     public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new AppDestroy(app.get("name"));
+        Command<EmptyResponse> cmd = new AppDestroy(app.get("name"));
         CommandResponse response = connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new SharingAdd(app.get("name"), DEMO_EMAIL);
+        Command<EmptyResponse> cmd = new SharingAdd(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
     }
 
@@ -95,27 +96,27 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
     public void testSharingTransferCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
+        Command<EmptyResponse> sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
+        Command<EmptyResponse> sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
         CommandResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
 
     }
 
     @Test(dataProvider = "app")
     public void testSharingRemoveCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
+        Command<EmptyResponse> sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
-        Command cmd = new SharingRemove(app.get("name"), DEMO_EMAIL);
+        Command<EmptyResponse> cmd = new SharingRemove(app.get("name"), DEMO_EMAIL);
         CommandResponse response = connection.executeCommand(cmd);
 
     }
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(JsonMapResponse app) throws IOException {
-        Command cmd = new ConfigAdd(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
+        Command<EmptyResponse> cmd = new ConfigAdd(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         CommandResponse response = connection.executeCommand(cmd);
     }
 

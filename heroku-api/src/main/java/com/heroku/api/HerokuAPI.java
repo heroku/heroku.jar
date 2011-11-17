@@ -27,11 +27,11 @@ public class HerokuAPI {
     }
 
     public HerokuAppAPI newapp(HerokuStack stack) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack.value)).get("name"));
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack)).get("name"));
     }
 
     public HerokuAppAPI newapp(HerokuStack stack, String appName) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack.value).withName(appName)).get("name"));
+        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack).withName(appName)).get("name"));
     }
 
 
