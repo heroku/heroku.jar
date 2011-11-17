@@ -13,7 +13,9 @@ public class HttpClientModule extends ConnectionTestModule<HttpClientConnection>
     HttpClientConnection getConnectionImpl() throws IOException {
         AuthenticationTestCredentials cred = getCredentials();
         try {
-            return new HttpClientConnection(new BasicAuthLogin(cred.username, cred.password, cred.endpoint));
+            // skip login -- login creates additional, unnecessary http overhead. this uses
+            // the api key directly to avoid login.
+            return new HttpClientConnection(cred.username, cred.apiKey, cred.endpoint);
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

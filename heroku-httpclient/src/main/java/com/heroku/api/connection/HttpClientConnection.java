@@ -56,13 +56,13 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     public HttpClientConnection(String email, String apiKey) {
-        this(email, apiKey, HttpUtil.toURL(LoginCommand.DEFAULT_ENDPOINT));
+        this(email, apiKey, LoginCommand.DEFAULT_ENDPOINT);
     }
 
-    public HttpClientConnection(String email, String apiKey, URL endpoint) {
+    public HttpClientConnection(String email, String apiKey, String endpoint) {
         this.email = "";
         this.apiKey = apiKey;
-        this.endpoint = endpoint;
+        this.endpoint = HttpUtil.toURL(endpoint);
         setHttpClientCredentials(this.apiKey);
     }
 

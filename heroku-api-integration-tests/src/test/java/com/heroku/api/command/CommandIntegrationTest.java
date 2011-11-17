@@ -177,7 +177,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response);
         assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
-        assertNotNull(response.get("logging:basic"));
+        assertNotNull(response.get("releases:basic"));
     }
 
     @Test(dataProvider = "app")
