@@ -40,21 +40,36 @@ import java.util.concurrent.Future;
  */
 public class HttpClientConnection implements Connection<Future<?>> {
 
-    private LoginCommand loginCommand;
-    private LoginResponse loginResponse;
-    private URL endpoint;
+    private final URL endpoint;
     private DefaultHttpClient httpClient = wrapClient(new DefaultHttpClient(new ThreadSafeClientConnManager()));
     private volatile ExecutorService executorService;
     private Object lock = new Object();
+    private final String email;
+    private final String apiKey;
 
     public HttpClientConnection(LoginCommand login) {
-        this.loginCommand = login;
-        this.endpoint = HttpUtil.toURL(loginCommand.getApiEndpoint());
-        this.loginResponse = executeCommand(loginCommand);
+        this.endpoint = HttpUtil.toURL(login.getApiEndpoint());
+        LoginResponse loginResponse = executeCommand(login);
+        this.email = loginResponse.email();
+        this.apiKey = loginResponse.api_key();
+        setHttpClientCredentials(apiKey);
+    }
+
+    public HttpClientConnection(String email, String apiKey) {
+        this(email, apiKey, HttpUtil.toURL(LoginCommand.DEFAULT_ENDPOINT));
+    }
+
+    public HttpClientConnection(String email, String apiKey, URL endpoint) {
+        this.email = "";
+        this.apiKey = apiKey;
+        this.endpoint = endpoint;
+        setHttpClientCredentials(this.apiKey);
+    }
+
+    private void setHttpClientCredentials(String apiKey) {
         httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
                 // the Basic Authentication scheme only expects an API key.
-                new UsernamePasswordCredentials("", loginResponse.api_key()));
-
+                new UsernamePasswordCredentials("", apiKey));
     }
 
     @Override
@@ -120,12 +135,12 @@ public class HttpClientConnection implements Connection<Future<?>> {
 
     @Override
     public String getEmail() {
-        return loginResponse.email();
+        return email;
     }
 
     @Override
     public String getApiKey() {
-        return loginResponse.api_key();
+        return apiKey;
     }
 
     private ExecutorService getExecutorService() {
