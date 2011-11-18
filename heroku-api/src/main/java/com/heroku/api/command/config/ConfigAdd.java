@@ -4,7 +4,7 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class ConfigAdd implements Command<EmptyResponse> {
+public class ConfigAdd implements Command<Unit> {
 
     // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
@@ -59,9 +59,9 @@ public class ConfigAdd implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(byte[] in, int code) {
+    public Unit getResponse(byte[] in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse();
+            return Unit.unit;
         else
             throw new RequestFailedException("AppDestroy failed", code, in);
     }

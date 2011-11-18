@@ -17,9 +17,9 @@ import com.heroku.api.command.log.LogsResponse;
 import com.heroku.api.command.ps.ProcessList;
 import com.heroku.api.command.ps.Restart;
 import com.heroku.api.command.ps.Scale;
-import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.response.Unit;
 import com.heroku.api.command.sharing.SharingAdd;
 import com.heroku.api.command.sharing.SharingRemove;
 import com.heroku.api.command.sharing.SharingTransfer;
@@ -88,13 +88,13 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     @Test(dataProvider = "app")
     public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
         AppDestroy cmd = new AppDestroy(app.get("name"));
-        EmptyResponse response = connection.executeCommand(cmd);
+        connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(JsonMapResponse app) throws IOException {
         SharingAdd cmd = new SharingAdd(app.get("name"), DEMO_EMAIL);
-        EmptyResponse response = connection.executeCommand(cmd);
+        connection.executeCommand(cmd);
     }
 
     // if we do this then we will no longer be able to remove the app
@@ -106,7 +106,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         connection.executeCommand(sharingAddCommand);
 
         SharingTransfer sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
-        EmptyResponse sharingTransferCommandResponse = connection.executeCommand(sharingTransferCommand);
+        connection.executeCommand(sharingTransferCommand);
 
     }
 
@@ -116,14 +116,14 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         connection.executeCommand(sharingAddCommand);
 
         SharingRemove cmd = new SharingRemove(app.get("name"), DEMO_EMAIL);
-        EmptyResponse response = connection.executeCommand(cmd);
+        connection.executeCommand(cmd);
 
     }
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(JsonMapResponse app) throws IOException {
         ConfigAdd cmd = new ConfigAdd(app.get("name"), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
-        EmptyResponse response = connection.executeCommand(cmd);
+        connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
@@ -160,14 +160,14 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testScaleCommand(JsonMapResponse app) {
-        Command<EmptyResponse> cmd = new Scale(app.get("name"), "web", 1);
-        EmptyResponse response = connection.executeCommand(cmd);
+        Command<Unit> cmd = new Scale(app.get("name"), "web", 1);
+        connection.executeCommand(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testRestartCommand(JsonMapResponse app) {
-        Command<EmptyResponse> cmd = new Restart(app.get("name"));
-        EmptyResponse response = connection.executeCommand(cmd);
+        Command<Unit> cmd = new Restart(app.get("name"));
+        connection.executeCommand(cmd);
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * @author James Ward
  */
-public class KeyAdd implements Command<EmptyResponse> {
+public class KeyAdd implements Command<Unit> {
 
     // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
 
@@ -55,9 +55,9 @@ public class KeyAdd implements Command<EmptyResponse> {
         return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
     }
 
-    public EmptyResponse getResponse(byte[] in, int code) {
+    public Unit getResponse(byte[] in, int code) {
         if (code == HttpStatus.OK.statusCode)
-            return new EmptyResponse();
+            return Unit.unit;
         else
             throw new RequestFailedException("KeysAdd failed", code, in);
     }

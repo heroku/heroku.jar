@@ -4,7 +4,7 @@ import com.heroku.api.HerokuRequestKey;
 import com.heroku.api.HerokuResource;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.response.EmptyResponse;
+import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
@@ -15,10 +15,10 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class Restart implements Command<EmptyResponse> {
+public class Restart implements Command<Unit> {
 
     private final CommandConfig config;
-    
+
     public Restart(String appName) {
         this(new CommandConfig().app(appName));
     }
@@ -58,9 +58,9 @@ public class Restart implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(byte[] bytes, int status) {
+    public Unit getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new EmptyResponse();
+            return Unit.unit;
         } else {
             throw new RequestFailedException("Unable to restart the process.", status, bytes);
         }

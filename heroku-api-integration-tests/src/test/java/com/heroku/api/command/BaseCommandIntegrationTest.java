@@ -6,15 +6,14 @@ import com.heroku.api.TestModuleFactory;
 import com.heroku.api.command.app.AppCreate;
 import com.heroku.api.command.app.AppDestroy;
 import com.heroku.api.command.config.ConfigAdd;
-import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.command.response.JsonMapResponse;
+import com.heroku.api.command.response.Unit;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.HerokuAPIException;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
 
-import javax.inject.Named;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,21 +64,21 @@ public abstract class BaseCommandIntegrationTest {
         if (nameValuePairs.length != 0 && (nameValuePairs.length % 2) != 0) {
             throw new RuntimeException("Config must have an equal number of name and value pairs.");
         }
-        
+
         StringBuffer jsonConfig = new StringBuffer();
         jsonConfig = jsonConfig.append("{");
         String separator = "";
-        
-        for (int i = 0; i < nameValuePairs.length; i=i+2) {
+
+        for (int i = 0; i < nameValuePairs.length; i = i + 2) {
             jsonConfig = jsonConfig.append(
-                    String.format("%s\"%s\":\"%s\"", separator, nameValuePairs[i], nameValuePairs[i+1])
+                    String.format("%s\"%s\":\"%s\"", separator, nameValuePairs[i], nameValuePairs[i + 1])
             );
             separator = ",";
         }
-        
+
         jsonConfig = jsonConfig.append("}");
-        
-        Command<EmptyResponse> cmd = new ConfigAdd(app.get("name").toString(), new String(jsonConfig));
+
+        Command<Unit> cmd = new ConfigAdd(app.get("name").toString(), new String(jsonConfig));
         connection.executeCommand(cmd);
     }
 }
