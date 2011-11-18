@@ -7,13 +7,13 @@ import com.heroku.api.http._
 import collection.mutable.HashMap
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
-import sun.misc.BASE64Encoder
 import com.heroku.api.command.{LoginCommand, Command}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.ChannelBuffers
 import com.twitter.util.{Base64StringEncoder, Future}
+import java.nio.charset.Charset
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -57,7 +57,11 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
         case (k, v) => req.addHeader(k, v)
       }
     }
-    if (cmd.hasBody) req.setContent(ChannelBuffers.wrappedBuffer(cmd.getBody.getBytes("UTF-8")))
+    if (cmd.hasBody) {
+      val body = ChannelBuffers.copiedBuffer(cmd.getBody, Charset.forName("UTF-8"))
+      req.setContent(body)
+      req.setHeader("Content-Length", body.readableBytes().toString)
+    }
 
     req
   }
