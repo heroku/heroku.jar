@@ -24,13 +24,19 @@
         </dependency>
         <dependency>
             <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-httpclient</artifactId>
+            <artifactId>heroku-finagle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-finagle</artifactId>
+            <artifactId>heroku-httpclient</artifactId>
             <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.heroku.api</groupId>

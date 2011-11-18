@@ -1,6 +1,5 @@
 package com.heroku.api.connection
 
-import com.twitter.util.Future
 import java.lang.String
 import com.heroku.api.HerokuAPI
 import com.twitter.finagle.builder.ClientBuilder
@@ -14,6 +13,7 @@ import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.ChannelBuffers
+import com.twitter.util.{Base64StringEncoder, Future}
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -21,8 +21,6 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
   type HttpService = Service[HttpRequest, HttpResponse]
 
   val clients = new HashMap[(String, Int), HttpService]
-
-  val encoder = new BASE64Encoder
 
   val getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
 
@@ -51,7 +49,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
 
     if (loginResponse != null && cmd.getEndpoint.startsWith("/")) {
       //send basic auth if we've logged in and we are hitting the api endpoint and not logplex etc...
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + encoder.encode((":" + loginResponse.api_key()).getBytes("UTF-8")))
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + loginResponse.api_key()).getBytes("UTF-8")))
     }
 
     cmd.getHeaders.foreach {

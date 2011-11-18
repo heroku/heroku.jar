@@ -30,7 +30,7 @@ public abstract class ConnectionTestModule<F extends Connection> extends Abstrac
 
     @Provides
     AuthenticationTestCredentials getCredentials() throws IOException {
-        return new AuthenticationTestCredentials(ENDPOINT.getRequiredConfig(), USER.getRequiredConfig(), PASSWORD.getRequiredConfig(), APIKEY.getRequiredConfig());
+        return new AuthenticationTestCredentials(ENDPOINT.getRequiredConfig(), USER.getRequiredConfig(), PASSWORD.getRequiredConfig(), APIKEY.getOptionalConfig());
     }
 
     public static class AuthenticationTestCredentials {
