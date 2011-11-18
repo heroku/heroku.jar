@@ -11,6 +11,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>heroku-api</artifactId>
 
-    <!-- no dependencies -->
+    <!-- no non test dependencies -->
 
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

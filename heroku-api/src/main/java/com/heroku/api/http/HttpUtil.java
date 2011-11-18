@@ -67,8 +67,8 @@ public class HttpUtil {
         return new HerokuAPIException("Unable to add keys.");
     }
 
-    public static RequestFailedException insufficientPrivileges(int code, InputStream in) {
-        return new RequestFailedException("Insufficient privileges.", code, in);
+    public static RequestFailedException insufficientPrivileges(int code, byte[] bytes) {
+        return new RequestFailedException("Insufficient privileges.", code, bytes);
     }
 
 }

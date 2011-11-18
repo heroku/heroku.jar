@@ -1,9 +1,9 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.app.AppInfo;
 import com.heroku.api.command.app.AppCreate;
 import com.heroku.api.command.app.AppDestroy;
+import com.heroku.api.command.app.AppInfo;
 import com.heroku.api.command.log.Log;
 import com.heroku.api.command.sharing.SharingAdd;
 import com.heroku.api.command.sharing.SharingRemove;
@@ -54,7 +54,7 @@ public class HerokuAppAPI {
     }
 
     public String getLogChunk() {
-        return connection.executeCommand(connection.executeCommand(new Log(appName)).getData()).getData();
+        return connection.executeCommand(connection.executeCommand(new Log(appName)).getNextCommand()).getText();
     }
 
     public HerokuAPI api() {

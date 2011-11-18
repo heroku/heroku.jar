@@ -20,8 +20,8 @@ public class JsonArrayResponse implements CommandResponse {
     private final List<Map<String, String>> data;
     private final byte[] rawData;
 
-    public JsonArrayResponse(InputStream in) {
-        this.rawData = CommandUtil.getBytes(in);
+    public JsonArrayResponse(byte[] bytes) {
+        this.rawData = bytes;
         this.data = Json.getJsonParser().parseArray(this.rawData);
     }
 

@@ -7,7 +7,6 @@ import com.heroku.api.command.LoginCommand;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 
@@ -68,7 +67,7 @@ public class BasicAuthLogin implements LoginCommand {
 
 
     @Override
-    public LoginResponse getResponse(InputStream in, int code) {
+    public LoginResponse getResponse(byte[] in, int code) {
         if (code == 200) {
             return new LoginResponse(in);
         } else if (code == 404) {

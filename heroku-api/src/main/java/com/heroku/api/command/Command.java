@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public interface Command<T extends CommandResponse> {
+public interface Command<T> {
 
 
     Method getHttpMethod();
@@ -26,6 +26,6 @@ public interface Command<T extends CommandResponse> {
 
     Map<String, String> getHeaders();
 
-    T getResponse(InputStream inputStream, int status);
+    T getResponse(byte[] bytes, int status);
 
 }

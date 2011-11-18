@@ -10,7 +10,6 @@ import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class AppInfo implements Command<XmlMapResponse> {
     }
 
     @Override
-    public XmlMapResponse getResponse(InputStream in, int code) {
+    public XmlMapResponse getResponse(byte[] in, int code) {
         if (code == 200)
             return new XmlMapResponse(in);
         else

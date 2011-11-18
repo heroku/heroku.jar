@@ -2,7 +2,6 @@ package com.heroku.api.connection;
 
 import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.login.LoginResponse;
 import com.heroku.api.exception.HerokuAPIException;
@@ -69,7 +68,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public <T extends CommandResponse> T executeCommand(Command<T> command) {
+    public <T> T executeCommand(Command<T> command) {
         try {
             return executeCommandAsync(command).get(30L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
@@ -82,12 +81,12 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public <T extends CommandResponse> ListenableFuture<T> executeCommandAsync(final Command<T> command) {
+    public <T> ListenableFuture<T> executeCommandAsync(final Command<T> command) {
         Request req = buildRequest(command);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
-                return command.getResponse(response.getResponseBodyAsStream(), response.getStatusCode());
+                return command.getResponse(response.getResponseBody("UTF-8").getBytes(), response.getStatusCode());
             }
         };
         try {

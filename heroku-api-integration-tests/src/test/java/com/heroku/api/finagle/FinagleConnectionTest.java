@@ -21,6 +21,7 @@ public class FinagleConnectionTest {
     @Inject
     FinagleConnection connection;
 
+
     @Test
     public void asyncTests() {
         Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeCommandAsync(new AppList());

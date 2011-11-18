@@ -1,10 +1,8 @@
 package com.heroku.api.command.response;
 
 import com.heroku.api.command.CommandResponse;
-import com.heroku.api.command.CommandUtil;
 import com.heroku.api.json.Json;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +16,8 @@ public class JsonMapResponse implements CommandResponse {
     private final Map<String, String> data;
     private final byte[] rawData;
 
-    public JsonMapResponse(InputStream in) {
-        this.rawData = CommandUtil.getBytes(in);
+    public JsonMapResponse(byte[] bytes) {
+        this.rawData = bytes;
         this.data = Json.getJsonParser().parseMap(this.rawData);
     }
 

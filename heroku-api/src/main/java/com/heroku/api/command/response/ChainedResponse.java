@@ -2,7 +2,6 @@ package com.heroku.api.command.response;
 
 
 import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
 
 /**
  * A chained response is a response that returns a command that should subsequently be executed.
@@ -14,7 +13,7 @@ import com.heroku.api.command.CommandResponse;
  *
  * @param <T> The type of the 'next' command that should be executed.
  */
-public class ChainedResponse<T extends Command> implements CommandResponse {
+public class ChainedResponse<T extends Command> {
 
     T nextCommand;
     byte[] data;
@@ -24,18 +23,7 @@ public class ChainedResponse<T extends Command> implements CommandResponse {
         data = raw;
     }
 
-    @Override
-    public Object get(String key) {
-        throw new UnsupportedOperationException("Call getData to get the next command to execute");
-    }
-
-    @Override
-    public byte[] getRawData() {
-        return data;
-    }
-
-    @Override
-    public T getData() {
+    public T getNextCommand() {
         return nextCommand;
     }
 }

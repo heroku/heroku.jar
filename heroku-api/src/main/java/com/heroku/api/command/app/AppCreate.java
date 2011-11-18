@@ -9,7 +9,6 @@ import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -68,7 +67,7 @@ public class AppCreate implements Command<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(InputStream in, int code) {
+    public JsonMapResponse getResponse(byte[] in, int code) {
         if (code == HttpStatus.ACCEPTED.statusCode)
             return new JsonMapResponse(in);
         else

@@ -8,7 +8,6 @@ import com.heroku.api.http.Accept;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Method;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class AppList implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(InputStream in, int code) {
+    public JsonArrayResponse getResponse(byte[] in, int code) {
         if (code == 200)
             return new JsonArrayResponse(in);
         else

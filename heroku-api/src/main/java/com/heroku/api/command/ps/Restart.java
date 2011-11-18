@@ -8,7 +8,6 @@ import com.heroku.api.command.response.EmptyResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.*;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -59,11 +58,11 @@ public class Restart implements Command<EmptyResponse> {
     }
 
     @Override
-    public EmptyResponse getResponse(InputStream inputStream, int status) {
+    public EmptyResponse getResponse(byte[] bytes, int status) {
         if (status == HttpStatus.OK.statusCode) {
-            return new EmptyResponse(inputStream);
+            return new EmptyResponse();
         } else {
-            throw new RequestFailedException("Unable to restart the process.", status, inputStream);
+            throw new RequestFailedException("Unable to restart the process.", status, bytes);
         }
     }
 
