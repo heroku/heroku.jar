@@ -60,7 +60,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     if (cmd.hasBody) {
       val body = ChannelBuffers.copiedBuffer(cmd.getBody, Charset.forName("UTF-8"))
       req.setContent(body)
-      req.setHeader("Content-Length", body.readableBytes().toString)
+      req.setHeader(HttpHeaders.Names.CONTENT_LENGTH, body.readableBytes().toString)
     }
 
     req
