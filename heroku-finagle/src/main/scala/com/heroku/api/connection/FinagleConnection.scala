@@ -66,11 +66,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req
   }
 
-  def getEmail: String = loginResponse.email()
-
   def getApiKey: String = loginResponse.api_key()
-
-  def getApi: HerokuAPI = new HerokuAPI(this)
 
   def getUrl(cmdEndpoint: String): URL = {
     if (cmdEndpoint.startsWith("https//") || cmdEndpoint.startsWith("http://")) {

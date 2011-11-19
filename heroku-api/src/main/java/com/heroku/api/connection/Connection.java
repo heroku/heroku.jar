@@ -1,8 +1,6 @@
 package com.heroku.api.connection;
 
-import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
-import com.heroku.api.command.CommandResponse;
 
 import java.net.URL;
 
@@ -20,9 +18,6 @@ public interface Connection<F> {
 
     URL getEndpoint();
 
-    String getEmail();
-
     String getApiKey();
 
-    HerokuAPI getApi();
 }

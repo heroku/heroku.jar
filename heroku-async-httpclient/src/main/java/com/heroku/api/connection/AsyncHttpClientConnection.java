@@ -97,18 +97,8 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public HerokuAPI getApi() {
-        return new HerokuAPI(this);
-    }
-
-    @Override
     public URL getEndpoint() {
         return endpoint;
-    }
-
-    @Override
-    public String getEmail() {
-        return loginResponse.email();
     }
 
     @Override

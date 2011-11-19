@@ -44,23 +44,20 @@ public class HttpClientConnection implements Connection<Future<?>> {
     private DefaultHttpClient httpClient = wrapClient(new DefaultHttpClient(new ThreadSafeClientConnManager()));
     private volatile ExecutorService executorService;
     private Object lock = new Object();
-    private final String email;
     private final String apiKey;
 
     public HttpClientConnection(LoginCommand login) {
         this.endpoint = HttpUtil.toURL(login.getApiEndpoint());
         LoginResponse loginResponse = executeCommand(login);
-        this.email = loginResponse.email();
         this.apiKey = loginResponse.api_key();
         setHttpClientCredentials(apiKey);
     }
 
-    public HttpClientConnection(String email, String apiKey) {
-        this(email, apiKey, LoginCommand.DEFAULT_ENDPOINT);
+    public HttpClientConnection(String apiKey) {
+        this(apiKey, LoginCommand.DEFAULT_ENDPOINT);
     }
 
-    public HttpClientConnection(String email, String apiKey, String endpoint) {
-        this.email = "";
+    public HttpClientConnection(String apiKey, String endpoint) {
         this.apiKey = apiKey;
         this.endpoint = HttpUtil.toURL(endpoint);
         setHttpClientCredentials(this.apiKey);
@@ -124,18 +121,8 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     @Override
-    public HerokuAPI getApi() {
-        return new HerokuAPI(this);
-    }
-
-    @Override
     public URL getEndpoint() {
         return endpoint;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.heroku.api.connection;
 
-import com.google.inject.Inject;
-import com.heroku.api.ConnectionTestModule;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.command.login.BasicAuthLogin;
 import com.heroku.api.exception.RequestFailedException;
@@ -12,6 +10,9 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
+import static com.heroku.api.IntegrationTestConfig.PASSWORD;
+import static com.heroku.api.IntegrationTestConfig.USER;
+
 /**
  * Integration tests for authenticating with the Heroku API.
  *
@@ -20,12 +21,9 @@ import java.io.IOException;
 @Guice(moduleFactory = TestModuleFactory.class)
 public class ConnectionIntegrationTest {
 
-    @Inject
-    ConnectionTestModule.AuthenticationTestCredentials cred;
-
     @Test(groups = "integration")
     public void testValidUsernameAndPassword() throws IOException {
-        Connection conn = new HttpClientConnection(new BasicAuthLogin(cred.username, cred.password));
+        Connection conn = new HttpClientConnection(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
         Assert.assertNotNull(conn.getApiKey(), "Expected an API key from login, but it doesn't exist.");
     }
 

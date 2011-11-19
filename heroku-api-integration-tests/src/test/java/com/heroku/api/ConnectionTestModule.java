@@ -6,7 +6,6 @@ import com.heroku.api.connection.Connection;
 
 import java.io.IOException;
 
-import static com.heroku.api.IntegrationTestConfig.*;
 
 /**
  * Guice Module for providing tests with authentication information.
@@ -28,22 +27,4 @@ public abstract class ConnectionTestModule<F extends Connection> extends Abstrac
     }
 
 
-    @Provides
-    AuthenticationTestCredentials getCredentials() throws IOException {
-        return new AuthenticationTestCredentials(ENDPOINT.getRequiredConfig(), USER.getRequiredConfig(), PASSWORD.getRequiredConfig(), APIKEY.getOptionalConfig());
-    }
-
-    public static class AuthenticationTestCredentials {
-        public final String endpoint;
-        public final String username;
-        public final String password;
-        public final String apiKey;
-
-        public AuthenticationTestCredentials(String endpoint, String username, String password, String apiKey) {
-            this.endpoint = endpoint;
-            this.username = username;
-            this.password = password;
-            this.apiKey = apiKey;
-        }
-    }
 }
