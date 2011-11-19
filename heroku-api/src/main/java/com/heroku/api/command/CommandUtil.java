@@ -39,7 +39,7 @@ public class CommandUtil {
         try {
             return new String(in, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Somehow UTF-8 is unsupported");
+            throw new HerokuAPIException("Somehow UTF-8 is unsupported");
         }
     }
 

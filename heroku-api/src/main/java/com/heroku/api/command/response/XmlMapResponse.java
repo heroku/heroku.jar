@@ -12,22 +12,17 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * TODO: Javadoc
- *
- * @author Naaman Newbold
- */
+
 public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
     private final byte[] rawData;
-    private volatile boolean rawDataIsProcessed = false;
-    private Object lock = new Object();
     private final HashMap<String, String> data = new HashMap<String, String>();
     private String lastKey;
     private StringBuffer charBuffer;
 
     public XmlMapResponse(byte[] bytes) {
         this.rawData = bytes;
+        parse();
     }
 
     @Override
@@ -51,28 +46,23 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
     public void characters(char[] chars, int offset, int offsetLen) throws SAXException {
         if (charBuffer == null)
             charBuffer = new StringBuffer();
-
         charBuffer.append(chars, offset, offsetLen);
     }
 
 
     @Override
     public String get(String key) {
-        if (!rawDataIsProcessed) {
-            synchronized (lock) {
-                if (!rawDataIsProcessed) {
-                    SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-                    try {
-                        SAXParser parser = parserFactory.newSAXParser();
-                        parser.parse(new ByteArrayInputStream(rawData), this);
-                    } catch (Exception e) {
-                        throw new HerokuAPIException("Unable to parse XML response.", e);
-                    }
-                    rawDataIsProcessed = true;
-                }
-            }
-        }
         return data.get(key);
+    }
+
+    private void parse() {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        try {
+            SAXParser parser = parserFactory.newSAXParser();
+            parser.parse(new ByteArrayInputStream(rawData), this);
+        } catch (Exception e) {
+            throw new HerokuAPIException("Unable to parse XML response.", e);
+        }
     }
 
     @Override
