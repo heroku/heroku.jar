@@ -12,10 +12,6 @@ public class HerokuAPIException extends RuntimeException {
         super(msg);
     }
 
-    public HerokuAPIException(String msg, int statusCode, String body) {
-        super(msg);
-    }
-
     public HerokuAPIException(Throwable throwable) {
         super(throwable);
     }
