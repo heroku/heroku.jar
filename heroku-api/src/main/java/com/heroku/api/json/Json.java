@@ -6,13 +6,15 @@ import java.util.ServiceLoader;
 
 public class Json {
 
-    private static volatile JsonParser parser;
+    private static volatile boolean initialized = false;
+    private static JsonParser parser;
     private static Object lock = new Object();
 
     public static JsonParser getJsonParser() {
-        if (parser == null) {
+        if (parser != null) return parser;
+        if (!initialized) {
             synchronized (lock) {
-                if (parser == null) {
+                if (!initialized) {
                     ServiceLoader<JsonParser> loader = ServiceLoader.load(JsonParser.class);
                     Iterator<JsonParser> iterator = loader.iterator();
                     if (iterator.hasNext()) {
