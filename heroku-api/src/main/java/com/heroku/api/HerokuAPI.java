@@ -2,8 +2,10 @@ package com.heroku.api;
 
 
 import com.heroku.api.command.app.AppCreate;
+import com.heroku.api.command.app.AppList;
 import com.heroku.api.command.key.KeyAdd;
 import com.heroku.api.command.key.KeyRemove;
+import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.connection.Connection;
 
 public class HerokuAPI {
@@ -21,7 +23,11 @@ public class HerokuAPI {
     public void removeKey(String sshKey) {
         connection.executeCommand(new KeyRemove(sshKey));
     }
-
+    
+    public JsonArrayResponse apps() {
+        return connection.executeCommand(new AppList());
+    }
+    
     public HerokuAppAPI app(String name) {
         return new HerokuAppAPI(connection, name);
     }
