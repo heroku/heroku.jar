@@ -5,12 +5,21 @@ import com.heroku.api.command.CommandConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.security.cert.X509Certificate;
 
 /**
@@ -73,24 +82,31 @@ public class HttpUtil {
         return new RequestFailedException("Insufficient privileges.", code, bytes);
     }
 
-    public static TrustManager[] trustAllTrustManager() {
-        return new TrustManager[]{new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-            }
 
-            @Override
-            public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+    public static byte[] getBytes(InputStream in) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        WritableByteChannel wbc = Channels.newChannel(os);
+        ReadableByteChannel rbc = Channels.newChannel(in);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        try {
+            while (rbc.read(byteBuffer) != -1) {
+                byteBuffer.flip();
+                wbc.write(byteBuffer);
+                byteBuffer.clear();
             }
-
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-        }};
+            wbc.close();
+            rbc.close();
+            return os.toByteArray();
+        } catch (IOException e) {
+            throw new HerokuAPIException("IOException while reading response");
+        }
     }
 
-
-
-
+    public static String getUTF8String(byte[] in) {
+        try {
+            return new String(in, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new HerokuAPIException("Somehow UTF-8 is unsupported");
+        }
+    }
 }

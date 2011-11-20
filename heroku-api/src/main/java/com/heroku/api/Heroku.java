@@ -1,9 +1,80 @@
 package com.heroku.api;
 
 
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Http;
 
+import javax.net.ssl.*;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
 public class Heroku {
+
+
+    public enum Config {
+        ENDPOINT("HEROKU_HOST", "heroku.host", "https://api.heroku.com");
+        public final String environmentVariable;
+        public final String systemProperty;
+        public final String defaultValue;
+        public final String value;
+
+        Config(String environmentVariable, String systemProperty, String defaultValue) {
+            this.environmentVariable = environmentVariable;
+            this.systemProperty = systemProperty;
+            this.defaultValue = defaultValue;
+            String envVal = System.getenv(environmentVariable);
+            this.value = System.getProperty(systemProperty, envVal == null ? defaultValue : envVal);
+        }
+
+        public boolean isDefault() {
+            return defaultValue.equals(value);
+        }
+
+    }
+
+    public static SSLContext herokuSSLContext() {
+        return sslContext(Config.ENDPOINT.isDefault());
+    }
+
+    public static SSLContext sslContext(boolean verify) {
+        try {
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            TrustManager[] tmgrs = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).getTrustManagers();
+            if (!verify) {
+                tmgrs = trustAllTrustManagers();
+            }
+            KeyManager[] kmgrs = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm()).getKeyManagers();
+            if (!verify) {
+                kmgrs = null;
+            }
+            ctx.init(kmgrs, tmgrs, new SecureRandom());
+            return ctx;
+        } catch (NoSuchAlgorithmException e) {
+            throw new HerokuAPIException("NoSuchAlgorithmException while trying to setup SSLContext", e);
+        } catch (KeyManagementException e) {
+            throw new HerokuAPIException("KeyManagementException while trying to setup SSLContext", e);
+        }
+    }
+
+    public static HostnameVerifier hostnameVerifier(boolean verify) {
+        HostnameVerifier verifier = HttpsURLConnection.getDefaultHostnameVerifier();
+        if (!verify) {
+            verifier = new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            };
+        }
+        return verifier;
+    }
+
+    public static HostnameVerifier herokuHostnameVerifier() {
+        return hostnameVerifier(Config.ENDPOINT.isDefault());
+    }
+
 
     public static enum RequestKey {
         stack("app[stack]"),
@@ -75,7 +146,6 @@ public class Heroku {
         }
     }
 
-
     public static enum ApiVersion implements Http.Header {
 
         v2(2), v3(3);
@@ -97,5 +167,22 @@ public class Heroku {
         public String getHeaderValue() {
             return Integer.toString(version);
         }
+    }
+
+    public static TrustManager[] trustAllTrustManagers() {
+        return new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
     }
 }

@@ -6,13 +6,15 @@ import com.heroku.api.connection.AsyncHttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 
 import java.io.IOException;
-import static com.heroku.api.IntegrationTestConfig.*;
+
+import static com.heroku.api.IntegrationTestConfig.PASSWORD;
+import static com.heroku.api.IntegrationTestConfig.USER;
 
 public class AsyncHttpClientModule extends ConnectionTestModule<AsyncHttpClientConnection> {
     @Provides()
     AsyncHttpClientConnection getConnectionImpl() throws IOException {
         try {
-            return new AsyncHttpClientConnection(new BasicAuthLogin(USER.getRequiredConfig(),PASSWORD.getRequiredConfig(),ENDPOINT.getRequiredConfig()));
+            return new AsyncHttpClientConnection(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

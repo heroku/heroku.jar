@@ -14,21 +14,10 @@ public class BasicAuthLogin implements LoginCommand {
 
     private String username;
     private String password;
-    private String endpoint;
 
     public BasicAuthLogin(String username, String password) {
-        this(username, password, DEFAULT_ENDPOINT);
-    }
-
-    public BasicAuthLogin(String username, String password, String endpoint) {
         this.username = username;
         this.password = password;
-        this.endpoint = endpoint;
-    }
-
-    @Override
-    public String getApiEndpoint() {
-        return endpoint;
     }
 
     @Override

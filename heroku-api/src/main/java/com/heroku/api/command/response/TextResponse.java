@@ -1,14 +1,14 @@
 package com.heroku.api.command.response;
 
 
-import com.heroku.api.command.CommandUtil;
+import com.heroku.api.http.HttpUtil;
 
 public class TextResponse {
 
     String text;
 
     public TextResponse(byte[] in) {
-        text = CommandUtil.getUTF8String(in);
+        text = HttpUtil.getUTF8String(in);
     }
 
     public String getText() {

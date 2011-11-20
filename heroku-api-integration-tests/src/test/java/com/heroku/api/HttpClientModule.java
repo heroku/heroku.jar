@@ -7,7 +7,6 @@ import com.heroku.api.exception.RequestFailedException;
 import java.io.IOException;
 
 import static com.heroku.api.IntegrationTestConfig.APIKEY;
-import static com.heroku.api.IntegrationTestConfig.ENDPOINT;
 
 public class HttpClientModule extends ConnectionTestModule<HttpClientConnection> {
     @Provides()
@@ -15,7 +14,7 @@ public class HttpClientModule extends ConnectionTestModule<HttpClientConnection>
         try {
             // skip login -- login creates additional, unnecessary http overhead. this uses
             // the api key directly to avoid login.
-            return new HttpClientConnection(APIKEY.getRequiredConfig(), ENDPOINT.getRequiredConfig());
+            return new HttpClientConnection(APIKEY.getRequiredConfig());
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

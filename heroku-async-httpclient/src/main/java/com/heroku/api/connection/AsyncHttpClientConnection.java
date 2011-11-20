@@ -5,13 +5,11 @@ import com.heroku.api.command.Command;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.login.LoginResponse;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HttpUtil;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -21,15 +19,15 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
     private LoginCommand loginCommand;
     private LoginResponse loginResponse;
-    private URL endpoint;
     private AsyncHttpClient httpClient;
 
 
     public AsyncHttpClientConnection(LoginCommand login) {
         this.loginCommand = login;
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        builder.setSSLContext(Heroku.herokuSSLContext());
+        builder.setHostnameVerifier(Heroku.herokuHostnameVerifier());
         httpClient = new AsyncHttpClient(builder.build());
-        this.endpoint = HttpUtil.toURL(loginCommand.getApiEndpoint());
         this.loginResponse = executeCommand(loginCommand);
     }
 
@@ -51,7 +49,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     private AsyncHttpClient.BoundRequestBuilder prepareRequest(Command<?> command) {
-        String req = getCommandEndpoint(endpoint, command.getEndpoint()).toString();
+        String req = Heroku.Config.ENDPOINT.value + command.getEndpoint();
         switch (command.getHttpMethod()) {
             case GET:
                 return httpClient.prepareGet(req);
@@ -95,23 +93,5 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
         }
     }
 
-    @Override
-    public URL getEndpoint() {
-        return endpoint;
-    }
-
-    @Override
-    public String getApiKey() {
-        return loginResponse.api_key();
-    }
-
-    private static URL getCommandEndpoint(URL connectionEndpoint, String commandEndpoint) {
-        if (commandEndpoint.startsWith("http://") || commandEndpoint.startsWith("https://")) {
-            return HttpUtil.toURL(commandEndpoint);
-        } else {
-            return HttpUtil.toURL(connectionEndpoint.toString() + commandEndpoint);
-        }
-
-    }
 
 }

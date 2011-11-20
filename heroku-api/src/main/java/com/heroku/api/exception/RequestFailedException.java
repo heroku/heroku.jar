@@ -1,7 +1,7 @@
 package com.heroku.api.exception;
 
 
-import com.heroku.api.command.CommandUtil;
+import com.heroku.api.http.HttpUtil;
 
 public class RequestFailedException extends HerokuAPIException {
 
@@ -15,7 +15,7 @@ public class RequestFailedException extends HerokuAPIException {
 
     private static String getBodyFromInput(byte[] in) {
         try {
-            return CommandUtil.getUTF8String(in);
+            return HttpUtil.getUTF8String(in);
         } catch (Exception e) {
             return "There was also an error reading the response body.";
         }

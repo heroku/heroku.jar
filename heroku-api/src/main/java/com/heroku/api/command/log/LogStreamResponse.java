@@ -1,16 +1,14 @@
 package com.heroku.api.command.log;
 
 
+import com.heroku.api.Heroku;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HttpUtil;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 public class LogStreamResponse {
 
@@ -19,7 +17,6 @@ public class LogStreamResponse {
     public LogStreamResponse(URL streamUrl) {
         logStreamURL = streamUrl;
     }
-
 
     public URL getLogStreamURL() {
         return logStreamURL;
@@ -30,8 +27,8 @@ public class LogStreamResponse {
             URLConnection urlConnection = logStreamURL.openConnection();
             if (urlConnection instanceof HttpsURLConnection) {
                 HttpsURLConnection https = (HttpsURLConnection) urlConnection;
-                https.setSSLSocketFactory(getSslSocketFactory());
-                https.setHostnameVerifier(gethHostnameVerifier());
+                https.setSSLSocketFactory(Heroku.sslContext(false).getSocketFactory());
+                https.setHostnameVerifier(Heroku.hostnameVerifier(false));
             }
             urlConnection.connect();
             return urlConnection.getInputStream();
@@ -40,27 +37,4 @@ public class LogStreamResponse {
             throw new HerokuAPIException("IOException while opening log stream", e);
         }
     }
-
-
-    private SSLSocketFactory getSslSocketFactory() {
-        try {
-            final SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, HttpUtil.trustAllTrustManager(), new java.security.SecureRandom());
-            return sslContext.getSocketFactory();
-        } catch (NoSuchAlgorithmException e) {
-            throw new HerokuAPIException("Cant getSslSocketFactory, NoSuchAlgorithmException", e);
-        } catch (KeyManagementException e) {
-            throw new HerokuAPIException("Cant getSslSocketFactory, KeyManagementException", e);
-        }
-    }
-
-    private HostnameVerifier gethHostnameVerifier() {
-        return new HostnameVerifier() {
-            @Override
-            public boolean verify(String s, SSLSession sslSession) {
-                return true;
-            }
-        };
-    }
-
 }

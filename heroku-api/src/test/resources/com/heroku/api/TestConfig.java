@@ -5,8 +5,7 @@ public enum TestConfig {
 
     USER("HEROKU_USER", "heroku.user"),
     PASSWORD("HEROKU_PASSWORD", "heroku.password"),
-    APIKEY("HEROKU_APIKEY", "heroku.apikey"),
-    ENDPOINT("HEROKU_HOST", "heroku.host");
+    APIKEY("HEROKU_APIKEY", "heroku.apikey");
 
     private String environmentVariable;
     private String systemProperty;

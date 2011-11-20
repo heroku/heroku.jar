@@ -4,11 +4,6 @@ import com.heroku.api.http.Http;
 
 import java.util.Map;
 
-/**
- * TODO: Enter JavaDoc
- *
- * @author Naaman Newbold
- */
 public interface Command<T> {
 
 

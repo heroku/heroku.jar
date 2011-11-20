@@ -16,8 +16,4 @@ public interface Connection<F> {
 
     <T> F executeCommandAsync(Command<T> command);
 
-    URL getEndpoint();
-
-    String getApiKey();
-
 }

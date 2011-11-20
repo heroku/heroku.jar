@@ -1,6 +1,6 @@
 package com.heroku.api.command;
 
-import com.heroku.api.TestConfig;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.log.LogStreamResponse;
 import org.testng.annotations.Test;
 
@@ -13,7 +13,7 @@ public class LogStreamResponseTest {
 
     @Test
     public void testLogStream() throws IOException {
-        LogStreamResponse response = new LogStreamResponse(new URL(TestConfig.ENDPOINT.getRequiredConfig()));
+        LogStreamResponse response = new LogStreamResponse(new URL(Heroku.Config.ENDPOINT.value));
         BufferedReader reader = new BufferedReader(new InputStreamReader(response.openStream()));
         String line = "";
         while (line != null) {

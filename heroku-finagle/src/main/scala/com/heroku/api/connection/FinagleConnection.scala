@@ -2,7 +2,6 @@ package com.heroku.api.connection
 
 import java.lang.String
 import com.heroku.api.http._
-import collection.mutable.HashMap
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
 import com.heroku.api.command.{LoginCommand, Command}
@@ -12,25 +11,26 @@ import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.ChannelBuffers
 import com.twitter.util.{Base64StringEncoder, Future}
 import java.nio.charset.Charset
-import com.twitter.finagle.builder.{ClientConfig, ClientBuilder}
+import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
 import com.heroku.api.Heroku.ApiVersion
+import com.heroku.api.Heroku
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
-  val clients = new HashMap[(String, Int), HttpService]
-
-  val getEndpoint: URL = HttpUtil.toURL(loginCommand.getApiEndpoint)
+  val client = newClient()
 
   val loginResponse = executeCommand(loginCommand)
+
+  val hostHeader = getHostHeader
 
   def executeCommand[T](command: Command[T]): T = executeCommandAsync(command).get()
 
   def executeCommandAsync[T](command: Command[T]): Future[T] = {
-    getClient(command).apply(toReq(command)).map {
+    client(toReq(command)).map {
       resp =>
         command.getResponse(resp.getContent.toByteBuffer.array(), resp.getStatus.getCode)
     }
@@ -43,10 +43,10 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
       case Method.POST => HttpMethod.POST
       case Method.DELETE => HttpMethod.DELETE
     }
-    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, getPath(cmd.getEndpoint))
+    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, cmd.getEndpoint)
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
-    req.addHeader(HttpHeaders.Names.HOST, getHostHeader(cmd.getEndpoint))
+    req.addHeader(HttpHeaders.Names.HOST, hostHeader)
 
     if (loginResponse != null && cmd.getEndpoint.startsWith("/")) {
       //send basic auth if we've logged in and we are hitting the api endpoint and not logplex etc...
@@ -67,57 +67,36 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req
   }
 
-  def getApiKey: String = loginResponse.api_key()
-
-  def getUrl(cmdEndpoint: String): URL = {
-    if (cmdEndpoint.startsWith("https//") || cmdEndpoint.startsWith("http://")) {
-      HttpUtil.toURL(cmdEndpoint)
-    } else {
-      getEndpoint
-    }
-  }
-
-  def getPath(cmdEndpoint: String): String = {
-    if (cmdEndpoint.startsWith("https//") || cmdEndpoint.startsWith("http://")) {
-      HttpUtil.toURL(cmdEndpoint).getPath
-    } else {
-      cmdEndpoint
-    }
-  }
-
   def getPort(url: URL): Int = {
     if (url.getPort == -1) url.getDefaultPort
     else url.getPort
   }
 
-  def getHostHeader(cmdEndpoint: String): String = {
-    val url = getUrl(cmdEndpoint)
+  def getHostHeader: String = {
+    val url = HttpUtil.toURL(Heroku.Config.ENDPOINT.value)
     val host = url.getHost
     var port = ""
     if (url.getPort != url.getDefaultPort) port = ":" + url.getPort.toString
     host + port
   }
 
-  def getClient(cmd: Command[_]): HttpService = {
-    val url = getUrl(cmd.getEndpoint)
-    clients.getOrElseUpdate((url.getHost, getPort(url)), {
-      var builder = ClientBuilder()
-        .codec(Http())
-        .hosts(new InetSocketAddress(url.getHost, getPort(url)))
-        .hostConnectionLimit(10)
-      if (url.getProtocol.equals("https")) {
+  def newClient(): HttpService = {
+    val endpoint = HttpUtil.toURL(Heroku.Config.ENDPOINT.value)
+    var builder = ClientBuilder()
+      .codec(Http())
+      .hosts(new InetSocketAddress(endpoint.getHost, getPort(endpoint)))
+      .hostConnectionLimit(10)
+    if (endpoint.getProtocol.equals("https")) {
+      if (Heroku.Config.ENDPOINT.isDefault) {
+        builder = builder.tls(endpoint.getHost)
+      } else {
         builder = builder.tlsWithoutValidation()
       }
-
-      builder.build()
-    })
-  }
-
-  def releaseClients() {
-    clients.keys.foreach {
-      hp => clients.remove(hp).foreach(_.release())
     }
+    builder.build()
   }
+
+
 }
 
 
