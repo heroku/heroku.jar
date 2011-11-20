@@ -5,7 +5,8 @@ public enum IntegrationTestConfig {
 
     USER("HEROKU_USER", "heroku.user"),
     PASSWORD("HEROKU_PASSWORD", "heroku.password"),
-    APIKEY("HEROKU_APIKEY", "heroku.apikey");
+    APIKEY("HEROKU_APIKEY", "heroku.apikey"),
+    TEST_AGAINST_PRODUCTION("HEROKU_TEST_PRODUCTION", "heroku.test.production");
 
     private String environmentVariable;
     private String systemProperty;

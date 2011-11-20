@@ -33,8 +33,7 @@ public class SharingRemove implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Collaborator.value,
-                config.get(Heroku.RequestKey.appName),
+        return Heroku.Resource.Collaborator.format(config.get(Heroku.RequestKey.appName),
                 HttpUtil.urlencode(config.get(Heroku.RequestKey.collaborator), "Unable to encode the endpoint"));
     }
 

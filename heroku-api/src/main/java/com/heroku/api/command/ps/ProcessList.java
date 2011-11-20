@@ -31,7 +31,7 @@ public class ProcessList implements Command<JsonArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Process.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Process.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

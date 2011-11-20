@@ -30,7 +30,7 @@ public class Scale implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Scale.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Scale.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

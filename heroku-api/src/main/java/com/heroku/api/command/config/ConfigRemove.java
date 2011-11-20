@@ -31,11 +31,7 @@ public class ConfigRemove implements Command<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(
-                Heroku.Resource.ConfigVar.value,
-                config.get(Heroku.RequestKey.appName),
-                config.get(Heroku.RequestKey.configVarName
-        ));
+        return Heroku.Resource.ConfigVar.format(config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.configVarName));
     }
 
     @Override

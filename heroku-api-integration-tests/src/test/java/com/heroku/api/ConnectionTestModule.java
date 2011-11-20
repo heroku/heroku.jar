@@ -16,7 +16,9 @@ public abstract class ConnectionTestModule<F extends Connection> extends Abstrac
 
     @Override
     protected void configure() {
-        // not implemented
+        if (Heroku.Config.ENDPOINT.isDefault() && !IntegrationTestConfig.TEST_AGAINST_PRODUCTION.getRequiredConfig().equals("true")) {
+            throw new IllegalStateException("The API endpoint is set to production and TEST_AGAINST_PRODUCTION is not set to true");
+        }
     }
 
     abstract F getConnectionImpl() throws IOException;

@@ -33,7 +33,7 @@ public class KeyRemove implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Key.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Key.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

@@ -30,7 +30,7 @@ public class ConfigList implements Command<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.ConfigVars.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

@@ -28,7 +28,7 @@ public class Log implements Command<LogsResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Logs.value, config.get(Heroku.RequestKey.appName)) + "?logplex=true";
+        return Heroku.Resource.Logs.format(config.get(Heroku.RequestKey.appName)) + "?logplex=true";
     }
 
     @Override

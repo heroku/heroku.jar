@@ -145,6 +145,10 @@ Likewise, the secure random parameter may be null in which case the default impl
         Resource(String value) {
             this.value = value;
         }
+
+        public String format(String... values) {
+            return String.format(value, values);
+        }
     }
 
     public static enum ApiVersion implements Http.Header {

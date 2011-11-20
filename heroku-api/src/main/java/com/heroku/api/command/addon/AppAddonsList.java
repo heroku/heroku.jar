@@ -31,7 +31,7 @@ public class AppAddonsList implements Command<JsonArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.AppAddons.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.AppAddons.format(config.get(Heroku.RequestKey.appName));
     }
     
     @Override

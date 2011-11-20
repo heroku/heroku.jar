@@ -31,7 +31,7 @@ public class AppDestroy implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.App.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

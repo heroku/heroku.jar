@@ -34,7 +34,7 @@ public class Restart implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Restart.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Restart.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

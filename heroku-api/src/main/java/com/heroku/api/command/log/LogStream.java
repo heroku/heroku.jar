@@ -27,7 +27,7 @@ public class LogStream implements Command<LogStreamResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Logs.value, config.get(Heroku.RequestKey.appName)) + "?logplex=true&tail=1";
+        return Heroku.Resource.Logs.format(config.get(Heroku.RequestKey.appName)) + "?logplex=true&tail=1";
     }
 
     @Override

@@ -32,7 +32,7 @@ public class SharingAdd implements Command<Unit> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.Collaborators.value, config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.appName));
     }
 
     @Override

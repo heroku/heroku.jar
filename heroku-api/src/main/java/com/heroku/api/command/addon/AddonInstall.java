@@ -30,7 +30,7 @@ public class AddonInstall implements Command<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return String.format(Heroku.Resource.AppAddon.value, config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.addonName));
+        return Heroku.Resource.AppAddon.format(config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.addonName));
     }
 
     @Override
