@@ -10,7 +10,11 @@ public class HerokuAPI {
 
     Connection<?> connection;
 
-    public HerokuAPI(Connection<?> connection) {
+    public static HerokuAPI with(Connection<?> connection) {
+        return new HerokuAPI(connection);
+    }
+
+    protected HerokuAPI(Connection<?> connection) {
         this.connection = connection;
     }
 

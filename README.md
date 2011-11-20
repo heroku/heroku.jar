@@ -7,8 +7,8 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 3. Write some code:
 
     ```java
-    Connection<?> connection = new HttpClientConnection(new BasicAuthLoginCommand('username', 'password'));
-    HerokuAPI api = new HerokuAPI(connection);
+    String yourApiKey = ...
+    HerokuAPI api = new HerokuAPI(new HttpClientConnection(yourApiKey));
     HerokuAppAPI appApi = HerokuAPI.newapp(HerokuStack.Cedar);
     ```
 
