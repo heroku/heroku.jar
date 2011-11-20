@@ -2,8 +2,6 @@ package com.heroku.api.connection;
 
 import com.heroku.api.command.Command;
 
-import java.net.URL;
-
 /**
  * Connection manager for connecting to the Heroku API.
  *

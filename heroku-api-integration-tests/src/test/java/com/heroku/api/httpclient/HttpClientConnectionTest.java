@@ -1,7 +1,6 @@
 package com.heroku.api.httpclient;
 
 import com.google.inject.Inject;
-import com.heroku.api.AsyncHttpClientModule;
 import com.heroku.api.HttpClientModule;
 import com.heroku.api.command.app.AppList;
 import com.heroku.api.command.response.JsonArrayResponse;

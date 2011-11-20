@@ -5,7 +5,6 @@ import com.heroku.api.AsyncHttpClientModule;
 import com.heroku.api.command.app.AppList;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.connection.AsyncHttpClientConnection;
-import com.heroku.api.connection.HttpClientConnection;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
