@@ -3,7 +3,6 @@ package com.heroku.api.connection;
 import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.login.LoginResponse;
 import com.heroku.api.exception.HerokuAPIException;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
@@ -17,27 +16,34 @@ import java.util.concurrent.TimeoutException;
 
 public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>> {
 
-    private LoginCommand loginCommand;
-    private LoginResponse loginResponse;
+    private String apiKey;
     private AsyncHttpClient httpClient;
 
 
     public AsyncHttpClientConnection(LoginCommand login) {
-        this.loginCommand = login;
+        httpClient = geHttpClient();
+        this.apiKey = executeCommand(login).api_key();
+    }
+
+    public AsyncHttpClientConnection(String apiKey) {
+        httpClient = geHttpClient();
+        this.apiKey = apiKey;
+    }
+
+    protected AsyncHttpClient geHttpClient() {
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
         builder.setSSLContext(Heroku.herokuSSLContext());
         builder.setHostnameVerifier(Heroku.herokuHostnameVerifier());
-        httpClient = new AsyncHttpClient(builder.build());
-        this.loginResponse = executeCommand(loginCommand);
+        return new AsyncHttpClient(builder.build());
     }
 
     private Request buildRequest(Command<?> command) {
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(command);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
-        if (loginResponse != null) {
+        if (apiKey != null) {
             try {
-                builder.setHeader("Authorization", "Basic " + Base64.encode((":" + loginResponse.api_key()).getBytes("UTF-8")));
+                builder.setHeader("Authorization", "Basic " + Base64.encode((":" + apiKey).getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
                 throw new HerokuAPIException("Unupported op exception while encoding api key");
             }
