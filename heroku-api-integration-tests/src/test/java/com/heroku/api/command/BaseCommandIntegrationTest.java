@@ -1,7 +1,7 @@
 package com.heroku.api.command;
 
 import com.google.inject.Inject;
-import com.heroku.api.HerokuStack;
+import com.heroku.api.Heroku;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.command.app.AppCreate;
 import com.heroku.api.command.app.AppDestroy;
@@ -33,7 +33,7 @@ public abstract class BaseCommandIntegrationTest {
 
     @DataProvider
     public Object[][] app() throws IOException {
-        CommandConfig config = new CommandConfig().onStack(HerokuStack.Cedar);
+        CommandConfig config = new CommandConfig().onStack(Heroku.Stack.Cedar);
 
         AppCreate cmd = new AppCreate("Cedar");
         JsonMapResponse response = connection.executeCommand(cmd);
@@ -47,7 +47,7 @@ public abstract class BaseCommandIntegrationTest {
     public void deleteTestApps() throws IOException {
         for (JsonMapResponse res : apps) {
             CommandConfig config = new CommandConfig()
-                    .onStack(HerokuStack.Cedar)
+                    .onStack(Heroku.Stack.Cedar)
                     .app(res.get("name"));
 
             try {

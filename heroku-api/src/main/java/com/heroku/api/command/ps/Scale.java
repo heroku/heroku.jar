@@ -1,12 +1,12 @@
 package com.heroku.api.command.ps;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 
 import java.util.Map;
 
@@ -20,17 +20,17 @@ public class Scale implements Command<Unit> {
     private final CommandConfig config;
 
     public Scale(String appName, String processType, int quantity) {
-        config = new CommandConfig().app(appName).with(HerokuRequestKey.processType, processType).with(HerokuRequestKey.quantity, String.valueOf(quantity));
+        config = new CommandConfig().app(appName).with(Heroku.RequestKey.processType, processType).with(Heroku.RequestKey.quantity, String.valueOf(quantity));
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Scale.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.Scale.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -40,28 +40,28 @@ public class Scale implements Command<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, HerokuRequestKey.processType, HerokuRequestKey.quantity);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.processType, Heroku.RequestKey.quantity);
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
     public Unit getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return Unit.unit;
-        } else if (status == HttpStatus.FORBIDDEN.statusCode) {
+        } else if (status == Http.Status.FORBIDDEN.statusCode) {
             throw HttpUtil.insufficientPrivileges(status, bytes);
-        } else if (status == HttpStatus.UNPROCESSABLE_ENTITY.statusCode) {
+        } else if (status == Http.Status.UNPROCESSABLE_ENTITY.statusCode) {
             throw new RequestFailedException("Invalid process type", status, bytes);
-        } else if (status == HttpStatus.PAYMENT_REQUIRED.statusCode) {
+        } else if (status == Http.Status.PAYMENT_REQUIRED.statusCode) {
             throw new RequestFailedException("Payment is required for scaling this process. " +
                     "Please go to https://api.heroku.com and check your account details.", status, bytes);
         } else {

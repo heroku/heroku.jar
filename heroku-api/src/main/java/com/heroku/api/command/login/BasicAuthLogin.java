@@ -1,11 +1,11 @@
 package com.heroku.api.command.login;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 
 import java.util.Map;
 
@@ -32,13 +32,13 @@ public class BasicAuthLogin implements LoginCommand {
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Login.value;
+        return Heroku.Resource.Login.value;
     }
 
     @Override
@@ -49,20 +49,20 @@ public class BasicAuthLogin implements LoginCommand {
     @Override
     public String getBody() {
         return HttpUtil.encodeParameters(
-                new CommandConfig().with(HerokuRequestKey.username, username)
-                        .with(HerokuRequestKey.password, password),
-                HerokuRequestKey.username, HerokuRequestKey.password
+                new CommandConfig().with(Heroku.RequestKey.username, username)
+                        .with(Heroku.RequestKey.password, password),
+                Heroku.RequestKey.username, Heroku.RequestKey.password
         );
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
 

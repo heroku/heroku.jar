@@ -1,11 +1,10 @@
 package com.heroku.api.connection;
 
-import com.heroku.api.HerokuAPI;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.login.LoginResponse;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.HerokuApiVersion;
 import com.heroku.api.http.HttpUtil;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
@@ -36,7 +35,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
     private Request buildRequest(Command<?> command) {
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(command);
-        builder.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
+        builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
         if (loginResponse != null) {
             try {

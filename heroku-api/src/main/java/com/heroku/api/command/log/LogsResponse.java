@@ -1,8 +1,8 @@
 package com.heroku.api.command.log;
 
 
-import com.heroku.api.command.response.ChainedResponse;
 import com.heroku.api.command.TextCommand;
+import com.heroku.api.command.response.ChainedResponse;
 
 public class LogsResponse extends ChainedResponse<TextCommand> {
 

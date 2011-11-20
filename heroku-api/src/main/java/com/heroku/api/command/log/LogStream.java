@@ -1,16 +1,12 @@
 package com.heroku.api.command.log;
 
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
-import com.heroku.api.HerokuStack;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
-import com.heroku.api.command.CommandUtil;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -18,20 +14,20 @@ import java.util.Map;
 
 public class LogStream implements Command<LogStreamResponse> {
 
-    private CommandConfig config = new CommandConfig().onStack(HerokuStack.Cedar);
+    private CommandConfig config = new CommandConfig().onStack(Heroku.Stack.Cedar);
 
     public LogStream(String app) {
         config = config.app(app);
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Logs.value, config.get(HerokuRequestKey.appName)) + "?logplex=true&tail=1";
+        return String.format(Heroku.Resource.Logs.value, config.get(Heroku.RequestKey.appName)) + "?logplex=true&tail=1";
     }
 
     @Override
@@ -45,8 +41,8 @@ public class LogStream implements Command<LogStreamResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.TEXT;
+    public Http.Accept getResponseType() {
+        return Http.Accept.TEXT;
     }
 
     @Override

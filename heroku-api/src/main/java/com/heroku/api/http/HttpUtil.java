@@ -1,11 +1,12 @@
 package com.heroku.api.http;
 
-import com.heroku.api.HerokuRequestKey;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 
-import javax.net.ssl.*;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,11 +22,11 @@ public class HttpUtil {
 
     private static String ENCODE_FAIL = "Unsupported encoding exception while encoding parameters";
 
-    public static String encodeParameters(CommandConfig config, HerokuRequestKey... keys) {
+    public static String encodeParameters(CommandConfig config, Heroku.RequestKey... keys) {
 
         StringBuilder encodedParameters = new StringBuilder();
         String separator = "";
-        for (HerokuRequestKey key : keys) {
+        for (Heroku.RequestKey key : keys) {
             if (config.get(key) != null) {
                 encodedParameters.append(separator);
                 encodedParameters.append(urlencode(key.queryParameter, ENCODE_FAIL));

@@ -1,15 +1,12 @@
 package com.heroku.api.command.config;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +24,13 @@ public class ConfigList implements Command<JsonMapResponse> {
     }
     
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.ConfigVars.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.ConfigVars.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -47,8 +44,8 @@ public class ConfigList implements Command<JsonMapResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -58,13 +55,13 @@ public class ConfigList implements Command<JsonMapResponse> {
 
     @Override
     public JsonMapResponse getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return new JsonMapResponse(bytes);
-        } else if (status == HttpStatus.NOT_FOUND.statusCode) {
+        } else if (status == Http.Status.NOT_FOUND.statusCode) {
             throw new RequestFailedException("Application not found.", status, bytes);
-        } else if (status == HttpStatus.FORBIDDEN.statusCode) {
+        } else if (status == Http.Status.FORBIDDEN.statusCode) {
             throw new RequestFailedException(
-                    "Insufficient privileges to \"" + config.get(HerokuRequestKey.appName) + "\"",
+                    "Insufficient privileges to \"" + config.get(Heroku.RequestKey.appName) + "\"",
                     status,
                     bytes
             );

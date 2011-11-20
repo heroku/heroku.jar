@@ -1,14 +1,11 @@
 package com.heroku.api.command.config;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
-import com.heroku.api.http.Method;
+import com.heroku.api.http.Http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +22,17 @@ public class ConfigAdd implements Command<Unit> {
     private final CommandConfig config;
 
     public ConfigAdd(String appName, String jsonConfigVars) {
-        this.config = new CommandConfig().app(appName).with(HerokuRequestKey.configvars, jsonConfigVars);
+        this.config = new CommandConfig().app(appName).with(Heroku.RequestKey.configvars, jsonConfigVars);
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.PUT;
+    public Http.Method getHttpMethod() {
+        return Http.Method.PUT;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.ConfigVars.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.ConfigVars.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -45,12 +42,12 @@ public class ConfigAdd implements Command<Unit> {
 
     @Override
     public String getBody() {
-        return config.get(HerokuRequestKey.configvars);
+        return config.get(Heroku.RequestKey.configvars);
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.XML;
+    public Http.Accept getResponseType() {
+        return Http.Accept.XML;
     }
 
     @Override
@@ -60,7 +57,7 @@ public class ConfigAdd implements Command<Unit> {
 
     @Override
     public Unit getResponse(byte[] in, int code) {
-        if (code == HttpStatus.OK.statusCode)
+        if (code == Http.Status.OK.statusCode)
             return Unit.unit;
         else
             throw new RequestFailedException("AppDestroy failed", code, in);

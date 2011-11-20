@@ -1,14 +1,12 @@
 package com.heroku.api.command.app;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.XmlMapResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +25,13 @@ public class AppInfo implements Command<XmlMapResponse> {
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.App.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.App.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -47,8 +45,8 @@ public class AppInfo implements Command<XmlMapResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.XML;
+    public Http.Accept getResponseType() {
+        return Http.Accept.XML;
     }
 
     @Override

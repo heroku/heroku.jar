@@ -2,8 +2,7 @@ package com.heroku.api.command;
 
 import com.heroku.api.command.response.TextResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.Method;
+import com.heroku.api.http.Http;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -26,8 +25,8 @@ public class TextCommand implements Command<TextResponse> {
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
@@ -46,8 +45,8 @@ public class TextCommand implements Command<TextResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.TEXT;
+    public Http.Accept getResponseType() {
+        return Http.Accept.TEXT;
     }
 
     @Override

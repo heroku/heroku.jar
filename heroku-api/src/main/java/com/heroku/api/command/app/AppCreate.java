@@ -1,13 +1,12 @@
 package com.heroku.api.command.app;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
-import com.heroku.api.HerokuStack;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 
 import java.util.Map;
 
@@ -21,15 +20,15 @@ public class AppCreate implements Command<JsonMapResponse> {
     private final CommandConfig config;
 
     public AppCreate(String stack) {
-        this(HerokuStack.valueOf(stack));
+        this(Heroku.Stack.valueOf(stack));
     }
 
-    public AppCreate(HerokuStack stack) {
+    public AppCreate(Heroku.Stack stack) {
         config = new CommandConfig().onStack(stack);
     }
 
     public AppCreate withName(String name) {
-        return new AppCreate(config.with(HerokuRequestKey.createAppName, name));
+        return new AppCreate(config.with(Heroku.RequestKey.createAppName, name));
     }
 
     private AppCreate(CommandConfig config) {
@@ -37,13 +36,13 @@ public class AppCreate implements Command<JsonMapResponse> {
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Apps.value;
+        return Heroku.Resource.Apps.value;
     }
 
     @Override
@@ -53,22 +52,22 @@ public class AppCreate implements Command<JsonMapResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, HerokuRequestKey.stack, HerokuRequestKey.createAppName);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.stack, Heroku.RequestKey.createAppName);
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
     public JsonMapResponse getResponse(byte[] in, int code) {
-        if (code == HttpStatus.ACCEPTED.statusCode)
+        if (code == Http.Status.ACCEPTED.statusCode)
             return new JsonMapResponse(in);
         else
             throw new RequestFailedException("Failed to create app", code, in);

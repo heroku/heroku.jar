@@ -1,7 +1,6 @@
 package com.heroku.api.command;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuStack;
+import com.heroku.api.Heroku;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -12,24 +11,24 @@ import java.util.Map;
  * @author Naaman Newbold
  */
 public class CommandConfig {
-    private final Map<HerokuRequestKey, String> config = new EnumMap<HerokuRequestKey, String>(HerokuRequestKey.class);
+    private final Map<Heroku.RequestKey, String> config = new EnumMap<Heroku.RequestKey, String>(Heroku.RequestKey.class);
 
-    public CommandConfig onStack(HerokuStack stack) {
-        return with(HerokuRequestKey.stack, stack.value);
+    public CommandConfig onStack(Heroku.Stack stack) {
+        return with(Heroku.RequestKey.stack, stack.value);
     }
 
     public CommandConfig app(String appName) {
-        return with(HerokuRequestKey.appName, appName);
+        return with(Heroku.RequestKey.appName, appName);
     }
 
-    public CommandConfig with(HerokuRequestKey key, String value) {
+    public CommandConfig with(Heroku.RequestKey key, String value) {
         CommandConfig newConfig = new CommandConfig();
         newConfig.config.putAll(config);
         newConfig.config.put(key, value);
         return newConfig;
     }
 
-    public String get(HerokuRequestKey key) {
+    public String get(Heroku.RequestKey key) {
         return config.get(key);
     }
 

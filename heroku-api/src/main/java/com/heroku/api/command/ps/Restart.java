@@ -1,12 +1,12 @@
 package com.heroku.api.command.ps;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 
 import java.util.Map;
 
@@ -28,13 +28,13 @@ public class Restart implements Command<Unit> {
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Restart.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.Restart.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -44,22 +44,22 @@ public class Restart implements Command<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, HerokuRequestKey.processName, HerokuRequestKey.processType);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.processName, Heroku.RequestKey.processType);
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
     public Unit getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return Unit.unit;
         } else {
             throw new RequestFailedException("Unable to restart the process.", status, bytes);
@@ -68,13 +68,13 @@ public class Restart implements Command<Unit> {
 
     public static class NamedProcessRestart extends Restart {
         public NamedProcessRestart(String appName, String processName) {
-            super(new CommandConfig().app(appName).with(HerokuRequestKey.processName, processName));
+            super(new CommandConfig().app(appName).with(Heroku.RequestKey.processName, processName));
         }
     }
 
     public static class ProcessTypeRestart extends Restart {
         public ProcessTypeRestart(String appName, String processType) {
-            super(new CommandConfig().app(appName).with(HerokuRequestKey.processType, processType));
+            super(new CommandConfig().app(appName).with(Heroku.RequestKey.processType, processType));
         }
     }
 }

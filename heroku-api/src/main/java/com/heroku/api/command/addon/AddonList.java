@@ -1,13 +1,11 @@
 package com.heroku.api.command.addon;
 
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +18,13 @@ import java.util.Map;
 public class AddonList implements Command<JsonArrayResponse> {
 
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Addons.value;
+        return Heroku.Resource.Addons.value;
     }
 
     @Override
@@ -40,8 +38,8 @@ public class AddonList implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -51,7 +49,7 @@ public class AddonList implements Command<JsonArrayResponse> {
 
     @Override
     public JsonArrayResponse getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return new JsonArrayResponse(bytes);
         } else {
             throw new RequestFailedException("Unable to list addons.", status, bytes);

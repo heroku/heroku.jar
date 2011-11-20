@@ -22,11 +22,11 @@ public class HerokuAppAPI {
         this.appName = name;
     }
 
-    public Map<String, String> create(HerokuStack stack) {
+    public Map<String, String> create(Heroku.Stack stack) {
         return connection.executeCommand(new AppCreate(stack).withName(appName)).getData();
     }
 
-    public HerokuAppAPI createAnd(HerokuStack stack) {
+    public HerokuAppAPI createAnd(Heroku.Stack stack) {
         create(stack);
         return this;
     }

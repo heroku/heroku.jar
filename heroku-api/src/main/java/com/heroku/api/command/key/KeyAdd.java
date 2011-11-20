@@ -1,12 +1,11 @@
 package com.heroku.api.command.key;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
 
 import java.util.Map;
 
@@ -22,17 +21,17 @@ public class KeyAdd implements Command<Unit> {
     private final CommandConfig config;
 
     public KeyAdd(String sshkey) {
-        this.config = new CommandConfig().with(HerokuRequestKey.sshkey, sshkey);
+        this.config = new CommandConfig().with(Heroku.RequestKey.sshkey, sshkey);
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return HerokuResource.Keys.value;
+        return Heroku.Resource.Keys.value;
     }
 
     @Override
@@ -42,21 +41,21 @@ public class KeyAdd implements Command<Unit> {
 
     @Override
     public String getBody() {
-        return config.get(HerokuRequestKey.sshkey);
+        return config.get(Heroku.RequestKey.sshkey);
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.SSH_AUTHKEY);
+        return Http.Header.Util.setHeaders(Http.ContentType.SSH_AUTHKEY);
     }
 
     public Unit getResponse(byte[] in, int code) {
-        if (code == HttpStatus.OK.statusCode)
+        if (code == Http.Status.OK.statusCode)
             return Unit.unit;
         else
             throw new RequestFailedException("KeysAdd failed", code, in);

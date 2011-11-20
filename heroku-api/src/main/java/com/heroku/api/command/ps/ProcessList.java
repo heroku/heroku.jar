@@ -1,15 +1,12 @@
 package com.heroku.api.command.ps;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +25,13 @@ public class ProcessList implements Command<JsonArrayResponse> {
     }
     
     @Override
-    public Method getHttpMethod() {
-        return Method.GET;
+    public Http.Method getHttpMethod() {
+        return Http.Method.GET;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Process.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.Process.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -48,8 +45,8 @@ public class ProcessList implements Command<JsonArrayResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -59,7 +56,7 @@ public class ProcessList implements Command<JsonArrayResponse> {
 
     @Override
     public JsonArrayResponse getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return new JsonArrayResponse(bytes);
         } else {
             throw new RequestFailedException("Process command failed.", status, bytes);

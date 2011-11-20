@@ -1,10 +1,8 @@
 package com.heroku.api.command.response;
 
 import com.heroku.api.command.CommandResponse;
-import com.heroku.api.command.CommandUtil;
 import com.heroku.api.json.Json;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,8 +1,6 @@
 package com.heroku.api.connection
 
 import java.lang.String
-import com.heroku.api.HerokuAPI
-import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http._
 import collection.mutable.HashMap
 import com.twitter.finagle.Service
@@ -14,6 +12,9 @@ import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.ChannelBuffers
 import com.twitter.util.{Base64StringEncoder, Future}
 import java.nio.charset.Charset
+import com.twitter.finagle.builder.{ClientConfig, ClientBuilder}
+import com.heroku.api.http.Http.Method
+import com.heroku.api.Heroku.ApiVersion
 
 
 class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
@@ -44,7 +45,7 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     }
     val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, getPath(cmd.getEndpoint))
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
-    req.addHeader(HerokuApiVersion.HEADER, HerokuApiVersion.v2.getHeaderValue)
+    req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, getHostHeader(cmd.getEndpoint))
 
     if (loginResponse != null && cmd.getEndpoint.startsWith("/")) {
@@ -118,4 +119,5 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     }
   }
 }
+
 

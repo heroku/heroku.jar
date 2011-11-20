@@ -1,9 +1,7 @@
 package com.heroku.api.command;
 
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.Method;
+import com.heroku.api.http.Http;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -14,7 +12,7 @@ import java.util.Map;
 public interface Command<T> {
 
 
-    Method getHttpMethod();
+    Http.Method getHttpMethod();
 
     String getEndpoint();
 
@@ -22,7 +20,7 @@ public interface Command<T> {
 
     String getBody();
 
-    Accept getResponseType();
+    Http.Accept getResponseType();
 
     Map<String, String> getHeaders();
 

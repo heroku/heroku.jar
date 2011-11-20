@@ -1,12 +1,12 @@
 package com.heroku.api.connection;
 
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandUtil;
 import com.heroku.api.command.LoginCommand;
 import com.heroku.api.command.login.LoginResponse;
-import com.heroku.api.http.HerokuApiVersion;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -29,9 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * TODO: Enter JavaDoc
- *
- * @author Naaman Newbold
+ *Todo refactor constructors and provide protected methods for subclasses to provide httpclient and executor etc in all impls
  */
 public class HttpClientConnection implements Connection<Future<?>> {
 
@@ -80,7 +78,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     public <T> T executeCommand(Command<T> command) {
         try {
             HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), getCommandEndpoint(endpoint, command.getEndpoint()).toString());
-            message.setHeader(HerokuApiVersion.HEADER, String.valueOf(HerokuApiVersion.v2.version));
+            message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
             message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 
             for (Map.Entry<String, String> header : command.getHeaders().entrySet()) {
@@ -100,7 +98,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
 
-    private HttpRequestBase getHttpRequestBase(Method httpMethod, String endpoint) {
+    private HttpRequestBase getHttpRequestBase(Http.Method httpMethod, String endpoint) {
         switch (httpMethod) {
             case GET:
                 return new HttpGet(endpoint);

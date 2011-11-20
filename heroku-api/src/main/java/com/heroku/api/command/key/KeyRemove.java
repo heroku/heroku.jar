@@ -1,15 +1,12 @@
 package com.heroku.api.command.key;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Accept;
-import com.heroku.api.http.HttpStatus;
+import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.http.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,17 +23,17 @@ public class KeyRemove implements Command<Unit> {
     private final CommandConfig config;
 
     public KeyRemove(String keyName) {
-        this.config = new CommandConfig().with(HerokuRequestKey.appName, keyName);
+        this.config = new CommandConfig().with(Heroku.RequestKey.appName, keyName);
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.DELETE;
+    public Http.Method getHttpMethod() {
+        return Http.Method.DELETE;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.Key.value, config.get(HerokuRequestKey.appName));
+        return String.format(Heroku.Resource.Key.value, config.get(Heroku.RequestKey.appName));
     }
 
     @Override
@@ -50,8 +47,8 @@ public class KeyRemove implements Command<Unit> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -61,7 +58,7 @@ public class KeyRemove implements Command<Unit> {
 
     @Override
     public Unit getResponse(byte[] in, int code) {
-        if (code == HttpStatus.OK.statusCode)
+        if (code == Http.Status.OK.statusCode)
             return Unit.unit;
         else
             throw new RequestFailedException("KeysRemove failed", code, in);

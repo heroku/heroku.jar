@@ -1,12 +1,12 @@
 package com.heroku.api.command.addon;
 
-import com.heroku.api.HerokuRequestKey;
-import com.heroku.api.HerokuResource;
+import com.heroku.api.Heroku;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandConfig;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.*;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 
 import java.util.Map;
 
@@ -20,17 +20,17 @@ public class AddonInstall implements Command<JsonMapResponse> {
     private final CommandConfig config;
 
     public AddonInstall(String appName, String addonName) {
-        config = new CommandConfig().app(appName).with(HerokuRequestKey.addonName, addonName);
+        config = new CommandConfig().app(appName).with(Heroku.RequestKey.addonName, addonName);
     }
 
     @Override
-    public Method getHttpMethod() {
-        return Method.POST;
+    public Http.Method getHttpMethod() {
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return String.format(HerokuResource.AppAddon.value, config.get(HerokuRequestKey.appName), config.get(HerokuRequestKey.addonName));
+        return String.format(Heroku.Resource.AppAddon.value, config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.addonName));
     }
 
     @Override
@@ -44,21 +44,21 @@ public class AddonInstall implements Command<JsonMapResponse> {
     }
 
     @Override
-    public Accept getResponseType() {
-        return Accept.JSON;
+    public Http.Accept getResponseType() {
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return HttpHeader.Util.setHeaders(ContentType.FORM_URLENCODED);
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
     public JsonMapResponse getResponse(byte[] bytes, int status) {
-        if (status == HttpStatus.OK.statusCode) {
+        if (status == Http.Status.OK.statusCode) {
             return new JsonMapResponse(bytes);
         } else {
-            throw new RequestFailedException("Unable to add addon " + config.get(HerokuRequestKey.addonName), status, bytes);
+            throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.addonName), status, bytes);
         }
     }
 }
