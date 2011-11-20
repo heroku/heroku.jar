@@ -2,6 +2,7 @@ package com.heroku.api.command.log;
 
 
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.http.HttpUtil;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
 
 public class LogStreamResponse {
 
@@ -44,23 +44,8 @@ public class LogStreamResponse {
 
     private SSLSocketFactory getSslSocketFactory() {
         try {
-            final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                @Override
-                public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-                }
-
-                @Override
-                public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
-                }
-
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            }};
-
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            final SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, HttpUtil.trustAllTrustManager(), new java.security.SecureRandom());
             return sslContext.getSocketFactory();
         } catch (NoSuchAlgorithmException e) {
             throw new HerokuAPIException("Cant getSslSocketFactory, NoSuchAlgorithmException", e);

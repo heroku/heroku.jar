@@ -5,11 +5,12 @@ import com.heroku.api.command.CommandConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 
-import java.io.InputStream;
+import javax.net.ssl.*;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.cert.X509Certificate;
 
 /**
  * TODO: Javadoc
@@ -70,5 +71,25 @@ public class HttpUtil {
     public static RequestFailedException insufficientPrivileges(int code, byte[] bytes) {
         return new RequestFailedException("Insufficient privileges.", code, bytes);
     }
+
+    public static TrustManager[] trustAllTrustManager() {
+        return new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
+    }
+
+
+
 
 }

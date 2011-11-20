@@ -1,6 +1,5 @@
 package com.heroku.api.connection;
 
-import com.heroku.api.HerokuAPI;
 import com.heroku.api.command.Command;
 import com.heroku.api.command.CommandUtil;
 import com.heroku.api.command.LoginCommand;
@@ -21,12 +20,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.net.URL;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -157,18 +152,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     public static DefaultHttpClient wrapClient(DefaultHttpClient base) {
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
-            X509TrustManager tm = new X509TrustManager() {
-                public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
-                }
-
-                public void checkServerTrusted(X509Certificate[] xcs, String string) throws CertificateException {
-                }
-
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            };
-            ctx.init(null, new TrustManager[]{tm}, null);
+            ctx.init(null, HttpUtil.trustAllTrustManager(), new java.security.SecureRandom());
             SSLSocketFactory ssf = new SSLSocketFactory(ctx);
             ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
             ClientConnectionManager ccm = base.getConnectionManager();
