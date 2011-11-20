@@ -7,7 +7,6 @@ import com.heroku.api.http.Http;
 import javax.net.ssl.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
 public class Heroku {
@@ -41,15 +40,17 @@ public class Heroku {
     public static SSLContext sslContext(boolean verify) {
         try {
             SSLContext ctx = SSLContext.getInstance("TLS");
-            TrustManager[] tmgrs = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).getTrustManagers();
+            TrustManager[] tmgrs = null;
             if (!verify) {
                 tmgrs = trustAllTrustManagers();
             }
-            KeyManager[] kmgrs = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm()).getKeyManagers();
-            if (!verify) {
-                kmgrs = null;
-            }
-            ctx.init(kmgrs, tmgrs, new SecureRandom());
+            /*
+Initializes this context.
+Either of the first two parameters may be null in which case the installed security providers will be searched
+for the highest priority implementation of the appropriate factory.
+Likewise, the secure random parameter may be null in which case the default implementation will be used.
+            */
+            ctx.init(null, tmgrs, null);
             return ctx;
         } catch (NoSuchAlgorithmException e) {
             throw new HerokuAPIException("NoSuchAlgorithmException while trying to setup SSLContext", e);
