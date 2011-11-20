@@ -120,12 +120,12 @@ public class HttpClientConnection implements Connection<Future<?>> {
 
     protected DefaultHttpClient getHttpClient() {
         SSLSocketFactory ssf = new SSLSocketFactory(Heroku.herokuSSLContext());
+        ThreadSafeClientConnManager ccm = new ThreadSafeClientConnManager();
         if (!Heroku.Config.ENDPOINT.isDefault()) {
             ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            SchemeRegistry sr = ccm.getSchemeRegistry();
+            sr.register(new Scheme("https", ssf, 443));
         }
-        ThreadSafeClientConnManager ccm = new ThreadSafeClientConnManager();
-        SchemeRegistry sr = ccm.getSchemeRegistry();
-        sr.register(new Scheme("https", ssf, 443));
         return new DefaultHttpClient(ccm);
     }
 
