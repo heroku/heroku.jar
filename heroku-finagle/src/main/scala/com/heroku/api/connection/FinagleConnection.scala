@@ -17,15 +17,18 @@ import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 
 
-class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Future[_]] {
+class FinagleConnection(val config: Either[LoginCommand, String]) extends Connection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
   val client = newClient()
 
-  val loginResponse = executeCommand(loginCommand)
-
   val hostHeader = getHostHeader
+
+  val apiKey = config match {
+    case Left(login) => executeCommand(login).api_key()
+    case Right(key) => key
+  }
 
   def executeCommand[T](command: Command[T]): T = executeCommandAsync(command).get()
 
@@ -48,9 +51,8 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, hostHeader)
 
-    if (loginResponse != null && cmd.getEndpoint.startsWith("/")) {
-      //send basic auth if we've logged in and we are hitting the api endpoint and not logplex etc...
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + loginResponse.api_key()).getBytes("UTF-8")))
+    if (apiKey != null) {
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + apiKey).getBytes("UTF-8")))
     }
 
     cmd.getHeaders.foreach {
@@ -95,8 +97,16 @@ class FinagleConnection(val loginCommand: LoginCommand) extends Connection[Futur
     }
     builder.build()
   }
-
-
 }
 
 
+object FinagleConnection {
+  def apply(cmd: LoginCommand): FinagleConnection = {
+    new FinagleConnection(Left(cmd))
+  }
+
+  def apply(apiKey: String): FinagleConnection = {
+    new FinagleConnection(Right(apiKey))
+  }
+
+}

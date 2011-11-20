@@ -16,7 +16,7 @@ public class FinagleModule extends ConnectionTestModule<FinagleConnection> {
     FinagleConnection getConnectionImpl() throws IOException {
 
         try {
-            return new FinagleConnection(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
+            return FinagleConnection.apply(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

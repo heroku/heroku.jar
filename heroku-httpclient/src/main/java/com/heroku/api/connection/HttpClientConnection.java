@@ -27,9 +27,6 @@ import java.util.concurrent.Future;
 
 import static com.heroku.api.Heroku.Config.ENDPOINT;
 
-/**
- * Todo refactor constructors and provide protected methods for subclasses to provide httpclient and executor etc in all impls
- */
 public class HttpClientConnection implements Connection<Future<?>> {
 
     private DefaultHttpClient httpClient = getHttpClient();
