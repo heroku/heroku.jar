@@ -99,5 +99,8 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
         }
     }
 
-
+    @Override
+    public void close() {
+        httpClient.close();
+    }
 }

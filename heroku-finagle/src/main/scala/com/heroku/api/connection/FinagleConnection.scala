@@ -97,6 +97,10 @@ class FinagleConnection(val config: Either[LoginCommand, String]) extends Connec
     }
     builder.build()
   }
+
+  def close() {
+    client.release()
+  }
 }
 
 

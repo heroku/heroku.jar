@@ -14,4 +14,6 @@ public interface Connection<F> {
 
     <T> F executeCommandAsync(Command<T> command);
 
+    void close();
+
 }

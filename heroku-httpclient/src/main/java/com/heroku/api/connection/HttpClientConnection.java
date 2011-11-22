@@ -134,4 +134,8 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
 
+    @Override
+    public void close() {
+        getExecutorService().shutdownNow();
+    }
 }
