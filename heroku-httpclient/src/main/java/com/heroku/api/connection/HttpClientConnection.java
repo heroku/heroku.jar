@@ -20,10 +20,7 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import static com.heroku.api.Heroku.Config.ENDPOINT;
 
@@ -115,7 +112,14 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     protected ExecutorService createExecutorService() {
-        return Executors.newCachedThreadPool();
+        return Executors.newCachedThreadPool(new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable runnable) {
+                Thread t = new Thread(runnable);
+                t.setDaemon(true);
+                return t;
+            }
+        });
     }
 
     protected DefaultHttpClient getHttpClient() {
