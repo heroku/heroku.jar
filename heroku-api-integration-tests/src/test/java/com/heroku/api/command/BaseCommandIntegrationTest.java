@@ -9,7 +9,7 @@ import com.heroku.api.command.config.ConfigAdd;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.exception.HerokuAPIException;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -43,21 +43,21 @@ public abstract class BaseCommandIntegrationTest {
         return new Object[][]{{response}};
     }
 
+    @AfterSuite
+    public void closeConnection() {
+        connection.close();
+    }
+    
     @AfterTest
     public void deleteTestApps() throws IOException {
         for (JsonMapResponse res : apps) {
-            CommandConfig config = new CommandConfig()
-                    .onStack(Heroku.Stack.Cedar)
-                    .app(res.get("name"));
-
-            try {
-                Command cmd = new AppDestroy(res.get("name"));
-                connection.executeCommand(cmd);
-            } catch (HerokuAPIException e) {
-                // quietly clean up apps created. if the destroy fails, it's ok because it might
-                // have been deleted before we get to it here.
-            }
+            Command<Unit> cmd = new AppDestroy(res.get("name"));
+            connection.executeCommand(cmd);
         }
+    }
+    
+    public void deleteApp(String appName) {
+        connection.executeCommand(new AppDestroy(appName));
     }
 
     protected void addConfig(CommandResponse app, String... nameValuePairs) {

@@ -60,6 +60,6 @@ public class ConfigAdd implements Command<Unit> {
         if (code == Http.Status.OK.statusCode)
             return Unit.unit;
         else
-            throw new RequestFailedException("AppDestroy failed", code, in);
+            throw new RequestFailedException("Config add failed", code, in);
     }
 }

@@ -18,14 +18,14 @@ import java.util.concurrent.TimeoutException;
 @Guice(modules = AsyncHttpClientModule.class)
 public class AsyncHttpClientConnectionTest {
 
-    @Inject
-    AsyncHttpClientConnection connection;
-
-    @Test
-    public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {
-        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeCommandAsync(new AppList());
-        JsonArrayResponse jsonArrayResponse = jsonArrayResponseFuture.get(10L, TimeUnit.SECONDS);
-        Assert.assertTrue(jsonArrayResponse != null);
-    }
+//    @Inject
+//    AsyncHttpClientConnection connection;
+//
+//    @Test
+//    public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {
+//        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeCommandAsync(new AppList());
+//        JsonArrayResponse jsonArrayResponse = jsonArrayResponseFuture.get(10L, TimeUnit.SECONDS);
+//        Assert.assertTrue(jsonArrayResponse != null);
+//    }
 
 }

@@ -1,16 +1,14 @@
 package com.heroku.api.command.response;
 
 import com.heroku.api.command.CommandResponse;
-import com.heroku.api.exception.HerokuAPIException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.heroku.api.command.response.XmlUtil.parse;
 
 
 public class XmlMapResponse extends DefaultHandler implements CommandResponse {
@@ -22,7 +20,7 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
 
     public XmlMapResponse(byte[] bytes) {
         this.rawData = bytes;
-        parse();
+        parse(this.rawData, this);
     }
 
     @Override
@@ -53,16 +51,6 @@ public class XmlMapResponse extends DefaultHandler implements CommandResponse {
     @Override
     public String get(String key) {
         return data.get(key);
-    }
-
-    private void parse() {
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        try {
-            SAXParser parser = parserFactory.newSAXParser();
-            parser.parse(new ByteArrayInputStream(rawData), this);
-        } catch (Exception e) {
-            throw new HerokuAPIException("Unable to parse XML response.", e);
-        }
     }
 
     @Override

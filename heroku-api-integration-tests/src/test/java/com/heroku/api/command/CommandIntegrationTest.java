@@ -20,6 +20,8 @@ import com.heroku.api.command.ps.Scale;
 import com.heroku.api.command.response.JsonArrayResponse;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.command.response.Unit;
+import com.heroku.api.command.response.XmlArrayResponse;
+import com.heroku.api.command.sharing.CollabList;
 import com.heroku.api.command.sharing.SharingAdd;
 import com.heroku.api.command.sharing.SharingRemove;
 import com.heroku.api.command.sharing.SharingTransfer;
@@ -102,7 +104,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
     public void testSharingTransferCommand(JsonMapResponse app) throws IOException {
-        Command sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
+        Command<Unit> sharingAddCommand = new SharingAdd(app.get("name"), DEMO_EMAIL);
         connection.executeCommand(sharingAddCommand);
 
         SharingTransfer sharingTransferCommand = new SharingTransfer(app.get("name"), DEMO_EMAIL);
@@ -183,7 +185,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         JsonArrayResponse response = connection.executeCommand(cmd);
         assertNotNull(response);
         assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
-        assertNotNull(response.get("logging:basic"));
+        assertNotNull(response.get("releases:basic"));
     }
 
     @Test(dataProvider = "app")
@@ -192,4 +194,16 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         JsonMapResponse response = connection.executeCommand(cmd);
         assertEquals(response.get("status"), "Installed");
     }
+
+    @Test(dataProvider = "app")
+    public void testCollaboratorList(JsonMapResponse app) {
+        Command<XmlArrayResponse> cmd = new CollabList(app.get("name"));
+        XmlArrayResponse xmlArrayResponse = connection.executeCommand(cmd);
+        assertEquals(xmlArrayResponse.getData().size(), 1);
+        assertEquals(xmlArrayResponse.getData().get(0).get("email"), app.get("email"));
+    }
+
+
+
+
 }
