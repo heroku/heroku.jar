@@ -6,6 +6,7 @@ import com.heroku.api.TestModuleFactory;
 import com.heroku.api.command.app.AppCreate;
 import com.heroku.api.command.app.AppDestroy;
 import com.heroku.api.command.config.ConfigAdd;
+import com.heroku.api.command.log.LogStreamResponse;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.command.response.Unit;
 import com.heroku.api.connection.Connection;
@@ -15,8 +16,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * TODO: Javadoc
@@ -80,5 +85,17 @@ public abstract class BaseCommandIntegrationTest {
 
         Command<Unit> cmd = new ConfigAdd(app.get("name").toString(), new String(jsonConfig));
         connection.executeCommand(cmd);
+    }
+
+    void assertLogIsReadable(LogStreamResponse logsResponse) throws IOException {
+        InputStream in = logsResponse.openStream();
+        try {
+            in = logsResponse.openStream();
+            assertTrue(in.read(new byte[1024]) > -1, "No logs returned");
+        } catch (Exception e) {
+            fail("Unable to read logs", e);
+        } finally {
+            in.close();
+        }
     }
 }

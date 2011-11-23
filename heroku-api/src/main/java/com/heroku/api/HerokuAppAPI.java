@@ -8,6 +8,7 @@ import com.heroku.api.command.config.ConfigAdd;
 import com.heroku.api.command.config.ConfigList;
 import com.heroku.api.command.config.ConfigRemove;
 import com.heroku.api.command.log.Log;
+import com.heroku.api.command.log.LogStreamResponse;
 import com.heroku.api.command.response.JsonMapResponse;
 import com.heroku.api.command.sharing.CollabList;
 import com.heroku.api.command.sharing.SharingAdd;
@@ -75,8 +76,8 @@ public class HerokuAppAPI {
         connection.executeCommand(new SharingTransfer(appName, to));
     }
 
-    public String getLogChunk() {
-        return connection.executeCommand(connection.executeCommand(new Log(appName)).getNextCommand()).getText();
+    public LogStreamResponse getLogChunk() {
+        return connection.executeCommand(new Log(appName));
     }
 
     public HerokuAPI api() {

@@ -62,9 +62,8 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
         Log logs = new Log(app.get("name"));
-        LogsResponse logsResponse = connection.executeCommand(logs);
-        String logChunk = connection.executeCommand(logsResponse.getNextCommand()).getText();
-        assertTrue(logChunk.length() > 0, "No Logs Returned");
+        LogStreamResponse logsResponse = connection.executeCommand(logs);
+        assertLogIsReadable(logsResponse);
     }
 
     @Test(dataProvider = "app")
@@ -73,9 +72,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Thread.sleep(10000);
         LogStream logs = new LogStream(app.get("name"));
         LogStreamResponse logsResponse = connection.executeCommand(logs);
-        InputStream in = logsResponse.openStream();
-        byte[] read = new byte[1024];
-        assertTrue(in.read(read) > -1, "No Logs Returned");
+        assertLogIsReadable(logsResponse);
     }
 
     @Test(dataProvider = "app")

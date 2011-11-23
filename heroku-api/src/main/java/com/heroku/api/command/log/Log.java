@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Log implements Command<LogsResponse> {
+public class Log implements Command<LogStreamResponse> {
 
     private CommandConfig config = new CommandConfig().onStack(Heroku.Stack.Cedar);
 
@@ -52,10 +52,10 @@ public class Log implements Command<LogsResponse> {
     }
 
     @Override
-    public LogsResponse getResponse(byte[] bytes, int status) {
+    public LogStreamResponse getResponse(byte[] bytes, int status) {
         if (status == 200) {
             URL logs = HttpUtil.toURL(new String(bytes));
-            return new LogsResponse(new TextCommand(logs), bytes);
+            return new LogStreamResponse(logs);
         } else {
             throw new RequestFailedException("Unable to get logs", status, bytes);
         }
