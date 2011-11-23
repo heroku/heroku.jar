@@ -48,7 +48,7 @@ public abstract class BaseCommandIntegrationTest {
         connection.close();
     }
     
-    @AfterTest
+    @AfterTest(alwaysRun = true)
     public void deleteTestApps() throws IOException {
         for (JsonMapResponse res : apps) {
             Command<Unit> cmd = new AppDestroy(res.get("name"));

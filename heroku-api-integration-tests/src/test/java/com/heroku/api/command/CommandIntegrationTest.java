@@ -1,5 +1,8 @@
 package com.heroku.api.command;
 
+import com.heroku.api.Heroku;
+import com.heroku.api.HerokuAPI;
+import com.heroku.api.HerokuAppAPI;
 import com.heroku.api.command.addon.AddonInstall;
 import com.heroku.api.command.addon.AddonList;
 import com.heroku.api.command.addon.AppAddonsList;
@@ -30,6 +33,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.heroku.api.Heroku.Stack.Cedar;
 import static org.testng.Assert.*;
 
 
@@ -50,6 +54,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
 
         assertNotNull(response.get("id"));
         assertEquals(response.get("stack").toString(), "cedar");
+        deleteApp(response.get("name").toString());
     }
 
     @Test(dataProvider = "app")
@@ -87,9 +92,10 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         assertNotNull(response.get(app.get("name")));
     }
 
-    @Test(dataProvider = "app")
-    public void testDestroyAppCommand(JsonMapResponse app) throws IOException {
-        AppDestroy cmd = new AppDestroy(app.get("name"));
+    // don't use the app dataprovider because it'll try to delete an already deleted app
+    @Test
+    public void testDestroyAppCommand() throws IOException {
+        AppDestroy cmd = new AppDestroy(HerokuAPI.with(connection).newapp(Cedar).getAppName());
         connection.executeCommand(cmd);
     }
 
@@ -200,7 +206,7 @@ public class CommandIntegrationTest extends BaseCommandIntegrationTest {
         Command<XmlArrayResponse> cmd = new CollabList(app.get("name"));
         XmlArrayResponse xmlArrayResponse = connection.executeCommand(cmd);
         assertEquals(xmlArrayResponse.getData().size(), 1);
-        assertEquals(xmlArrayResponse.getData().get(0).get("email"), app.get("email"));
+        assertNotNull(xmlArrayResponse.getData().get(0).get("email"));
     }
 
 

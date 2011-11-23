@@ -64,7 +64,7 @@ public class HttpClientConnection implements Connection<Future<?>> {
     @Override
     public <T> T executeCommand(Command<T> command) {
         try {
-            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), ENDPOINT.value + command.getEndpoint());
+            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), parseEndpoint(command.getEndpoint()));
             message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
             message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
 
@@ -82,6 +82,14 @@ public class HttpClientConnection implements Connection<Future<?>> {
         } catch (IOException e) {
             throw new RuntimeException("exception while executing command", e);
         }
+    }
+
+    // Assume the endpoint string passed from executeCommand is a partial URL.
+    private String parseEndpoint(String commandEndpoint) {
+        if (commandEndpoint.matches("https?://.*"))
+            return commandEndpoint;
+
+        return ENDPOINT.value + commandEndpoint;
     }
 
 
