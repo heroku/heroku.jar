@@ -1,6 +1,6 @@
 package com.heroku.api.connection;
 
-import com.heroku.api.command.Command;
+import com.heroku.api.request.Request;
 
 /**
  * Connection manager for connecting to the Heroku API.
@@ -10,9 +10,9 @@ import com.heroku.api.command.Command;
 public interface Connection<F> {
 
 
-    <T> T executeCommand(Command<T> command);
+    <T> T execute(Request<T> request);
 
-    <T> F executeCommandAsync(Command<T> command);
+    <T> F executeAsync(Request<T> request);
 
     void close();
 

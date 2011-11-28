@@ -2,8 +2,8 @@ package com.heroku.api.asynchttpclient;
 
 import com.google.inject.Inject;
 import com.heroku.api.AsyncHttpClientModule;
-import com.heroku.api.command.app.AppList;
-import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.AsyncHttpClientConnection;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
@@ -23,7 +23,7 @@ public class AsyncHttpClientConnectionTest {
 
     @Test
     public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {
-        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeCommandAsync(new AppList());
+        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeAsync(new AppList());
         JsonArrayResponse jsonArrayResponse = jsonArrayResponseFuture.get(10L, TimeUnit.SECONDS);
         Assert.assertTrue(jsonArrayResponse != null);
     }

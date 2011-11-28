@@ -1,9 +1,9 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.command.Command;
-import com.heroku.api.command.LoginCommand;
-import com.heroku.api.command.login.LoginResponse;
+import com.heroku.api.request.LoginRequest;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.login.LoginResponse;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import org.apache.http.HttpResponse;
@@ -31,8 +31,8 @@ public class HttpClientConnection implements Connection<Future<?>> {
     private Object lock = new Object();
     private final String apiKey;
 
-    public HttpClientConnection(LoginCommand login) {
-        LoginResponse loginResponse = executeCommand(login);
+    public HttpClientConnection(LoginRequest login) {
+        LoginResponse loginResponse = execute(login);
         this.apiKey = loginResponse.api_key();
         setHttpClientCredentials(apiKey);
     }
@@ -50,11 +50,11 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     @Override
-    public <T> Future<T> executeCommandAsync(final Command<T> command) {
+    public <T> Future<T> executeAsync(final Request<T> request) {
         Callable<T> callable = new Callable<T>() {
             @Override
             public T call() throws Exception {
-                return executeCommand(command);
+                return execute(request);
             }
         };
         return getExecutorService().submit(callable);
@@ -62,25 +62,25 @@ public class HttpClientConnection implements Connection<Future<?>> {
     }
 
     @Override
-    public <T> T executeCommand(Command<T> command) {
+    public <T> T execute(Request<T> request) {
         try {
-            HttpRequestBase message = getHttpRequestBase(command.getHttpMethod(), ENDPOINT.value + command.getEndpoint());
+            HttpRequestBase message = getHttpRequestBase(request.getHttpMethod(), ENDPOINT.value + request.getEndpoint());
             message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
-            message.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
+            message.setHeader(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
 
-            for (Map.Entry<String, String> header : command.getHeaders().entrySet()) {
+            for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
                 message.setHeader(header.getKey(), header.getValue());
             }
 
-            if (command.hasBody()) {
-                ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(command.getBody()));
+            if (request.hasBody()) {
+                ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody()));
             }
 
             HttpResponse httpResponse = httpClient.execute(message);
 
-            return command.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
+            return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
         } catch (IOException e) {
-            throw new RuntimeException("exception while executing command", e);
+            throw new RuntimeException("exception while executing request", e);
         }
     }
 

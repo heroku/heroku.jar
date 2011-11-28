@@ -2,8 +2,8 @@ package com.heroku.api.finagle;
 
 import com.google.inject.Inject;
 import com.heroku.api.FinagleModule;
-import com.heroku.api.command.app.AppList;
-import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.FinagleConnection;
 import com.twitter.util.Duration;
 import com.twitter.util.Future;
@@ -24,7 +24,7 @@ public class FinagleConnectionTest {
 
     @Test
     public void asyncTests() {
-        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeCommandAsync(new AppList());
+        Future<JsonArrayResponse> jsonArrayResponseFuture = connection.executeAsync(new AppList());
         Try<JsonArrayResponse> jsonArrayResponseTry = jsonArrayResponseFuture.get(Duration.fromTimeUnit(10L, TimeUnit.SECONDS));
         Assert.assertTrue(jsonArrayResponseTry.isReturn());
     }

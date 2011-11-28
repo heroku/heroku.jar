@@ -1,19 +1,18 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.app.AppCreate;
-import com.heroku.api.command.app.AppDestroy;
-import com.heroku.api.command.app.AppInfo;
-import com.heroku.api.command.config.ConfigAdd;
-import com.heroku.api.command.config.ConfigList;
-import com.heroku.api.command.config.ConfigRemove;
-import com.heroku.api.command.log.Log;
-import com.heroku.api.command.log.LogStreamResponse;
-import com.heroku.api.command.response.JsonMapResponse;
-import com.heroku.api.command.sharing.CollabList;
-import com.heroku.api.command.sharing.SharingAdd;
-import com.heroku.api.command.sharing.SharingRemove;
-import com.heroku.api.command.sharing.SharingTransfer;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.app.AppInfo;
+import com.heroku.api.request.config.ConfigAdd;
+import com.heroku.api.request.config.ConfigList;
+import com.heroku.api.request.config.ConfigRemove;
+import com.heroku.api.request.log.Log;
+import com.heroku.api.request.log.LogStreamResponse;
+import com.heroku.api.request.sharing.CollabList;
+import com.heroku.api.request.sharing.SharingAdd;
+import com.heroku.api.request.sharing.SharingRemove;
+import com.heroku.api.request.sharing.SharingTransfer;
 import com.heroku.api.connection.Connection;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class HerokuAppAPI {
     }
 
     public Map<String, String> create(Heroku.Stack stack) {
-        return connection.executeCommand(new AppCreate(stack).withName(appName)).getData();
+        return connection.execute(new AppCreate(stack).withName(appName)).getData();
     }
 
     public HerokuAppAPI createAnd(Heroku.Stack stack) {
@@ -39,45 +38,45 @@ public class HerokuAppAPI {
     }
 
     public void destroy() {
-        connection.executeCommand(new AppDestroy(appName));
+        connection.execute(new AppDestroy(appName));
     }
 
     public Map<String, String> info() {
-        return connection.executeCommand(new AppInfo(appName)).getData();
+        return connection.execute(new AppInfo(appName)).getData();
     }
 
     public List<Map<String, String>> listCollaborators() {
-        return connection.executeCommand(new CollabList(appName)).getData();
+        return connection.execute(new CollabList(appName)).getData();
     }
 
     public HerokuAppAPI addCollaborator(String collaborator) {
-        connection.executeCommand(new SharingAdd(appName, collaborator));
+        connection.execute(new SharingAdd(appName, collaborator));
         return this;
     }
 
     public HerokuAppAPI removeCollaborator(String collaborator) {
-        connection.executeCommand(new SharingRemove(appName, collaborator));
+        connection.execute(new SharingRemove(appName, collaborator));
         return this;
     }
 
     public void addConfig(String config) {
-        connection.executeCommand(new ConfigAdd(appName, config));
+        connection.execute(new ConfigAdd(appName, config));
     }
 
     public Map<String, String> listConfig() {
-        return connection.executeCommand(new ConfigList(appName)).getData();
+        return connection.execute(new ConfigList(appName)).getData();
     }
 
     public Map<String, String> removeConfig(String configVarName) {
-        return connection.executeCommand(new ConfigRemove(appName, configVarName)).getData();
+        return connection.execute(new ConfigRemove(appName, configVarName)).getData();
     }
 
     public void transferApp(String to) {
-        connection.executeCommand(new SharingTransfer(appName, to));
+        connection.execute(new SharingTransfer(appName, to));
     }
 
     public LogStreamResponse getLogChunk() {
-        return connection.executeCommand(new Log(appName));
+        return connection.execute(new Log(appName));
     }
 
     public HerokuAPI api() {

@@ -1,7 +1,7 @@
 package com.heroku.api.http;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.command.CommandConfig;
+import com.heroku.api.request.RequestConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 
@@ -26,7 +26,7 @@ public class HttpUtil {
 
     private static String ENCODE_FAIL = "Unsupported encoding exception while encoding parameters";
 
-    public static String encodeParameters(CommandConfig config, Heroku.RequestKey... keys) {
+    public static String encodeParameters(RequestConfig config, Heroku.RequestKey... keys) {
 
         StringBuilder encodedParameters = new StringBuilder();
         String separator = "";
@@ -54,7 +54,7 @@ public class HttpUtil {
 
 
     public static UnsupportedOperationException noBody() {
-        return new UnsupportedOperationException("This command does not have a body. Use hasBody() to check for a body.");
+        return new UnsupportedOperationException("This request does not have a body. Use hasBody() to check for a body.");
     }
 
     public static URL toURL(String url) {

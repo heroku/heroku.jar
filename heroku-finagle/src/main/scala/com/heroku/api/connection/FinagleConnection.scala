@@ -4,7 +4,7 @@ import java.lang.String
 import com.heroku.api.http._
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
-import com.heroku.api.command.{LoginCommand, Command}
+import com.heroku.api.request.{LoginRequest, Request}
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 import com.twitter.finagle.http.Http
@@ -17,7 +17,7 @@ import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 
 
-class FinagleConnection(val config: Either[LoginCommand, String]) extends Connection[Future[_]] {
+class FinagleConnection(val config: Either[LoginRequest, String]) extends Connection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
@@ -26,20 +26,20 @@ class FinagleConnection(val config: Either[LoginCommand, String]) extends Connec
   val hostHeader = getHostHeader
 
   val apiKey = config match {
-    case Left(login) => executeCommand(login).api_key()
+    case Left(login) => execute(login).api_key()
     case Right(key) => key
   }
 
-  def executeCommand[T](command: Command[T]): T = executeCommandAsync(command).get()
+  def execute[T](command: Request[T]): T = executeAsync(command).get()
 
-  def executeCommandAsync[T](command: Command[T]): Future[T] = {
+  def executeAsync[T](command: Request[T]): Future[T] = {
     client(toReq(command)).map {
       resp =>
         command.getResponse(resp.getContent.toByteBuffer.array(), resp.getStatus.getCode)
     }
   }
 
-  def toReq(cmd: Command[_]): HttpRequest = {
+  def toReq(cmd: Request[_]): HttpRequest = {
     val method = cmd.getHttpMethod match {
       case Method.GET => HttpMethod.GET
       case Method.PUT => HttpMethod.PUT
@@ -105,7 +105,7 @@ class FinagleConnection(val config: Either[LoginCommand, String]) extends Connec
 
 
 object FinagleConnection {
-  def apply(cmd: LoginCommand): FinagleConnection = {
+  def apply(cmd: LoginRequest): FinagleConnection = {
     new FinagleConnection(Left(cmd))
   }
 

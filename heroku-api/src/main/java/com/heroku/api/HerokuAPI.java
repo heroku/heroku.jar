@@ -1,11 +1,11 @@
 package com.heroku.api;
 
 
-import com.heroku.api.command.app.AppCreate;
-import com.heroku.api.command.app.AppList;
-import com.heroku.api.command.key.KeyAdd;
-import com.heroku.api.command.key.KeyRemove;
-import com.heroku.api.command.response.JsonArrayResponse;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.key.KeyAdd;
+import com.heroku.api.request.key.KeyRemove;
+import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.Connection;
 
 public class HerokuAPI {
@@ -21,15 +21,15 @@ public class HerokuAPI {
     }
 
     public void addKey(String sshKey) {
-        connection.executeCommand(new KeyAdd(sshKey));
+        connection.execute(new KeyAdd(sshKey));
     }
 
     public void removeKey(String sshKey) {
-        connection.executeCommand(new KeyRemove(sshKey));
+        connection.execute(new KeyRemove(sshKey));
     }
     
     public JsonArrayResponse apps() {
-        return connection.executeCommand(new AppList());
+        return connection.execute(new AppList());
     }
     
     public HerokuAppAPI app(String name) {
@@ -37,11 +37,11 @@ public class HerokuAPI {
     }
 
     public HerokuAppAPI newapp(Heroku.Stack stack) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack)).get("name"));
+        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack)).get("name"));
     }
 
     public HerokuAppAPI newapp(Heroku.Stack stack, String appName) {
-        return new HerokuAppAPI(connection, connection.executeCommand(new AppCreate(stack).withName(appName)).get("name"));
+        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack).withName(appName)).get("name"));
     }
 
 

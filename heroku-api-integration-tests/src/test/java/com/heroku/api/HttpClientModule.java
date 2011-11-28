@@ -1,13 +1,12 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
-import com.heroku.api.command.login.BasicAuthLogin;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 
 import java.io.IOException;
 
-import static com.heroku.api.IntegrationTestConfig.APIKEY;
 import static com.heroku.api.IntegrationTestConfig.PASSWORD;
 import static com.heroku.api.IntegrationTestConfig.USER;
 

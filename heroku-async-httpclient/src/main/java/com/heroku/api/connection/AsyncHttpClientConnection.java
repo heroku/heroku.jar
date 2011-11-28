@@ -1,8 +1,8 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.command.Command;
-import com.heroku.api.command.LoginCommand;
+import com.heroku.api.request.LoginRequest;
+import com.heroku.api.request.Request;
 import com.heroku.api.exception.HerokuAPIException;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
@@ -20,9 +20,9 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     private AsyncHttpClient httpClient;
 
 
-    public AsyncHttpClientConnection(LoginCommand login) {
+    public AsyncHttpClientConnection(LoginRequest login) {
         httpClient = geHttpClient();
-        this.apiKey = executeCommand(login).api_key();
+        this.apiKey = execute(login).api_key();
     }
 
     public AsyncHttpClientConnection(String apiKey) {
@@ -37,10 +37,10 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
         return new AsyncHttpClient(builder.build());
     }
 
-    private Request buildRequest(Command<?> command) {
-        AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(command);
+    private com.ning.http.client.Request buildRequest(Request<?> req) {
+        AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
-        builder.setHeader(command.getResponseType().getHeaderName(), command.getResponseType().getHeaderValue());
+        builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
         if (apiKey != null) {
             try {
                 builder.setHeader("Authorization", "Basic " + Base64.encode((":" + apiKey).getBytes("UTF-8")));
@@ -48,32 +48,32 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
                 throw new HerokuAPIException("UnsupportedEncodingException while encoding api key");
             }
         }
-        if (command.hasBody()) {
-            builder.setBody(command.getBody());
+        if (req.hasBody()) {
+            builder.setBody(req.getBody());
         }
         return builder.build();
     }
 
-    private AsyncHttpClient.BoundRequestBuilder prepareRequest(Command<?> command) {
-        String req = Heroku.Config.ENDPOINT.value + command.getEndpoint();
-        switch (command.getHttpMethod()) {
+    private AsyncHttpClient.BoundRequestBuilder prepareRequest(Request<?> request) {
+        String requestEndpoint = Heroku.Config.ENDPOINT.value + request.getEndpoint();
+        switch (request.getHttpMethod()) {
             case GET:
-                return httpClient.prepareGet(req);
+                return httpClient.prepareGet(requestEndpoint);
             case POST:
-                return httpClient.preparePost(req);
+                return httpClient.preparePost(requestEndpoint);
             case PUT:
-                return httpClient.preparePut(req);
+                return httpClient.preparePut(requestEndpoint);
             case DELETE:
-                return httpClient.prepareDelete(req);
+                return httpClient.prepareDelete(requestEndpoint);
             default:
-                throw new UnsupportedOperationException(command.getHttpMethod().name() + " is not supported");
+                throw new UnsupportedOperationException(request.getHttpMethod().name() + " is not supported");
         }
     }
 
     @Override
-    public <T> T executeCommand(Command<T> command) {
+    public <T> T execute(Request<T> req) {
         try {
-            return executeCommandAsync(command).get(30L, TimeUnit.SECONDS);
+            return executeAsync(req).get(30L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new HerokuAPIException("request interrupted", e);
         } catch (ExecutionException e) {
@@ -84,16 +84,16 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     }
 
     @Override
-    public <T> ListenableFuture<T> executeCommandAsync(final Command<T> command) {
-        Request req = buildRequest(command);
+    public <T> ListenableFuture<T> executeAsync(final Request<T> request) {
+        com.ning.http.client.Request asyncRequest = buildRequest(request);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
-                return command.getResponse(response.getResponseBody("UTF-8").getBytes(), response.getStatusCode());
+                return request.getResponse(response.getResponseBody("UTF-8").getBytes(), response.getStatusCode());
             }
         };
         try {
-            return httpClient.executeRequest(req, handler);
+            return httpClient.executeRequest(asyncRequest, handler);
         } catch (IOException e) {
             throw new HerokuAPIException("IOException while executing request", e);
         }

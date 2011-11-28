@@ -1,7 +1,7 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
-import com.heroku.api.command.login.BasicAuthLogin;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.connection.AsyncHttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 

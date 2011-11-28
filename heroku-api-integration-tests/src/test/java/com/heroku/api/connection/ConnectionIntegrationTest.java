@@ -1,7 +1,7 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.TestModuleFactory;
-import com.heroku.api.command.login.BasicAuthLogin;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 import org.testng.Assert;
