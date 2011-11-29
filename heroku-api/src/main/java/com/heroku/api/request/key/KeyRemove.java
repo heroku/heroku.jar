@@ -23,7 +23,7 @@ public class KeyRemove implements Request<Unit> {
     private final RequestConfig config;
 
     public KeyRemove(String keyName) {
-        this.config = new RequestConfig().with(Heroku.RequestKey.appName, keyName);
+        this.config = new RequestConfig().with(Heroku.RequestKey.AppName, keyName);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class KeyRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Key.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Key.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override

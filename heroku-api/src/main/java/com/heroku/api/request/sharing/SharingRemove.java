@@ -23,7 +23,7 @@ public class SharingRemove implements Request<Unit> {
     private final RequestConfig config;
 
     public SharingRemove(String appName, String collaboratorEmail) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.collaborator, collaboratorEmail);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.Collaborator, collaboratorEmail);
     }
 
     @Override
@@ -33,8 +33,8 @@ public class SharingRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborator.format(config.get(Heroku.RequestKey.appName),
-                HttpUtil.urlencode(config.get(Heroku.RequestKey.collaborator), "Unable to encode the endpoint"));
+        return Heroku.Resource.Collaborator.format(config.get(Heroku.RequestKey.AppName),
+                HttpUtil.urlencode(config.get(Heroku.RequestKey.Collaborator), "Unable to encode the endpoint"));
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Scale implements Request<Unit> {
     private final RequestConfig config;
 
     public Scale(String appName, String processType, int quantity) {
-        config = new RequestConfig().app(appName).with(Heroku.RequestKey.processType, processType).with(Heroku.RequestKey.quantity, String.valueOf(quantity));
+        config = new RequestConfig().app(appName).with(Heroku.RequestKey.ProcessType, processType).with(Heroku.RequestKey.Quantity, String.valueOf(quantity));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Scale implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Scale.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Scale.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Scale implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.processType, Heroku.RequestKey.quantity);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.ProcessType, Heroku.RequestKey.Quantity);
     }
 
     @Override

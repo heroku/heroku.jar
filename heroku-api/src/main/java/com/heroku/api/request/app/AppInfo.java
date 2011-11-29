@@ -31,7 +31,7 @@ public class AppInfo implements Request<XmlMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override

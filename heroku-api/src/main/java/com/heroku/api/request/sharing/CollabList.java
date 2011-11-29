@@ -33,7 +33,7 @@ public class CollabList implements Request<XmlArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborators.format(config.get(appName));
+        return Heroku.Resource.Collaborators.format(config.get(AppName));
     }
 
     @Override

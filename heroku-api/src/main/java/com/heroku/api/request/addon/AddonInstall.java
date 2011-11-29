@@ -20,7 +20,7 @@ public class AddonInstall implements Request<JsonMapResponse> {
     private final RequestConfig config;
 
     public AddonInstall(String appName, String addonName) {
-        config = new RequestConfig().app(appName).with(Heroku.RequestKey.addonName, addonName);
+        config = new RequestConfig().app(appName).with(Heroku.RequestKey.AddonName, addonName);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AddonInstall implements Request<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.AppAddon.format(config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.addonName));
+        return Heroku.Resource.AppAddon.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.AddonName));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class AddonInstall implements Request<JsonMapResponse> {
         if (status == Http.Status.OK.statusCode) {
             return new JsonMapResponse(bytes);
         } else {
-            throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.addonName), status, bytes);
+            throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.AddonName), status, bytes);
         }
     }
 }

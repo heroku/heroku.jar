@@ -25,7 +25,7 @@ public class SharingTransfer implements Request<Unit> {
     private final RequestConfig config;
 
     public SharingTransfer(String appName, String newOwnerEmail) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.transferOwner, newOwnerEmail);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.TransferOwner, newOwnerEmail);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SharingTransfer implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SharingTransfer implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.transferOwner);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.TransferOwner);
     }
 
     @Override

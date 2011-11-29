@@ -30,7 +30,7 @@ public class ConfigList implements Request<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ConfigList implements Request<JsonMapResponse> {
             throw new RequestFailedException("Application not found.", status, bytes);
         } else if (status == Http.Status.FORBIDDEN.statusCode) {
             throw new RequestFailedException(
-                    "Insufficient privileges to \"" + config.get(Heroku.RequestKey.appName) + "\"",
+                    "Insufficient privileges to \"" + config.get(Heroku.RequestKey.AppName) + "\"",
                     status,
                     bytes
             );

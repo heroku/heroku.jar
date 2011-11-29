@@ -21,7 +21,7 @@ public class ConfigRemove implements Request<JsonMapResponse> {
     private final RequestConfig config;
 
     public ConfigRemove(String appName, String configVarName) {
-        config = new RequestConfig().app(appName).with(Heroku.RequestKey.configVarName, configVarName);
+        config = new RequestConfig().app(appName).with(Heroku.RequestKey.ConfigVarName, configVarName);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ConfigRemove implements Request<JsonMapResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.ConfigVar.format(config.get(Heroku.RequestKey.appName), config.get(Heroku.RequestKey.configVarName));
+        return Heroku.Resource.ConfigVar.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.ConfigVarName));
     }
 
     @Override

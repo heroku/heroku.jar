@@ -31,7 +31,7 @@ public class AppAddonsList implements Request<JsonArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.AppAddons.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.AppAddons.format(config.get(Heroku.RequestKey.AppName));
     }
     
     @Override
@@ -60,6 +60,6 @@ public class AppAddonsList implements Request<JsonArrayResponse> {
             return new JsonArrayResponse(bytes);
         }
         throw new RequestFailedException(
-                "Unable to get addons for " + config.get(Heroku.RequestKey.appName), status, bytes);
+                "Unable to get addons for " + config.get(Heroku.RequestKey.AppName), status, bytes);
     }
 }

@@ -38,9 +38,9 @@ public class BasicAuthLogin implements LoginRequest {
     @Override
     public String getBody() {
         return HttpUtil.encodeParameters(
-                new RequestConfig().with(Heroku.RequestKey.username, username)
-                        .with(Heroku.RequestKey.password, password),
-                Heroku.RequestKey.username, Heroku.RequestKey.password
+                new RequestConfig().with(Heroku.RequestKey.Username, username)
+                        .with(Heroku.RequestKey.Password, password),
+                Heroku.RequestKey.Username, Heroku.RequestKey.Password
         );
     }
 

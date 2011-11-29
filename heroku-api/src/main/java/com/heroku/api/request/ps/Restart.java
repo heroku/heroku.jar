@@ -34,7 +34,7 @@ public class Restart implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Restart.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Restart.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Restart implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.processName, Heroku.RequestKey.processType);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.ProcessName, Heroku.RequestKey.ProcessType);
     }
 
     @Override
@@ -68,13 +68,13 @@ public class Restart implements Request<Unit> {
 
     public static class NamedProcessRestart extends Restart {
         public NamedProcessRestart(String appName, String processName) {
-            super(new RequestConfig().app(appName).with(Heroku.RequestKey.processName, processName));
+            super(new RequestConfig().app(appName).with(Heroku.RequestKey.ProcessName, processName));
         }
     }
 
     public static class ProcessTypeRestart extends Restart {
         public ProcessTypeRestart(String appName, String processType) {
-            super(new RequestConfig().app(appName).with(Heroku.RequestKey.processType, processType));
+            super(new RequestConfig().app(appName).with(Heroku.RequestKey.ProcessType, processType));
         }
     }
 }

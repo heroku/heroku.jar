@@ -28,7 +28,7 @@ public class AppCreate implements Request<JsonMapResponse> {
     }
 
     public AppCreate withName(String name) {
-        return new AppCreate(config.with(Heroku.RequestKey.createAppName, name));
+        return new AppCreate(config.with(Heroku.RequestKey.CreateAppName, name));
     }
 
     private AppCreate(RequestConfig config) {
@@ -52,7 +52,7 @@ public class AppCreate implements Request<JsonMapResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.stack, Heroku.RequestKey.createAppName);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.Stack, Heroku.RequestKey.CreateAppName);
     }
 
     @Override

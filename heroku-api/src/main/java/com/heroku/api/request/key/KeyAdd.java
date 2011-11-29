@@ -21,7 +21,7 @@ public class KeyAdd implements Request<Unit> {
     private final RequestConfig config;
 
     public KeyAdd(String sshkey) {
-        this.config = new RequestConfig().with(Heroku.RequestKey.sshkey, sshkey);
+        this.config = new RequestConfig().with(Heroku.RequestKey.SSHKey, sshkey);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class KeyAdd implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return config.get(Heroku.RequestKey.sshkey);
+        return config.get(Heroku.RequestKey.SSHKey);
     }
 
     @Override

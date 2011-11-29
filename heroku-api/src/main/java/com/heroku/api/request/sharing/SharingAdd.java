@@ -22,7 +22,7 @@ public class SharingAdd implements Request<Unit> {
     private final RequestConfig config;
 
     public SharingAdd(String appName, String collaboratorEmail) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.collaborator, collaboratorEmail);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.Collaborator, collaboratorEmail);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.collaborator);
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.Collaborator);
     }
 
     @Override

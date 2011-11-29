@@ -78,26 +78,26 @@ Likewise, the secure random parameter may be null in which case the default impl
 
 
     public static enum RequestKey {
-        stack("app[stack]"),
-        createAppName("app[name]"),
-        remote("remote"),
-        timeout("timeout"),
-        addons("addons"),
-        addonName("addon"),
-        requested("requested"),
-        beta("beta"),
-        appName("name"),
-        sshkey("sshkey"),
-        config("config"),
-        collaborator("collaborator[email]"),
-        transferOwner("app[transfer_owner]"),
-        configvars("config_vars"),
-        configVarName("key"),
-        processType("type"),
-        processName("ps"),
-        quantity("qty"),
-        username("username"),
-        password("password");
+        Stack("app[stack]"),
+        CreateAppName("app[name]"),
+        Remote("remote"),
+        Timeout("timeout"),
+        Addons("addons"),
+        AddonName("addon"),
+        Requested("requested"),
+        Beta("beta"),
+        AppName("name"),
+        SSHKey("sshkey"),
+        Config("config"),
+        Collaborator("collaborator[email]"),
+        TransferOwner("app[transfer_owner]"),
+        ConfigVars("config_vars"),
+        ConfigVarName("key"),
+        ProcessType("type"),
+        ProcessName("ps"),
+        Quantity("qty"),
+        Username("username"),
+        Password("password");
 
         public final String queryParameter;
 

@@ -14,11 +14,11 @@ public class RequestConfig {
     private final Map<Heroku.RequestKey, String> config = new EnumMap<Heroku.RequestKey, String>(Heroku.RequestKey.class);
 
     public RequestConfig onStack(Heroku.Stack stack) {
-        return with(Heroku.RequestKey.stack, stack.value);
+        return with(Heroku.RequestKey.Stack, stack.value);
     }
 
     public RequestConfig app(String appName) {
-        return with(Heroku.RequestKey.appName, appName);
+        return with(Heroku.RequestKey.AppName, appName);
     }
 
     public RequestConfig with(Heroku.RequestKey key, String value) {

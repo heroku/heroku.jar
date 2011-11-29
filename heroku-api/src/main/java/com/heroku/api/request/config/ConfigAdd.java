@@ -22,7 +22,7 @@ public class ConfigAdd implements Request<Unit> {
     private final RequestConfig config;
 
     public ConfigAdd(String appName, String jsonConfigVars) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.configvars, jsonConfigVars);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.ConfigVars, jsonConfigVars);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ConfigAdd implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.appName));
+        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ConfigAdd implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return config.get(Heroku.RequestKey.configvars);
+        return config.get(Heroku.RequestKey.ConfigVars);
     }
 
     @Override
