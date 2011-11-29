@@ -38,7 +38,7 @@ import static org.testng.Assert.*;
  *
  * @author Naaman Newbold
  */
-public class CommandIntegrationTest extends BaseCommandIntegrationTest {
+public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     // test app gets transferred to this user until we have a second user in auth-test.properties
     private static final String DEMO_EMAIL = "jw+demo@heroku.com";

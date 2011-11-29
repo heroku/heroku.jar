@@ -29,7 +29,7 @@ import static org.testng.Assert.fail;
  * @author Naaman Newbold
  */
 @Guice(moduleFactory = TestModuleFactory.class)
-public abstract class BaseCommandIntegrationTest {
+public abstract class BaseRequestIntegrationTest {
 
     @Inject
     Connection<?> connection;
