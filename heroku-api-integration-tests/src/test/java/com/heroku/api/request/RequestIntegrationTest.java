@@ -2,10 +2,14 @@ package com.heroku.api.request;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
+import com.heroku.api.model.App;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.*;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.app.AppInfo;
+import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
@@ -26,6 +30,7 @@ import com.heroku.api.request.sharing.SharingTransfer;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static org.testng.Assert.*;
@@ -44,18 +49,18 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate("Cedar");
-        App response = connection.execute(cmd);
+        com.heroku.api.model.App response = connection.execute(cmd);
 
-        assertNotNull(response.id());
-        assertEquals(response.stack(), Heroku.Stack.Cedar);
-        deleteApp(response.name());
+        assertNotNull(response.getId());
+        assertEquals(Heroku.Stack.fromString(response.getStack()), Heroku.Stack.Cedar);
+        deleteApp(response.getName());
     }
 
     @Test(dataProvider = "app")
     public void testLogCommand(App app) throws IOException, InterruptedException {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
-        Log logs = new Log(app.name());
+        Log logs = new Log(app.getName());
         LogStreamResponse logsResponse = connection.execute(logs);
         assertLogIsReadable(logsResponse);
     }
@@ -64,23 +69,24 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testLogStreamCommand(App app) throws IOException, InterruptedException {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
-        LogStream logs = new LogStream(app.name());
+        LogStream logs = new LogStream(app.getName());
         LogStreamResponse logsResponse = connection.execute(logs);
         assertLogIsReadable(logsResponse);
     }
 
     @Test(dataProvider = "app")
     public void testAppCommand(App app) throws IOException {
-        AppInfo cmd = new AppInfo(app.name());
+        AppInfo cmd = new AppInfo(app.getName());
         App response = connection.execute(cmd);
-        assertEquals(app.name(), app.name());
+        assertEquals(response.getName(), app.getName());
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(App app) throws IOException {
+    public void testListAppsCommand(com.heroku.api.model.App app) throws IOException {
         AppList cmd = new AppList();
-        Response response = connection.execute(cmd);
-        assertNotNull(response.get(app.name()));
+        List<com.heroku.api.model.App> response = connection.execute(cmd);
+        assertNotNull(response);
+        assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
     }
 
     // don't use the app dataprovider because it'll try to delete an already deleted app
@@ -92,7 +98,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(App app) throws IOException {
-        SharingAdd cmd = new SharingAdd(app.name(), DEMO_EMAIL);
+        SharingAdd cmd = new SharingAdd(app.getName(), DEMO_EMAIL);
         connection.execute(cmd);
     }
 
@@ -101,34 +107,34 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // rather than transferring it to a black hole
     @Test(dataProvider = "app")
     public void testSharingTransferCommand(App app) throws IOException {
-        Request<Unit> sharingAddReq = new SharingAdd(app.name(), DEMO_EMAIL);
+        Request<Unit> sharingAddReq = new SharingAdd(app.getName(), DEMO_EMAIL);
         connection.execute(sharingAddReq);
 
-        SharingTransfer sharingTransferCommand = new SharingTransfer(app.name(), DEMO_EMAIL);
+        SharingTransfer sharingTransferCommand = new SharingTransfer(app.getName(), DEMO_EMAIL);
         connection.execute(sharingTransferCommand);
 
     }
 
     @Test(dataProvider = "app")
     public void testSharingRemoveCommand(App app) throws IOException {
-        SharingAdd sharingAddCommand = new SharingAdd(app.name(), DEMO_EMAIL);
+        SharingAdd sharingAddCommand = new SharingAdd(app.getName(), DEMO_EMAIL);
         connection.execute(sharingAddCommand);
 
-        SharingRemove cmd = new SharingRemove(app.name(), DEMO_EMAIL);
+        SharingRemove cmd = new SharingRemove(app.getName(), DEMO_EMAIL);
         connection.execute(cmd);
 
     }
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(App app) throws IOException {
-        ConfigAdd cmd = new ConfigAdd(app.name(), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
+        ConfigAdd cmd = new ConfigAdd(app.getName(), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
         connection.execute(cmd);
     }
 
     @Test(dataProvider = "app")
     public void testConfigCommand(App app) {
         addConfig(app, "FOO", "BAR");
-        Request<JsonMapResponse> req = new ConfigList(app.name());
+        Request<JsonMapResponse> req = new ConfigList(app.getName());
         JsonMapResponse response = connection.execute(req);
         assertNotNull(response.get("FOO"));
         assertEquals(response.get("FOO"), "BAR");
@@ -139,10 +145,10 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
             expectedExceptionsMessageRegExp = "FOO is not present.")
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
-        Request<JsonMapResponse> removeRequest = new ConfigRemove(app.name(), "FOO");
+        Request<JsonMapResponse> removeRequest = new ConfigRemove(app.getName(), "FOO");
         connection.execute(removeRequest);
 
-        Request<JsonMapResponse> listRequest = new ConfigList(app.name());
+        Request<JsonMapResponse> listRequest = new ConfigList(app.getName());
         JsonMapResponse response = connection.execute(listRequest);
 
         assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
@@ -151,7 +157,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testProcessCommand(App app) {
-        Request<JsonArrayResponse> req = new ProcessList(app.name());
+        Request<JsonArrayResponse> req = new ProcessList(app.getName());
         JsonArrayResponse response = connection.execute(req);
         assertNotNull(response.getData(), "Expected a non-null response for a new app, but the data was null.");
         assertEquals(response.getData().size(), 1);
@@ -159,13 +165,13 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testScaleCommand(App app) {
-        Request<Unit> req = new Scale(app.name(), "web", 1);
+        Request<Unit> req = new Scale(app.getName(), "web", 1);
         connection.execute(req);
     }
 
     @Test(dataProvider = "app")
     public void testRestartCommand(App app) {
-        Request<Unit> req = new Restart(app.name());
+        Request<Unit> req = new Restart(app.getName());
         connection.execute(req);
     }
 
@@ -178,7 +184,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testListAppAddons(App app) {
-        Request<JsonArrayResponse> req = new AppAddonsList(app.name());
+        Request<JsonArrayResponse> req = new AppAddonsList(app.getName());
         JsonArrayResponse response = connection.execute(req);
         assertNotNull(response);
         assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
@@ -187,14 +193,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testAddAddonToApp(App app) {
-        Request<JsonMapResponse> req = new AddonInstall(app.name(), "shared-database:5mb");
+        Request<JsonMapResponse> req = new AddonInstall(app.getName(), "shared-database:5mb");
         JsonMapResponse response = connection.execute(req);
         assertEquals(response.get("status"), "Installed");
     }
 
     @Test(dataProvider = "app")
     public void testCollaboratorList(App app) {
-        Request<XmlArrayResponse> req = new CollabList(app.name());
+        Request<XmlArrayResponse> req = new CollabList(app.getName());
         XmlArrayResponse xmlArrayResponse = connection.execute(req);
         assertEquals(xmlArrayResponse.getData().size(), 1);
         assertNotNull(xmlArrayResponse.getData().get(0).get("email"));

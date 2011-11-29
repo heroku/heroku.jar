@@ -16,6 +16,11 @@ import java.util.Map;
 public class GsonJsonParser implements JsonParser {
 
     @Override
+    public <T> T parse(byte[] data, final Type type) {
+        return new Gson().<T>fromJson(getReader(data), type);
+    }
+
+    @Override
     public Map<String, String> parseMap(byte[] raw) {
         Type listType = new TypeToken<HashMap<String, String>>() {
         }.getType();

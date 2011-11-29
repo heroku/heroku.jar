@@ -1,12 +1,15 @@
 package com.heroku.api;
 
 
+import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.Connection;
+
+import java.util.List;
 
 public class HerokuAPI {
 
@@ -28,7 +31,7 @@ public class HerokuAPI {
         connection.execute(new KeyRemove(sshKey));
     }
     
-    public JsonArrayResponse apps() {
+    public List<App> apps() {
         return connection.execute(new AppList());
     }
     
@@ -37,11 +40,11 @@ public class HerokuAPI {
     }
 
     public HerokuAppAPI newapp(Heroku.Stack stack) {
-        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack)).name());
+        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack)).getName());
     }
 
     public HerokuAppAPI newapp(Heroku.Stack stack, String appName) {
-        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack).withName(appName)).name());
+        return new HerokuAppAPI(connection, connection.execute(new AppCreate(stack).withName(appName)).getName());
     }
 
 

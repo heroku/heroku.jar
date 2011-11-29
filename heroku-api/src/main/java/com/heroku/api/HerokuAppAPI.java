@@ -1,7 +1,7 @@
 package com.heroku.api;
 
 
-import com.heroku.api.request.app.App;
+import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;

@@ -7,6 +7,7 @@ import com.heroku.api.request.response.XmlMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.model.App;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,9 +57,6 @@ public class AppInfo implements Request<App> {
 
     @Override
     public App getResponse(byte[] in, int code) {
-        if (code == 200)
-            return new App(new XmlMapResponse(in));
-        else
-            throw new RequestFailedException("Unable to get app info", code, in);
+        throw new UnsupportedOperationException("AppInfo needs XML -- not working just yet");
     }
 }
