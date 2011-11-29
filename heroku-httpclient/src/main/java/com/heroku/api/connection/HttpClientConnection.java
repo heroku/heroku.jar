@@ -1,11 +1,11 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.login.LoginResponse;
-import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -136,5 +136,10 @@ public class HttpClientConnection implements Connection<Future<?>> {
     @Override
     public void close() {
         getExecutorService().shutdownNow();
+    }
+
+    @Override
+    public String getApiKey() {
+        return apiKey;
     }
 }

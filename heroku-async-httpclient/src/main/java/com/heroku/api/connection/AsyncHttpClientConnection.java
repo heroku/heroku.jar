@@ -1,9 +1,9 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
-import com.heroku.api.exception.HerokuAPIException;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
 
@@ -102,5 +102,10 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     @Override
     public void close() {
         httpClient.close();
+    }
+
+    @Override
+    public String getApiKey() {
+        return apiKey;
     }
 }

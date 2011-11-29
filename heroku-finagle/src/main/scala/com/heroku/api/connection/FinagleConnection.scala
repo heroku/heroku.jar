@@ -101,6 +101,8 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
   def close() {
     client.release()
   }
+
+  def getApiKey: String = apiKey
 }
 
 

@@ -14,6 +14,8 @@ public interface Connection<F> {
 
     <T> F executeAsync(Request<T> request);
 
+    String getApiKey();
+
     void close();
 
 }
