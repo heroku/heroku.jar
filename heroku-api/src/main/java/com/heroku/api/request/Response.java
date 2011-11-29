@@ -1,5 +1,7 @@
 package com.heroku.api.request;
 
+import com.heroku.api.Heroku;
+
 /**
  * TODO: Javadoc
  *
@@ -8,6 +10,8 @@ package com.heroku.api.request;
 public interface Response {
 
     Object get(String key);
+    
+    Object get(Heroku.ResponseKey key);
 
     byte[] getRawData();
 

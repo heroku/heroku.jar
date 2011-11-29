@@ -1,5 +1,6 @@
 package com.heroku.api.request.response;
 
+import com.heroku.api.Heroku;
 import com.heroku.api.request.Response;
 import com.heroku.api.json.Json;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  */
 public class JsonMapResponse implements Response {
 
-    private final Map<String, String> data;
+    protected final Map<String, String> data;
     private final byte[] rawData;
 
     public JsonMapResponse(byte[] bytes) {
@@ -28,6 +29,11 @@ public class JsonMapResponse implements Response {
             throw new IllegalArgumentException(key + " is not present.");
         }
         return data.get(key);
+    }
+
+    @Override
+    public String get(Heroku.ResponseKey key) {
+        return get(key.toString());
     }
 
     @Override

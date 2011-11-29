@@ -1,5 +1,6 @@
 package com.heroku.api.request.response;
 
+import com.heroku.api.Heroku;
 import com.heroku.api.request.Response;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -65,6 +66,11 @@ public class XmlArrayResponse extends DefaultHandler implements Response {
     @Override
     public Object get(String key) {
         return null;
+    }
+    
+    @Override
+    public Object get(Heroku.ResponseKey key) {
+        return get(key.toString());
     }
 
     @Override

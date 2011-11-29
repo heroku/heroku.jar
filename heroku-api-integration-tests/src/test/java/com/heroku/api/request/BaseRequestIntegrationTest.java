@@ -3,6 +3,7 @@ package com.heroku.api.request;
 import com.google.inject.Inject;
 import com.heroku.api.Heroku;
 import com.heroku.api.TestModuleFactory;
+import com.heroku.api.request.app.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
@@ -34,18 +35,18 @@ public abstract class BaseRequestIntegrationTest {
     @Inject
     Connection<?> connection;
 
-    private List<JsonMapResponse> apps = new ArrayList<JsonMapResponse>();
+    private List<App> apps = new ArrayList<App>();
 
     @DataProvider
     public Object[][] app() throws IOException {
         RequestConfig config = new RequestConfig().onStack(Heroku.Stack.Cedar);
 
         AppCreate cmd = new AppCreate("Cedar");
-        JsonMapResponse response = connection.execute(cmd);
+        App app = connection.execute(cmd);
 
-        apps.add(response);
+        apps.add(app);
 
-        return new Object[][]{{response}};
+        return new Object[][]{{app}};
     }
 
     @AfterSuite
@@ -55,8 +56,8 @@ public abstract class BaseRequestIntegrationTest {
     
     @AfterTest(alwaysRun = true)
     public void deleteTestApps() throws IOException {
-        for (JsonMapResponse res : apps) {
-            Request<Unit> req = new AppDestroy(res.get("name"));
+        for (App res : apps) {
+            Request<Unit> req = new AppDestroy(res.name());
             connection.execute(req);
         }
     }
@@ -65,7 +66,7 @@ public abstract class BaseRequestIntegrationTest {
         connection.execute(new AppDestroy(appName));
     }
 
-    protected void addConfig(Response app, String... nameValuePairs) {
+    protected void addConfig(App app, String... nameValuePairs) {
         if (nameValuePairs.length != 0 && (nameValuePairs.length % 2) != 0) {
             throw new RuntimeException("Config must have an equal number of name and value pairs.");
         }
@@ -83,7 +84,7 @@ public abstract class BaseRequestIntegrationTest {
 
         jsonConfig = jsonConfig.append("}");
 
-        Request<Unit> req = new ConfigAdd(app.get("name").toString(), new String(jsonConfig));
+        Request<Unit> req = new ConfigAdd(app.name(), new String(jsonConfig));
         connection.execute(req);
     }
 
