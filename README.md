@@ -9,7 +9,7 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
     ```java
     String yourApiKey = ...
     HerokuAPI api = new HerokuAPI(new HttpClientConnection(yourApiKey));
-    HerokuAppAPI appApi = HerokuAPI.newapp(HerokuStack.Cedar);
+    HerokuAppAPI appApi = HerokuAPI.newapp(Heroku.Stack.Cedar);
     ```
 
 
@@ -52,7 +52,7 @@ We opted for a slightly more verbose dependency declaration an a flexible implem
     </dependency>
     <dependency>
        <groupId>com.heroku.api</groupId>
-       <artifactId>heroku-httpclent</artifactId>
+       <artifactId>heroku-http-apache</artifactId>
        <version>0.1-SNAPSHOT</version>
     </dependency>
 
