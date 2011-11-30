@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppInfo implements Request<App> {
+public class AppInfo implements Request<XmlMapResponse> {
 
     private final RequestConfig config;
 
@@ -56,7 +56,10 @@ public class AppInfo implements Request<App> {
     }
 
     @Override
-    public App getResponse(byte[] in, int code) {
-        throw new UnsupportedOperationException("AppInfo needs XML -- not working just yet");
+    public XmlMapResponse getResponse(byte[] in, int code) {
+        if (code == 200)
+            return new XmlMapResponse(in);
+        else
+            throw new RequestFailedException("Unable to get app info", code, in);
     }
 }

@@ -19,10 +19,7 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
-import com.heroku.api.request.response.JsonArrayResponse;
-import com.heroku.api.request.response.JsonMapResponse;
-import com.heroku.api.request.response.Unit;
-import com.heroku.api.request.response.XmlArrayResponse;
+import com.heroku.api.request.response.*;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
@@ -77,8 +74,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testAppCommand(App app) throws IOException {
         AppInfo cmd = new AppInfo(app.getName());
-        App response = connection.execute(cmd);
-        assertEquals(response.getName(), app.getName());
+        XmlMapResponse response = connection.execute(cmd);
+        assertEquals(response.get("name"), app.getName());
     }
 
     @Test(dataProvider = "app")

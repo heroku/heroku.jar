@@ -42,8 +42,8 @@ public class HerokuAppAPI {
         connection.execute(new AppDestroy(appName));
     }
 
-    public App info() {
-        return connection.execute(new AppInfo(appName));
+    public Map<String, String> info() {
+        return connection.execute(new AppInfo(appName)).getData();
     }
 
     public List<Map<String, String>> listCollaborators() {
