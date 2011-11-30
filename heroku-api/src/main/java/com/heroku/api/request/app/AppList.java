@@ -1,6 +1,10 @@
 package com.heroku.api.request.app;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.json.Json;
+import com.heroku.api.json.TypeReference;
+import com.heroku.api.model.*;
+import com.heroku.api.model.App;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
@@ -8,6 +12,7 @@ import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +20,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppList implements Request<JsonArrayResponse> {
+public class AppList implements Request<List<App>> {
 
     @Override
     public Http.Method getHttpMethod() {
@@ -48,9 +53,9 @@ public class AppList implements Request<JsonArrayResponse> {
     }
 
     @Override
-    public JsonArrayResponse getResponse(byte[] in, int code) {
+    public List<App> getResponse(byte[] in, int code) {
         if (code == 200)
-            return new JsonArrayResponse(in);
+            return Json.getJsonParser().parse(in, new TypeReference<List<App>>(){}.getType());
         else
             throw new RequestFailedException("AppList Failed", code, in);
     }

@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-json-gson</artifactId>
+            <artifactId>heroku-json-jackson</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

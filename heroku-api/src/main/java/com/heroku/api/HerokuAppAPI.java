@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 
+import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;
@@ -28,8 +29,8 @@ public class HerokuAppAPI {
         this.appName = name;
     }
 
-    public Map<String, String> create(Heroku.Stack stack) {
-        return connection.execute(new AppCreate(stack).withName(appName)).getData();
+    public App create(Heroku.Stack stack) {
+        return connection.execute(new AppCreate(stack).withName(appName));
     }
 
     public HerokuAppAPI createAnd(Heroku.Stack stack) {
@@ -41,8 +42,8 @@ public class HerokuAppAPI {
         connection.execute(new AppDestroy(appName));
     }
 
-    public Map<String, String> info() {
-        return connection.execute(new AppInfo(appName)).getData();
+    public App info() {
+        return connection.execute(new AppInfo(appName));
     }
 
     public List<Map<String, String>> listCollaborators() {

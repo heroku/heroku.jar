@@ -15,6 +15,7 @@
         <module>heroku-api-integration-tests</module>
         <module>heroku-json-gson</module>
         <module>heroku-async-httpclient</module>
+        <module>heroku-json-jackson</module>
     </modules>
 
     <properties>

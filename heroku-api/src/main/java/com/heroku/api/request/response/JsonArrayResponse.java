@@ -1,5 +1,6 @@
 package com.heroku.api.request.response;
 
+import com.heroku.api.Heroku;
 import com.heroku.api.request.Response;
 import com.heroku.api.json.Json;
 
@@ -33,6 +34,11 @@ public class JsonArrayResponse implements Response {
             }
         }
         return null;
+    }
+
+    @Override
+    public Object get(Heroku.ResponseKey key) {
+        return get(key.toString());
     }
 
     @Override

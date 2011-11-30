@@ -8,6 +8,8 @@ import javax.net.ssl.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Heroku {
 
@@ -76,6 +78,44 @@ Likewise, the secure random parameter may be null in which case the default impl
         return hostnameVerifier(Config.ENDPOINT.isDefault());
     }
 
+    public static enum ResponseKey {
+        Name("name"),
+        DomainName("domain_name"),
+        CreateStatus("create_status"),
+        Stack("stack"),
+        SlugSize("slug_size"),
+        RequestedStack("requested_stack"),
+        CreatedAt("created_at"),
+        WebUrl("web_url"),
+        RepoMigrateStatus("repo_migrate_status"),
+        Id("id"),
+        GitUrl("git_url"),
+        RepoSize("repo_size"),
+        Dynos("dynos"),
+        Workers("workers");
+
+        public final String value;
+        
+        // From Effective Java, Second Edition
+        private static final Map<String, ResponseKey> stringToResponseKey = new HashMap<String, ResponseKey>();
+        static {
+            for (ResponseKey key : values())
+                stringToResponseKey.put(key.toString(), key);
+        }
+        
+        ResponseKey(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+        
+        public static ResponseKey fromString(String keyName) {
+            return stringToResponseKey.get(keyName);
+        }
+    }
 
     public static enum RequestKey {
         Stack("app[stack]"),
@@ -114,8 +154,24 @@ Likewise, the secure random parameter may be null in which case the default impl
 
         public final String value;
 
+        // From Effective Java, Second Edition
+        private final static Map<String, Stack> stringToEnum = new HashMap<String, Stack>();
+        static {
+            for (Stack s : values())
+                stringToEnum.put(s.toString(), s);
+        }
+
         Stack(String value) {
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public static Stack fromString(String stackName) {
+            return stringToEnum.get(stackName);
         }
     }
 
