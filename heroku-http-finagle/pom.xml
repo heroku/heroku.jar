@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>heroku-finagle</artifactId>
+    <artifactId>heroku-http-finagle</artifactId>
 
     <dependencies>
         <dependency>

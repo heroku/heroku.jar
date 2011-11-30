@@ -10,12 +10,12 @@
     <version>0.1-SNAPSHOT</version>
     <modules>
         <module>heroku-api</module>
-        <module>heroku-httpclient</module>
-        <module>heroku-finagle</module>
-        <module>heroku-api-integration-tests</module>
         <module>heroku-json-gson</module>
-        <module>heroku-async-httpclient</module>
         <module>heroku-json-jackson</module>
+        <module>heroku-http-apache</module>
+        <module>heroku-http-finagle</module>
+        <module>heroku-http-ning-async</module>
+        <module>heroku-api-integration-tests</module>
     </modules>
 
     <properties>
