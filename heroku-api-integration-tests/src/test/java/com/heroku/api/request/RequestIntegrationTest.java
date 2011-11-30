@@ -82,9 +82,9 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     }
 
     @Test(dataProvider = "app")
-    public void testListAppsCommand(com.heroku.api.model.App app) throws IOException {
+    public void testListAppsCommand(App app) throws IOException {
         AppList cmd = new AppList();
-        List<com.heroku.api.model.App> response = connection.execute(cmd);
+        List<App> response = connection.execute(cmd);
         assertNotNull(response);
         assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
     }

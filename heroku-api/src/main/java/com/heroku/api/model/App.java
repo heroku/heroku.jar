@@ -8,21 +8,11 @@ import java.util.Date;
  * @author Naaman Newbold
  */
 public class App {
-    String id;
-    String name;
-    String create_status;
-    String created_at;
-    String stack;
-    String requested_stack;
-    String repo_migrate_status;
-    int slug_size;
-    int repo_size;
-    int dynos;
-    int workers;
 
-    public void setWorkers(int workers) {
-        this.workers = workers;
-    }
+    String id, name, domain_name, created_at, create_status;
+    String web_url, stack, requested_stack, repo_migrate_status;
+    String git_url;
+    int slug_size, repo_size, dynos, workers;
 
     public String getId() {
         return id;
@@ -38,6 +28,28 @@ public class App {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDomain_name() {
+        return domain_name;
+    }
+
+    public void setDomain_name(String domain_name) {
+        this.domain_name = domain_name;
+    }
+    public String getWeb_url() {
+        return web_url;
+    }
+
+    public void setWeb_url(String web_url) {
+        this.web_url = web_url;
+    }
+    public String getGit_url() {
+        return git_url;
+    }
+
+    public void setGit_url(String git_url) {
+        this.git_url = git_url;
     }
 
     public String getCreate_status() {
@@ -106,6 +118,10 @@ public class App {
 
     public int getWorkers() {
         return workers;
+    }
+
+    public void setWorkers(int workers) {
+        this.workers = workers;
     }
 
 }

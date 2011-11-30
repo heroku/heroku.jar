@@ -2,14 +2,13 @@ package com.heroku.api.request.app;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.json.Json;
-import com.heroku.api.json.JsonParser;
 import com.heroku.api.json.TypeReference;
+import com.heroku.api.model.App;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.request.response.JsonMapResponse;
 
 import java.util.Map;
 
@@ -18,7 +17,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AppCreate implements Request<com.heroku.api.model.App> {
+public class AppCreate implements Request<App> {
 
     private final RequestConfig config;
 
@@ -69,9 +68,9 @@ public class AppCreate implements Request<com.heroku.api.model.App> {
     }
 
     @Override
-    public com.heroku.api.model.App getResponse(byte[] in, int code) {
+    public App getResponse(byte[] in, int code) {
         if (code == Http.Status.ACCEPTED.statusCode)
-            return Json.getJsonParser().parse(in, new TypeReference<com.heroku.api.model.App>(){}.getType());
+            return Json.getJsonParser().parse(in, new TypeReference<App>(){}.getType());
         else
             throw new RequestFailedException("Failed to create app", code, in);
     }
