@@ -26,31 +26,31 @@
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-core</artifactId>
-            <version>1.9.6</version>
+            <version>${finagle.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>finagle-http</artifactId>
-            <version>1.9.6</version>
+            <version>${finagle.version}</version>
             <scope>compile</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>util-core</artifactId>
-            <version>1.12.3</version>
+            <version>${twitter.util.version}</version>
             <scope>compile</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>util-codec</artifactId>
-            <version>1.12.3</version>
+            <version>${twitter.util.version}</version>
             <scope>compile</scope>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
-            <version>3.2.5.Final</version>
+            <version>${netty.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

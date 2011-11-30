@@ -28,6 +28,12 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>util-core</artifactId>
+            <version>1.12.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.heroku.api</groupId>
             <artifactId>heroku-http-apache</artifactId>
             <version>${project.parent.version}</version>
@@ -42,6 +48,11 @@
             <groupId>com.heroku.api</groupId>
             <artifactId>heroku-http-ning-async</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>1.6.5</version>
         </dependency>
 
         <!-- Test Deps -->
