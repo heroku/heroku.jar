@@ -22,7 +22,7 @@ public class RequestFailedException extends HerokuAPIException {
     }
 
     public RequestFailedException(String msg, int code, String body) {
-        super(msg);
+        super(msg + " statuscode:" + code + " responseBody:" + body);
         responseBody = body;
         statusCode = code;
     }
