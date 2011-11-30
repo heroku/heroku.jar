@@ -3,9 +3,11 @@ package com.heroku.api.request;
 import com.google.inject.Inject;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.request.key.KeyAdd;
+import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.request.response.XmlArrayResponse;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -16,6 +18,8 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import static org.testng.Assert.assertNotNull;
 
 /**
  * TODO: Javadoc
@@ -62,6 +66,13 @@ public class NoAppCommandIntegrationTest {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
         KeyAdd cmd = new KeyAdd(sshkey);
         connection.execute(cmd);
+    }
+
+    @Test
+    public void testKeyListCommand() {
+        KeyList keyListRequest = new KeyList();
+        XmlArrayResponse keyListResponse = connection.execute(keyListRequest);
+        assertNotNull(keyListResponse);
     }
 
 }
