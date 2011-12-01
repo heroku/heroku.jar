@@ -2,6 +2,8 @@ package com.heroku.api.request;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
+import com.heroku.api.model.Addon;
+import com.heroku.api.model.AddonChange;
 import com.heroku.api.model.App;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
@@ -19,7 +21,10 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
-import com.heroku.api.request.response.*;
+import com.heroku.api.request.response.JsonArrayResponse;
+import com.heroku.api.request.response.JsonMapResponse;
+import com.heroku.api.request.response.Unit;
+import com.heroku.api.request.response.XmlArrayResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
@@ -74,8 +79,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testAppCommand(App app) throws IOException {
         AppInfo cmd = new AppInfo(app.getName());
-        XmlMapResponse response = connection.execute(cmd);
-        assertEquals(response.get("name"), app.getName());
+        App response = connection.execute(cmd);
+        assertEquals(response.getName(), app.getName());
     }
 
     @Test(dataProvider = "app")
@@ -174,8 +179,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test
     public void testListAddons() {
-        Request<JsonArrayResponse> req = new AddonList();
-        JsonArrayResponse response = connection.execute(req);
+        AddonList req = new AddonList();
+        List<Addon> response = connection.execute(req);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
 
@@ -190,9 +195,9 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testAddAddonToApp(App app) {
-        Request<JsonMapResponse> req = new AddonInstall(app.getName(), "shared-database:5mb");
-        JsonMapResponse response = connection.execute(req);
-        assertEquals(response.get("status"), "Installed");
+        AddonInstall req = new AddonInstall(app.getName(), "shared-database:5mb");
+        AddonChange response = connection.execute(req);
+        assertEquals(response.getStatus(), "Installed");
     }
 
     @Test(dataProvider = "app")

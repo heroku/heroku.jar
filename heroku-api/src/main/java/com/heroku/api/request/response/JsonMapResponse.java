@@ -1,8 +1,9 @@
 package com.heroku.api.request.response;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Response;
-import com.heroku.api.json.Json;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,8 @@ public class JsonMapResponse implements Response {
 
     public JsonMapResponse(byte[] bytes) {
         this.rawData = bytes;
-        this.data = Json.getJsonParser().parseMap(this.rawData);
+        this.data = Json.getJsonParser().parse(this.rawData, new TypeReference<Map<String, String>>() {
+        }.getType());
     }
 
 

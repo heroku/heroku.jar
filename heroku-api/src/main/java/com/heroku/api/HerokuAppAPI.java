@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 
+import com.heroku.api.connection.Connection;
 import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
@@ -14,7 +15,6 @@ import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
-import com.heroku.api.connection.Connection;
 
 import java.util.List;
 import java.util.Map;
@@ -42,8 +42,8 @@ public class HerokuAppAPI {
         connection.execute(new AppDestroy(appName));
     }
 
-    public Map<String, String> info() {
-        return connection.execute(new AppInfo(appName)).getData();
+    public App info() {
+        return connection.execute(new AppInfo(appName));
     }
 
     public List<Map<String, String>> listCollaborators() {

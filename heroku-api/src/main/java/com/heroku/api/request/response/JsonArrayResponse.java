@@ -1,8 +1,9 @@
 package com.heroku.api.request.response;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Response;
-import com.heroku.api.json.Json;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class JsonArrayResponse implements Response {
 
     public JsonArrayResponse(byte[] bytes) {
         this.rawData = bytes;
-        this.data = Json.getJsonParser().parseArray(this.rawData);
+        this.data = Json.getJsonParser().parse(this.rawData, new TypeReference<List<Map<String, String>>>(){}.getType());
     }
 
     @Override
