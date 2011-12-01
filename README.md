@@ -1,18 +1,62 @@
 #Heroku JAR
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
-##Usage
+##Installation
 1. git clone git@github.com:heroku/heroku-jar.git
 2. mvn install -DskipTests
-3. Write some code:
 
-    ```java
-    String yourApiKey = ...
-    HerokuAPI api = new HerokuAPI(new HttpClientConnection(yourApiKey));
-    HerokuAppAPI appApi = HerokuAPI.newapp(Heroku.Stack.Cedar);
-    ```
+##Add Dependencies to your Pom
 
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-api</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-json-jackson</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-http-apache</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </dependency>
 
+##Examples
+
+###Create a Connection
+```java
+String username = ...;
+String password = ...;
+Connection<?> connection = new HttpClientConnection(new BasicAuthLogin(username, password));
+```
+
+###Obtain an API Key -- usually used for persisting credentials
+```java
+String apiKey = connection.getApiKey();
+```
+
+###Create a Connection using an API Key
+```java
+String apiKey = ...;
+Connection<?> connection = new HttpClientConnection(apiKey);
+```
+
+###Create an Application
+```java
+HerokuAPI api = new HerokuAPI(connection);
+HerokuAppAPI appApi = HerokuAPI.newapp(Heroku.Stack.Cedar);
+```
+
+###List applications
+```java
+HerokuAPI api = new HerokuAPI(connection);
+List<App> apps = api.apps();
+for (App app : apps) {
+    System.out.println(app.getName());
+}
+```
 
 ## Some Design Considerations
 
