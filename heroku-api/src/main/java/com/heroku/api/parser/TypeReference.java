@@ -1,6 +1,8 @@
 package com.heroku.api.parser;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
 /**
  * Provides a java.lang.reflect.Type for generically-typed arguments.
  *
@@ -13,20 +15,16 @@ public abstract class TypeReference<T> {
     private final Type t;
     
     protected TypeReference() {
-        t = inferType(getClass());
-    }
-    
-    public Type getType() {
-        return t;
-    }
-
-    public static Type inferType(Class<?> typedClass) {
-        Type superclass = typedClass.getGenericSuperclass();
+        Type superclass = getClass().getGenericSuperclass();
 
         if (superclass instanceof Class)
             throw new RuntimeException("No type parameter supplied.");
 
-        return ((ParameterizedType) superclass).getActualTypeArguments()[0];
+        t = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+    }
+    
+    public Type getType() {
+        return t;
     }
 
 }
