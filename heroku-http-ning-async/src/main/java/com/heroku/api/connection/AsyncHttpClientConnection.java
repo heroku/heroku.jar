@@ -22,7 +22,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
     public AsyncHttpClientConnection(LoginRequest login) {
         httpClient = geHttpClient();
-        this.apiKey = execute(login).api_key();
+        this.apiKey = execute(login).getApi_key();
     }
 
     public AsyncHttpClientConnection(String apiKey) {

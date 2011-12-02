@@ -15,8 +15,16 @@ public class Addon {
     String beta;
     int price_cents;
     String price_unit;
-
     String id;
+    Boolean configured;
+
+    public Boolean getConfigured() {
+        return configured;
+    }
+
+    public void setConfigured(Boolean configured) {
+        this.configured = configured;
+    }
 
     public int getPrice_cents() {
         return price_cents;

@@ -1,22 +1,23 @@
 package com.heroku.api.request.config;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class ConfigRemove implements Request<JsonMapResponse> {
+public class ConfigRemove implements Request<Map<String, String>> {
 
     private final RequestConfig config;
 
@@ -55,9 +56,9 @@ public class ConfigRemove implements Request<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(byte[] bytes, int status) {
+    public Map<String, String> getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            return new JsonMapResponse(bytes);
+            return parse(bytes, getClass());
         } else {
             throw new RequestFailedException("Config removal failed.", status, bytes);
         }

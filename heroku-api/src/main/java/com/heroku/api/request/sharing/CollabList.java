@@ -1,24 +1,25 @@
 package com.heroku.api.request.sharing;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.response.XmlArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-
-import static com.heroku.api.Heroku.RequestKey.*;
+import com.heroku.api.model.Collaborator;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class CollabList implements Request<XmlArrayResponse> {
+public class CollabList implements Request<List<Collaborator>> {
 
     private final RequestConfig config;
 
@@ -33,7 +34,7 @@ public class CollabList implements Request<XmlArrayResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborators.format(config.get(AppName));
+        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.AppName));
     }
 
     @Override
@@ -48,7 +49,7 @@ public class CollabList implements Request<XmlArrayResponse> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -57,9 +58,9 @@ public class CollabList implements Request<XmlArrayResponse> {
     }
 
     @Override
-    public XmlArrayResponse getResponse(byte[] bytes, int status) {
+    public List<Collaborator> getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            return new XmlArrayResponse(bytes);
+            return parse(bytes, getClass());
         } else {
             throw new RequestFailedException("List collaborators failed.", status, bytes);
         }

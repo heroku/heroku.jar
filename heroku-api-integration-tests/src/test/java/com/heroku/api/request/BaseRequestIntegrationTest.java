@@ -3,13 +3,13 @@ package com.heroku.api.request;
 import com.google.inject.Inject;
 import com.heroku.api.Heroku;
 import com.heroku.api.TestModuleFactory;
+import com.heroku.api.connection.Connection;
 import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.response.Unit;
-import com.heroku.api.connection.Connection;
+import com.heroku.api.response.Unit;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
@@ -38,6 +38,10 @@ public abstract class BaseRequestIntegrationTest {
 
     @DataProvider
     public Object[][] app() throws IOException {
+        return new Object[][]{{createApp()}};
+    }
+
+    public App createApp() {
         RequestConfig config = new RequestConfig().onStack(Heroku.Stack.Cedar);
 
         Request<App> cmd = new AppCreate("Cedar");
@@ -45,7 +49,7 @@ public abstract class BaseRequestIntegrationTest {
 
         apps.add(app);
 
-        return new Object[][]{{app}};
+        return app;
     }
 
     @AfterSuite

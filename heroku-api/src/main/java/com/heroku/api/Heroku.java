@@ -137,7 +137,11 @@ Likewise, the secure random parameter may be null in which case the default impl
         ProcessName("ps"),
         Quantity("qty"),
         Username("username"),
-        Password("password");
+        Password("password"),
+        Logplex("logplex"),
+        LogNum("num"),
+        LogSource("source"),
+        LogTail("tail");
 
         public final String queryParameter;
 
@@ -190,7 +194,7 @@ Likewise, the secure random parameter may be null in which case the default impl
         Collaborator(Collaborators.value + "/%s"),
         ConfigVars(App.value + "/config_vars"),
         ConfigVar(ConfigVars.value + "/%s"),
-        Logs(App.value + "/logs"),
+        Logs(App.value + "/logs?%s"),
         Process(App.value + "/ps"),
         Restart(Process.value + "/restart"),
         Stop(Process.value + "/stop"),

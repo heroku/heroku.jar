@@ -2,9 +2,7 @@ package com.heroku.api.request;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.model.Addon;
-import com.heroku.api.model.AddonChange;
-import com.heroku.api.model.App;
+import com.heroku.api.model.*;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
@@ -16,23 +14,21 @@ import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
-import com.heroku.api.request.log.LogStream;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
-import com.heroku.api.request.response.JsonArrayResponse;
-import com.heroku.api.request.response.JsonMapResponse;
-import com.heroku.api.request.response.Unit;
-import com.heroku.api.request.response.XmlArrayResponse;
+import com.heroku.api.response.Unit;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static org.testng.Assert.*;
@@ -57,22 +53,21 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(Heroku.Stack.fromString(response.getStack()), Heroku.Stack.Cedar);
         deleteApp(response.getName());
     }
-
-    @Test(dataProvider = "app")
-    public void testLogCommand(App app) throws IOException, InterruptedException {
-        System.out.println("Sleeping to wait for logplex provisioning");
-        Thread.sleep(10000);
-        Log logs = new Log(app.getName());
-        LogStreamResponse logsResponse = connection.execute(logs);
-        assertLogIsReadable(logsResponse);
+    
+    @DataProvider
+    public Object[][] logParameters() {
+        return new Object[][] {
+                { new Log(createApp().getName()) },
+                { new Log(createApp().getName(), true) },
+                { Log.logFor(createApp().getName()).tail(false).num(1).getRequest() }
+        };
     }
-
-    @Test(dataProvider = "app")
-    public void testLogStreamCommand(App app) throws IOException, InterruptedException {
+    
+    @Test(dataProvider = "logParameters")
+    public void testLogCommand(Log log) throws IOException, InterruptedException {
         System.out.println("Sleeping to wait for logplex provisioning");
         Thread.sleep(10000);
-        LogStream logs = new LogStream(app.getName());
-        LogStreamResponse logsResponse = connection.execute(logs);
+        LogStreamResponse logsResponse = connection.execute(log);
         assertLogIsReadable(logsResponse);
     }
 
@@ -136,33 +131,31 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testConfigCommand(App app) {
         addConfig(app, "FOO", "BAR");
-        Request<JsonMapResponse> req = new ConfigList(app.getName());
-        JsonMapResponse response = connection.execute(req);
+        Request<Map<String, String>> req = new ConfigList(app.getName());
+        Map<String, String> response = connection.execute(req);
         assertNotNull(response.get("FOO"));
         assertEquals(response.get("FOO"), "BAR");
     }
 
-    @Test(dataProvider = "app",
-            expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "FOO is not present.")
+    @Test(dataProvider = "app")
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
-        Request<JsonMapResponse> removeRequest = new ConfigRemove(app.getName(), "FOO");
+        Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
         connection.execute(removeRequest);
 
-        Request<JsonMapResponse> listRequest = new ConfigList(app.getName());
-        JsonMapResponse response = connection.execute(listRequest);
+        Request<Map<String, String>> listRequest = new ConfigList(app.getName());
+        Map<String, String> response = connection.execute(listRequest);
 
         assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
-        response.get("FOO");
+        assertNull(response.get("FOO"));
     }
 
     @Test(dataProvider = "app")
     public void testProcessCommand(App app) {
-        Request<JsonArrayResponse> req = new ProcessList(app.getName());
-        JsonArrayResponse response = connection.execute(req);
-        assertNotNull(response.getData(), "Expected a non-null response for a new app, but the data was null.");
-        assertEquals(response.getData().size(), 1);
+        Request<List<Proc>> req = new ProcessList(app.getName());
+        List<Proc> response = connection.execute(req);
+        assertNotNull(response, "Expected a non-null response for a new app, but the data was null.");
+        assertEquals(response.size(), 1);
     }
 
     @Test(dataProvider = "app")
@@ -186,11 +179,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testListAppAddons(App app) {
-        Request<JsonArrayResponse> req = new AppAddonsList(app.getName());
-        JsonArrayResponse response = connection.execute(req);
+        Request<List<Addon>> req = new AppAddonsList(app.getName());
+        List<Addon> response = connection.execute(req);
         assertNotNull(response);
-        assertTrue(response.getData().size() > 0, "Expected at least one addon to be present.");
-        assertNotNull(response.get("releases:basic"));
+        assertTrue(response.size() > 0, "Expected at least one addon to be present.");
+        assertNotNull(response.get(0).getName());
     }
 
     @Test(dataProvider = "app")
@@ -202,10 +195,10 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testCollaboratorList(App app) {
-        Request<XmlArrayResponse> req = new CollabList(app.getName());
-        XmlArrayResponse xmlArrayResponse = connection.execute(req);
-        assertEquals(xmlArrayResponse.getData().size(), 1);
-        assertNotNull(xmlArrayResponse.getData().get(0).get("email"));
+        Request<List<Collaborator>> req = new CollabList(app.getName());
+        List<Collaborator> xmlArrayResponse = connection.execute(req);
+        assertEquals(xmlArrayResponse.size(), 1);
+        assertNotNull(xmlArrayResponse.get(0).getEmail());
     }
 
 

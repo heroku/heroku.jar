@@ -3,6 +3,7 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.model.App;
+import com.heroku.api.model.Collaborator;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;
@@ -46,8 +47,8 @@ public class HerokuAppAPI {
         return connection.execute(new AppInfo(appName));
     }
 
-    public List<Map<String, String>> listCollaborators() {
-        return connection.execute(new CollabList(appName)).getData();
+    public List<Collaborator> listCollaborators() {
+        return connection.execute(new CollabList(appName));
     }
 
     public HerokuAppAPI addCollaborator(String collaborator) {
@@ -65,11 +66,11 @@ public class HerokuAppAPI {
     }
 
     public Map<String, String> listConfig() {
-        return connection.execute(new ConfigList(appName)).getData();
+        return connection.execute(new ConfigList(appName));
     }
 
     public Map<String, String> removeConfig(String configVarName) {
-        return connection.execute(new ConfigRemove(appName, configVarName)).getData();
+        return connection.execute(new ConfigRemove(appName, configVarName));
     }
 
     public void transferApp(String to) {

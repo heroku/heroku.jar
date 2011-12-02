@@ -3,9 +3,9 @@ package com.heroku.api.connection;
 import com.heroku.api.Heroku;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.model.LoginVerification;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
-import com.heroku.api.request.login.LoginResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -32,8 +32,8 @@ public class HttpClientConnection implements Connection<Future<?>> {
     private final String apiKey;
 
     public HttpClientConnection(LoginRequest login) {
-        LoginResponse loginResponse = execute(login);
-        this.apiKey = loginResponse.api_key();
+        LoginVerification loginVerification = execute(login);
+        this.apiKey = loginVerification.getApi_key();
         setHttpClientCredentials(apiKey);
     }
 

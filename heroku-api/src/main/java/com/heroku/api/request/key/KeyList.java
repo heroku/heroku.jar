@@ -3,20 +3,22 @@ package com.heroku.api.request.key;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.model.Key;
 import com.heroku.api.request.Request;
-import com.heroku.api.request.response.XmlArrayResponse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class KeyList implements Request<XmlArrayResponse> {
+public class KeyList implements Request<List<Key>> {
 
     @Override
     public Http.Method getHttpMethod() {
@@ -40,7 +42,7 @@ public class KeyList implements Request<XmlArrayResponse> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -49,9 +51,9 @@ public class KeyList implements Request<XmlArrayResponse> {
     }
 
     @Override
-    public XmlArrayResponse getResponse(byte[] bytes, int status) {
+    public List<Key> getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode)
-            return new XmlArrayResponse(bytes);
+            return parse(bytes, getClass());
         else
             throw new RequestFailedException("Unable to list keys.", status, bytes);
     }
