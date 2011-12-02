@@ -1,12 +1,14 @@
 package com.heroku.api.request.addon;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.response.JsonMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.model.AddonChange;
+import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
 
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class AddonInstall implements Request<JsonMapResponse> {
+public class AddonInstall implements Request<AddonChange> {
 
     private final RequestConfig config;
 
@@ -54,9 +56,9 @@ public class AddonInstall implements Request<JsonMapResponse> {
     }
 
     @Override
-    public JsonMapResponse getResponse(byte[] bytes, int status) {
+    public AddonChange getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            return new JsonMapResponse(bytes);
+            return Json.getJsonParser().parse(bytes, new TypeReference<AddonChange>(){}.getType());
         } else {
             throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.AddonName), status, bytes);
         }

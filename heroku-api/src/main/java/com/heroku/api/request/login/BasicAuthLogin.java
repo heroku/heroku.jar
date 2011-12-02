@@ -1,11 +1,14 @@
 package com.heroku.api.request.login;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.LoginRequest;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.model.LoginVerification;
+import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
+import com.heroku.api.request.LoginRequest;
+import com.heroku.api.request.RequestConfig;
 
 import java.util.Map;
 
@@ -56,9 +59,10 @@ public class BasicAuthLogin implements LoginRequest {
 
 
     @Override
-    public LoginResponse getResponse(byte[] in, int code) {
+    public LoginVerification getResponse(byte[] in, int code) {
         if (code == 200) {
-            return new LoginResponse(in);
+            return Json.getJsonParser().parse(in, new TypeReference<LoginVerification>() {
+            }.getType());
         } else if (code == 404) {
             throw new RequestFailedException("Invalid username and password combination.", code, in);
         } else {

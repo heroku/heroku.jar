@@ -2,12 +2,12 @@ package com.heroku.api.request;
 
 import com.google.inject.Inject;
 import com.heroku.api.TestModuleFactory;
+import com.heroku.api.connection.Connection;
+import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.model.Key;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
-import com.heroku.api.connection.Connection;
-import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.request.response.XmlArrayResponse;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -18,6 +18,7 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
 
@@ -71,7 +72,7 @@ public class NoAppCommandIntegrationTest {
     @Test
     public void testKeyListCommand() {
         KeyList keyListRequest = new KeyList();
-        XmlArrayResponse keyListResponse = connection.execute(keyListRequest);
+        List<Key> keyListResponse = connection.execute(keyListRequest);
         assertNotNull(keyListResponse);
     }
 

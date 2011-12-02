@@ -1,15 +1,13 @@
 package com.heroku.api.request.app;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.json.Json;
-import com.heroku.api.json.TypeReference;
-import com.heroku.api.model.*;
-import com.heroku.api.model.App;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.model.App;
+import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
+import com.heroku.api.request.Request;
 
 import java.util.HashMap;
 import java.util.List;

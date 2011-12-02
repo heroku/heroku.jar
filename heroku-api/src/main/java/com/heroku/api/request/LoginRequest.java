@@ -1,8 +1,8 @@
 package com.heroku.api.request;
 
 
-import com.heroku.api.request.login.LoginResponse;
+import com.heroku.api.model.LoginVerification;
 
-public interface LoginRequest extends Request<LoginResponse> {
+public interface LoginRequest extends Request<LoginVerification> {
 
 }

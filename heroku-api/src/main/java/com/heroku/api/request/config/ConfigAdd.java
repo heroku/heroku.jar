@@ -1,11 +1,11 @@
 package com.heroku.api.request.config;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.response.Unit;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
+import com.heroku.api.response.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +16,6 @@ import java.util.Map;
  * @author James Ward
  */
 public class ConfigAdd implements Request<Unit> {
-
-    // put("/apps/#{app_name}/config_vars", json_encode(new_vars)).to_s
 
     private final RequestConfig config;
 

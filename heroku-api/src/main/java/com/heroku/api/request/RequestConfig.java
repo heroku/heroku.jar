@@ -31,5 +31,9 @@ public class RequestConfig {
     public String get(Heroku.RequestKey key) {
         return config.get(key);
     }
+    
+    public Map<Heroku.RequestKey, String> asMap() {
+        return config;
+    }
 
 }

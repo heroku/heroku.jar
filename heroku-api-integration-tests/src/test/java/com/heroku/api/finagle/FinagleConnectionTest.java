@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.heroku.api.FinagleModule;
 import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppList;
-import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.FinagleConnection;
 import com.twitter.util.Duration;
 import com.twitter.util.Future;

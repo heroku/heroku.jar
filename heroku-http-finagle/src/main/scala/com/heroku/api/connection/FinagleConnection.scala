@@ -26,7 +26,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
   val hostHeader = getHostHeader
 
   val apiKey = config match {
-    case Left(login) => execute(login).api_key()
+    case Left(login) => execute(login).getApi_key()
     case Right(key) => key
   }
 

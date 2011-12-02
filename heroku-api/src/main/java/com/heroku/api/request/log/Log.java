@@ -2,22 +2,74 @@ package com.heroku.api.request.log;
 
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.heroku.api.Heroku.RequestKey.*;
+
 public class Log implements Request<LogStreamResponse> {
 
-    private RequestConfig config = new RequestConfig().onStack(Heroku.Stack.Cedar);
+    private final RequestConfig config;
 
     public Log(String app) {
-        config = config.app(app);
+        this(logFor(app).getConfig());
+    }
+    
+    public Log(String app, boolean tail) {
+        this(logFor(app).tail(true).getConfig());
+    }
+    
+    Log(RequestConfig config) {
+        this.config = config;
+    }
+    
+    public static LogRequestBuilder logFor(String app) {
+        return new LogRequestBuilder().app(app);
+    }
+    
+    public static class LogRequestBuilder {
+        RequestConfig config = new RequestConfig().with(Logplex, "true");
+        
+        public Log getRequest() {
+            return new Log(config);
+        }
+        
+        RequestConfig getConfig() {
+            return config;
+        }
+
+        LogRequestBuilder add(Heroku.RequestKey key, String val) {
+            config = config.with(key, val);
+            return this;
+        }
+        
+        public LogRequestBuilder app(String app) {
+            return add(AppName, app);
+        }
+
+        public LogRequestBuilder num(int num) {
+            return add(LogNum, String.valueOf(num));
+        }
+
+        public LogRequestBuilder ps(String processName) {
+            return add(ProcessName, processName);
+        }
+
+        public LogRequestBuilder source(String source) {
+            return add(LogSource, source);
+        }
+
+        public LogRequestBuilder tail(boolean tail) {
+            return (tail) ? add(LogTail, "1") : this;
+        }
+        
     }
 
     @Override
@@ -27,7 +79,10 @@ public class Log implements Request<LogStreamResponse> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Logs.format(config.get(Heroku.RequestKey.AppName)) + "?logplex=true";
+        return Heroku.Resource.Logs.format(
+                config.get(AppName),
+                HttpUtil.encodeParameters(config, Logplex, LogNum, ProcessName, LogSource, LogTail)
+        );
     }
 
     @Override
@@ -59,4 +114,5 @@ public class Log implements Request<LogStreamResponse> {
             throw new RequestFailedException("Unable to get logs", status, bytes);
         }
     }
+
 }

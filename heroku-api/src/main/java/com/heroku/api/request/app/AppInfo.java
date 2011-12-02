@@ -1,23 +1,24 @@
 package com.heroku.api.request.app;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.response.XmlMapResponse;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.model.App;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.RequestConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class AppInfo implements Request<XmlMapResponse> {
+public class AppInfo implements Request<App> {
 
     private final RequestConfig config;
 
@@ -47,7 +48,7 @@ public class AppInfo implements Request<XmlMapResponse> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -56,10 +57,10 @@ public class AppInfo implements Request<XmlMapResponse> {
     }
 
     @Override
-    public XmlMapResponse getResponse(byte[] in, int code) {
+    public App getResponse(byte[] data, int code) {
         if (code == 200)
-            return new XmlMapResponse(in);
+            return parse(data, getClass());
         else
-            throw new RequestFailedException("Unable to get app info", code, in);
+            throw new RequestFailedException("Unable to get app info", code, data);
     }
 }

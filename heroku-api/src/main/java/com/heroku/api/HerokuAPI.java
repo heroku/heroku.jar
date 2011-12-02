@@ -6,7 +6,6 @@ import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyRemove;
-import com.heroku.api.request.response.JsonArrayResponse;
 import com.heroku.api.connection.Connection;
 
 import java.util.List;

@@ -1,6 +1,8 @@
-package com.heroku.api.json;
+package com.heroku.api.parser;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
 /**
  * Provides a java.lang.reflect.Type for generically-typed arguments.
  *
@@ -24,4 +26,5 @@ public abstract class TypeReference<T> {
     public Type getType() {
         return t;
     }
+
 }
