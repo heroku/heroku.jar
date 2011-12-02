@@ -2,8 +2,12 @@ package com.heroku.api;
 
 
 import com.heroku.api.connection.Connection;
+import com.heroku.api.model.Addon;
+import com.heroku.api.model.AddonChange;
 import com.heroku.api.model.App;
 import com.heroku.api.model.Collaborator;
+import com.heroku.api.request.addon.AddonInstall;
+import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;
@@ -29,6 +33,17 @@ public class HerokuAppAPI {
         this.connection = connection;
         this.appName = name;
     }
+
+    public AddonChange addAddon(String addonName) {
+        return connection.execute(new AddonInstall(appName, addonName));
+    }
+
+    public List<Addon> listAddons() {
+        return connection.execute(new AppAddonsList(appName));
+    }
+
+    /*todo need addon remove*/
+    /*todo need addon upgrade/downgrade*/
 
     public App create(Heroku.Stack stack) {
         return connection.execute(new AppCreate(stack).withName(appName));
@@ -77,9 +92,10 @@ public class HerokuAppAPI {
         connection.execute(new SharingTransfer(appName, to));
     }
 
-    public LogStreamResponse getLogChunk() {
+    public LogStreamResponse logs() {
         return connection.execute(new Log(appName));
     }
+
 
     public HerokuAPI api() {
         return new HerokuAPI(connection);

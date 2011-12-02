@@ -1,12 +1,14 @@
 package com.heroku.api;
 
 
+import com.heroku.api.connection.Connection;
 import com.heroku.api.model.App;
+import com.heroku.api.model.Key;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.key.KeyAdd;
+import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
-import com.heroku.api.connection.Connection;
 
 import java.util.List;
 
@@ -29,11 +31,15 @@ public class HerokuAPI {
     public void removeKey(String sshKey) {
         connection.execute(new KeyRemove(sshKey));
     }
-    
+
+    public List<Key> listKeys() {
+        return connection.execute(new KeyList());
+    }
+
     public List<App> apps() {
         return connection.execute(new AppList());
     }
-    
+
     public HerokuAppAPI app(String name) {
         return new HerokuAppAPI(connection, name);
     }
