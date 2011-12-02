@@ -3,7 +3,15 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 
 ##Installation
 1. git clone git@github.com:heroku/heroku-jar.git
+
 2. mvn install -DskipTests
+
+Or run with tests:
+
+2. export HEROKU_USER=foo@bar.com
+3. export HEROKU_PASSWORD=password
+4. export HEROKU_TEST_PRODUCTION=true
+5. mvn install
 
 ##Add Dependencies to your Pom
 
