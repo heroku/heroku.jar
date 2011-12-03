@@ -32,8 +32,11 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
     protected AsyncHttpClient geHttpClient() {
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
-        builder.setSSLContext(Heroku.herokuSSLContext());
-        builder.setHostnameVerifier(Heroku.herokuHostnameVerifier());
+        // TODO: fix the handling of hostname verification
+        if (!Heroku.Config.ENDPOINT.isDefault()) {
+            builder.setSSLContext(Heroku.herokuSSLContext());
+            builder.setHostnameVerifier(Heroku.herokuHostnameVerifier());
+        }
         return new AsyncHttpClient(builder.build());
     }
 
