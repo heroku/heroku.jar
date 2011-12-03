@@ -2,18 +2,25 @@
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
 ##Installation
-1. git clone git@github.com:heroku/heroku-jar.git
 
-2. mvn install -DskipTests
+1. Clone the repo:
 
-Or run with tests:
+        `git clone git@github.com:heroku/heroku-jar.git`
 
-2. export HEROKU_USER=foo@bar.com
-3. export HEROKU_PASSWORD=password
-4. export HEROKU_TEST_PRODUCTION=true
-5. mvn install
+2. Build and install the jars:
 
-##Add Dependencies to your Pom
+    * Without running the tests:
+
+        `mvn install -DskipTests`
+
+    * Or run with tests:
+
+        `export HEROKU_USER=foo@bar.com`
+        `export HEROKU_PASSWORD=password`
+        `export HEROKU_TEST_PRODUCTION=true`
+        `mvn install`
+
+##Add Dependencies to your pom.xml
 
     <dependency>
         <groupId>com.heroku.api</groupId>
