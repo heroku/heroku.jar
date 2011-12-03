@@ -21,7 +21,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
-  val client = newClient()
+  @volatile var client = newClient()
 
   val hostHeader = getHostHeader
 
@@ -33,6 +33,10 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
   def execute[T](command: Request[T]): T = executeAsync(command).get()
 
   def executeAsync[T](command: Request[T]): Future[T] = {
+    if(!client.isAvailable){
+      client.release()
+      client = newClient()
+    }
     client(toReq(command)).map {
       resp =>
         command.getResponse(resp.getContent.toByteBuffer.array(), resp.getStatus.getCode)

@@ -2,6 +2,7 @@ package com.heroku.api.request;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.model.*;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
@@ -18,11 +19,11 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
-import com.heroku.api.response.Unit;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
+import com.heroku.api.response.Unit;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -65,10 +66,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     
     @Test(dataProvider = "logParameters")
     public void testLogCommand(Log log) throws IOException, InterruptedException {
-        System.out.println("Sleeping to wait for logplex provisioning");
-        Thread.sleep(10000);
-        LogStreamResponse logsResponse = connection.execute(log);
-        assertLogIsReadable(logsResponse);
+        for (int i = 0; i < 10; i++) {
+            try {
+                LogStreamResponse logsResponse = connection.execute(log);
+                assertLogIsReadable(logsResponse);
+                return;
+            } catch (HerokuAPIException e) {
+                Thread.sleep(1000);
+            }
+        }
+        fail("Logs were never read.");
     }
 
     @Test(dataProvider = "app")

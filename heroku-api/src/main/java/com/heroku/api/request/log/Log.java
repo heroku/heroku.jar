@@ -23,7 +23,7 @@ public class Log implements Request<LogStreamResponse> {
     }
     
     public Log(String app, boolean tail) {
-        this(logFor(app).tail(true).getConfig());
+        this(logFor(app).tail(tail).getConfig());
     }
     
     Log(RequestConfig config) {
