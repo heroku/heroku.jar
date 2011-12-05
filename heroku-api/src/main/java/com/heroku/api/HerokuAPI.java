@@ -18,7 +18,7 @@ public class HerokuAPI {
 
     Connection<?> connection;
 
-    public static HerokuAPI with(Connection<?> connection) {
+    public static HerokuAPI connect(Connection<?> connection) {
         return new HerokuAPI(connection);
     }
 
