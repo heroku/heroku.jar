@@ -10,6 +10,7 @@ import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.response.Unit;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Guice;
@@ -17,7 +18,11 @@ import org.testng.annotations.Guice;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.testng.Assert.fail;
 
@@ -32,21 +37,30 @@ public abstract class BaseRequestIntegrationTest {
     @Inject
     Connection<?> connection;
 
-    private List<com.heroku.api.model.App> apps = new ArrayList<com.heroku.api.model.App>();
+    private static List<com.heroku.api.model.App> apps = new ArrayList<com.heroku.api.model.App>();
 
     @DataProvider
-    public Object[][] app() throws IOException {
-        return new Object[][]{{createApp()}};
+    public Object[][] app() {
+        return new Object[][]{{getApp()}};
     }
+    
+    @DataProvider
+    public Object[][] newApp() {
+        return new Object[][] {{createApp()}};
+    }
+    
+    public App getApp() {
+        if (apps.size() > 0)
+            return apps.get(0);
 
+        return createApp();
+    }
+    
     public App createApp() {
-        RequestConfig config = new RequestConfig().onStack(Heroku.Stack.Cedar);
-
-        Request<App> cmd = new AppCreate("Cedar");
-        App app = connection.execute(cmd);
-
+        System.out.println("Creating app...");
+        App app = connection.execute(new AppCreate(Heroku.Stack.Cedar));
         apps.add(app);
-
+        System.out.format("%s created\n", app.getName());
         return app;
     }
 
@@ -54,13 +68,25 @@ public abstract class BaseRequestIntegrationTest {
     public void closeConnection() {
         connection.close();
     }
-    
-    @AfterSuite(alwaysRun = true)
-    public void deleteTestApps() throws IOException {
-        for (App res : apps) {
-            Request<Unit> req = new AppDestroy(res.getName());
-            connection.execute(req);
+
+    @AfterClass(alwaysRun = true)
+    public void deleteTestApps() throws IOException, InterruptedException {
+        long start = System.currentTimeMillis();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (final App res : apps) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.format("Deleting %s\n", res.getName());
+                    deleteApp(res.getName());
+                    System.out.format("Deleted %s\n", res.getName());
+                }
+            });
         }
+        // await termination of all the threads to complete app deletion.
+        // cannot use wait() because we don't own the thread
+        executorService.awaitTermination(30L, TimeUnit.SECONDS);
+        System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
     }
     
     public void deleteApp(String appName) {

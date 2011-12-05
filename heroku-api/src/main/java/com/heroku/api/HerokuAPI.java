@@ -2,8 +2,10 @@ package com.heroku.api;
 
 
 import com.heroku.api.connection.Connection;
+import com.heroku.api.model.Addon;
 import com.heroku.api.model.App;
 import com.heroku.api.model.Key;
+import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.key.KeyAdd;
@@ -16,7 +18,7 @@ public class HerokuAPI {
 
     Connection<?> connection;
 
-    public static HerokuAPI with(Connection<?> connection) {
+    public static HerokuAPI connect(Connection<?> connection) {
         return new HerokuAPI(connection);
     }
 
@@ -34,6 +36,10 @@ public class HerokuAPI {
 
     public List<Key> listKeys() {
         return connection.execute(new KeyList());
+    }
+    
+    public List<Addon> listAddons() {
+        return connection.execute(new AddonList());
     }
 
     public List<App> apps() {
