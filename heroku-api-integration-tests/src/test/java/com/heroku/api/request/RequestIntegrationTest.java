@@ -52,6 +52,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
         assertNotNull(response.getId());
         assertEquals(Heroku.Stack.fromString(response.getStack()), Heroku.Stack.Cedar);
+        assertTrue(response.getCreate_status().equals("complete")); //todo: move "complete" to a static final?
         deleteApp(response.getName());
     }
     
@@ -97,13 +98,15 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test
     public void testDestroyAppCommand() throws IOException {
         AppDestroy cmd = new AppDestroy(HerokuAPI.with(connection).newapp(Cedar).getAppName());
-        connection.execute(cmd);
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(App app) throws IOException {
         SharingAdd cmd = new SharingAdd(app.getName(), DEMO_EMAIL);
-        connection.execute(cmd);
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     // if we do this then we will no longer be able to remove the app
@@ -112,27 +115,30 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testSharingTransferCommand(App app) throws IOException {
         Request<Unit> sharingAddReq = new SharingAdd(app.getName(), DEMO_EMAIL);
-        connection.execute(sharingAddReq);
+        Unit sharingAddResp = connection.execute(sharingAddReq);
+        assertNotNull(sharingAddResp);
 
         SharingTransfer sharingTransferCommand = new SharingTransfer(app.getName(), DEMO_EMAIL);
-        connection.execute(sharingTransferCommand);
-
+        Unit sharingTransferResponse = connection.execute(sharingTransferCommand);
+        assertNotNull(sharingTransferResponse);
     }
 
     @Test(dataProvider = "app")
     public void testSharingRemoveCommand(App app) throws IOException {
         SharingAdd sharingAddCommand = new SharingAdd(app.getName(), DEMO_EMAIL);
-        connection.execute(sharingAddCommand);
+        Unit sharingAddResp = connection.execute(sharingAddCommand);
+        assertNotNull(sharingAddResp);
 
         SharingRemove cmd = new SharingRemove(app.getName(), DEMO_EMAIL);
-        connection.execute(cmd);
-
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
     public void testConfigAddCommand(App app) throws IOException {
         ConfigAdd cmd = new ConfigAdd(app.getName(), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
-        connection.execute(cmd);
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
@@ -148,7 +154,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
         Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
-        connection.execute(removeRequest);
+        Map<String, String> resp = connection.execute(removeRequest);
+        assertNotNull(resp);
 
         Request<Map<String, String>> listRequest = new ConfigList(app.getName());
         Map<String, String> response = connection.execute(listRequest);
@@ -168,13 +175,15 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testScaleCommand(App app) {
         Request<Unit> req = new Scale(app.getName(), "web", 1);
-        connection.execute(req);
+        Unit response = connection.execute(req);
+        assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
     public void testRestartCommand(App app) {
         Request<Unit> req = new Restart(app.getName());
-        connection.execute(req);
+        Unit response = connection.execute(req);
+        assertNotNull(response);
     }
 
     @Test
