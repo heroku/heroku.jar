@@ -40,13 +40,10 @@ public abstract class BaseRequestIntegrationTest {
     }
 
     public App createApp() {
-        RequestConfig config = new RequestConfig().onStack(Heroku.Stack.Cedar);
-
-        Request<App> cmd = new AppCreate("Cedar");
-        App app = connection.execute(cmd);
-
+        System.out.println("Creating app...");
+        App app = connection.execute(new AppCreate(Heroku.Stack.Cedar));
         apps.add(app);
-
+        System.out.format("%s created\n", app.getName());
         return app;
     }
 
@@ -58,8 +55,9 @@ public abstract class BaseRequestIntegrationTest {
     @AfterSuite(alwaysRun = true)
     public void deleteTestApps() throws IOException {
         for (App res : apps) {
-            Request<Unit> req = new AppDestroy(res.getName());
-            connection.execute(req);
+            System.out.format("Deleting %s\n", res.getName());
+            connection.execute(new AppDestroy(res.getName()));
+            System.out.format("Deleted %s\n", res.getName());
         }
     }
     

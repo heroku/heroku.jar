@@ -141,7 +141,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         Logplex("logplex"),
         LogNum("num"),
         LogSource("source"),
-        LogTail("tail");
+        LogTail("tail"),
+        Release("release"),
+        Rollback("rollback");
 
         public final String queryParameter;
 
@@ -198,7 +200,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         Process(App.value + "/ps"),
         Restart(Process.value + "/restart"),
         Stop(Process.value + "/stop"),
-        Scale(Process.value + "/scale");
+        Scale(Process.value + "/scale"),
+        Releases(App.value + "/releases"),
+        Release(Releases.value + "/%s");
 
         public final String value;
 

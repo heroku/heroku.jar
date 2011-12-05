@@ -21,16 +21,16 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
 
     public AsyncHttpClientConnection(LoginRequest login) {
-        httpClient = geHttpClient();
+        httpClient = getHttpClient();
         this.apiKey = execute(login).getApi_key();
     }
 
     public AsyncHttpClientConnection(String apiKey) {
-        httpClient = geHttpClient();
+        httpClient = getHttpClient();
         this.apiKey = apiKey;
     }
 
-    protected AsyncHttpClient geHttpClient() {
+    protected AsyncHttpClient getHttpClient() {
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
         // TODO: fix the handling of hostname verification
         if (!Heroku.Config.ENDPOINT.isDefault()) {
