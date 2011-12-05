@@ -58,9 +58,9 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @DataProvider
     public Object[][] logParameters() {
         return new Object[][] {
-                { new Log(createApp().getName()) },
-                { new Log(createApp().getName(), true) },
-                { Log.logFor(createApp().getName()).tail(false).num(1).getRequest() }
+                { new Log(getApp().getName()) },
+                { new Log(getApp().getName(), true) },
+                { Log.logFor(getApp().getName()).tail(false).num(1).getRequest() }
         };
     }
     
@@ -109,7 +109,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // if we do this then we will no longer be able to remove the app
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testSharingTransferCommand(App app) throws IOException {
         Request<Unit> sharingAddReq = new SharingAdd(app.getName(), DEMO_EMAIL);
         connection.execute(sharingAddReq);
@@ -119,7 +119,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testSharingRemoveCommand(App app) throws IOException {
         SharingAdd sharingAddCommand = new SharingAdd(app.getName(), DEMO_EMAIL);
         connection.execute(sharingAddCommand);
@@ -144,7 +144,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.get("FOO"), "BAR");
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
         Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
