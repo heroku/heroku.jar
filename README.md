@@ -60,7 +60,7 @@ Connection<?> connection = new HttpClientConnection(apiKey);
 
 ###Create an Application
 ```java
-HerokuAPI api = HerokuAPI().connect(connection);
+HerokuAPI api = HerokuAPI.connect(connection);
 HerokuAppAPI appApi = api.newapp(Heroku.Stack.Cedar);
 ```
 
