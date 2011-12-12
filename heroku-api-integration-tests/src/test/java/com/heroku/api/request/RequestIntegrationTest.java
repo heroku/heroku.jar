@@ -121,6 +121,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         SharingTransfer sharingTransferCommand = new SharingTransfer(app.getName(), DEMO_EMAIL);
         Unit sharingTransferResponse = connection.execute(sharingTransferCommand);
         assertNotNull(sharingTransferResponse);
+        
+        AppInfo appInfo = new AppInfo(app.getName());
+        App appResp = connection.execute(appInfo);
+        // todo: test with the actual owner once the API returns it
+        //assertEquals(app.getOwner(), DEMO_EMAIL);
     }
 
     @Test(dataProvider = "newApp")
@@ -132,6 +137,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         SharingRemove cmd = new SharingRemove(app.getName(), DEMO_EMAIL);
         Unit response = connection.execute(cmd);
         assertNotNull(response);
+        
+        CollabList collabList = new CollabList(app.getName());
+        List<Collaborator> collaborators = connection.execute(collabList);
+        for (Collaborator collaborator : collaborators) {
+            if (collaborator.getEmail().equals(DEMO_EMAIL)) {
+                fail("Collaborator was not removed");
+            }
+        }
     }
 
     @Test(dataProvider = "app")
