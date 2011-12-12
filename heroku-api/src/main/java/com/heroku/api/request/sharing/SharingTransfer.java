@@ -50,12 +50,12 @@ public class SharingTransfer implements Request<Unit> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
