@@ -5,10 +5,12 @@ import com.heroku.api.Heroku;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.model.App;
+import com.heroku.api.model.Collaborator;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.log.LogStreamResponse;
+import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
@@ -84,8 +86,7 @@ public abstract class BaseRequestIntegrationTest {
             });
         }
         // await termination of all the threads to complete app deletion.
-        // cannot use wait() because we don't own the thread
-        executorService.awaitTermination(30L, TimeUnit.SECONDS);
+        executorService.awaitTermination(120L, TimeUnit.SECONDS);
         System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
     }
     
@@ -124,6 +125,15 @@ public abstract class BaseRequestIntegrationTest {
             fail("Unable to read logs", e);
         } finally {
             in.close();
+        }
+    }
+
+    void assertCollaboratorNotPresent(String collabEmail, CollabList collabList) {
+        List<Collaborator> collaborators = connection.execute(collabList);
+        for (Collaborator collaborator : collaborators) {
+            if (collaborator.getEmail().equals(collabEmail)) {
+                fail("Collaborator was not removed");
+            }
         }
     }
 }

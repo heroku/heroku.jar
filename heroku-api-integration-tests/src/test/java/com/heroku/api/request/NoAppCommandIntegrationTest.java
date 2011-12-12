@@ -8,6 +8,7 @@ import com.heroku.api.model.Key;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
+import com.heroku.api.response.Unit;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
@@ -47,15 +48,16 @@ public class NoAppCommandIntegrationTest {
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
         KeyAdd cmd = new KeyAdd(sshPublicKey);
-        connection.execute(cmd);
-
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     // doesn't need an app
     @Test(dependsOnMethods = {"testKeysAddCommand"})
     public void testKeysRemoveCommand() {
         KeyRemove cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
-        connection.execute(cmd);
+        Unit response = connection.execute(cmd);
+        assertNotNull(response);
     }
 
     // doesn't need an app
