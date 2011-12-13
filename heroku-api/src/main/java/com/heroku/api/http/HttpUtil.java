@@ -1,9 +1,9 @@
 package com.heroku.api.http;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.request.RequestConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.request.RequestConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
