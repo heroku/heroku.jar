@@ -138,12 +138,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response);
         
         CollabList collabList = new CollabList(app.getName());
-        List<Collaborator> collaborators = connection.execute(collabList);
-        for (Collaborator collaborator : collaborators) {
-            if (collaborator.getEmail().equals(DEMO_EMAIL)) {
-                fail("Collaborator was not removed");
-            }
-        }
+        assertCollaboratorNotPresent(DEMO_EMAIL, collabList);
     }
 
     @Test(dataProvider = "app")
