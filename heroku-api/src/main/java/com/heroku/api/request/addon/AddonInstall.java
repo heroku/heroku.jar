@@ -1,10 +1,10 @@
 package com.heroku.api.request.addon;
 
+import com.heroku.api.AddonChange;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.AddonChange;
 import com.heroku.api.parser.Json;
 import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;

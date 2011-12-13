@@ -1,9 +1,9 @@
 package com.heroku.api.request.key;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.Key;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.model.Key;
 import com.heroku.api.request.Request;
 
 import java.util.HashMap;

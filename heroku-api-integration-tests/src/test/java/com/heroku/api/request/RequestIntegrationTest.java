@@ -1,9 +1,7 @@
 package com.heroku.api.request;
 
-import com.heroku.api.Heroku;
-import com.heroku.api.HerokuAPI;
+import com.heroku.api.*;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.model.*;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
@@ -47,12 +45,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test
     public void testCreateAppCommand() throws IOException {
-        AppCreate cmd = new AppCreate("Cedar");
-        com.heroku.api.model.App response = connection.execute(cmd);
+        AppCreate cmd = new AppCreate(new App().on(Cedar));
+        App response = connection.execute(cmd);
 
         assertNotNull(response.getId());
-        assertEquals(Heroku.Stack.fromString(response.getStack()), Heroku.Stack.Cedar);
-        assertTrue(response.getCreate_status().equals("complete")); //todo: move "complete" to a static final?
+        assertEquals(Heroku.Stack.fromString(response.getStack()), Cedar);
+        assertTrue(response.getCreateStatus().equals("complete")); //todo: move "complete" to a static final?
         deleteApp(response.getName());
     }
     
@@ -97,7 +95,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // don't use the app dataprovider because it'll try to delete an already deleted app
     @Test
     public void testDestroyAppCommand() throws IOException {
-        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection).newapp(Cedar).getAppName());
+        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection).createApp(new App().on(Cedar)).getName());
         Unit response = connection.execute(cmd);
         assertNotNull(response);
     }

@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 import java.util.List;
 import java.util.Map;
@@ -19,15 +19,15 @@ public class Release {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
-    public String getDescr() {
+    public String getDescription() {
         return descr;
     }
 
-    public void setDescr(String descr) {
+    private void setDescr(String descr) {
         this.descr = descr;
     }
 
@@ -35,7 +35,7 @@ public class Release {
         return user;
     }
 
-    public void setUser(String user) {
+    private void setUser(String user) {
         this.user = user;
     }
 
@@ -43,15 +43,15 @@ public class Release {
         return commit;
     }
 
-    public void setCommit(String commit) {
+    private void setCommit(String commit) {
         this.commit = commit;
     }
 
-    public String getCreated_at() {
+    public String getCreatedAt() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    private void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
@@ -59,7 +59,7 @@ public class Release {
         return env;
     }
 
-    public void setEnv(Map<String, String> env) {
+    private void setEnv(Map<String, String> env) {
         this.env = env;
     }
 
@@ -67,15 +67,15 @@ public class Release {
         return addons;
     }
 
-    public void setAddons(List<String> addons) {
+    private void setAddons(List<String> addons) {
         this.addons = addons;
     }
 
-    public Map<String, String> getPstable() {
+    public Map<String, String> getPSTable() {
         return pstable;
     }
 
-    public void setPstable(Map<String, String> pstable) {
+    private void setPstable(Map<String, String> pstable) {
         this.pstable = pstable;
     }
 }

@@ -1,10 +1,10 @@
 package com.heroku.api.request.app;
 
+import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.App;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -61,6 +61,6 @@ public class AppInfo implements Request<App> {
         if (code == 200)
             return parse(data, getClass());
         else
-            throw new RequestFailedException("Unable to get app info", code, data);
+            throw new RequestFailedException("Unable to get app appInfo", code, data);
     }
 }

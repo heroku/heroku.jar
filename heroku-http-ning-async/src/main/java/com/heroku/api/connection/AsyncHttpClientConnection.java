@@ -24,7 +24,7 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
 
     public AsyncHttpClientConnection(LoginRequest login) {
         httpClient = getHttpClient();
-        this.apiKey = execute(login).getApi_key();
+        this.apiKey = execute(login).getApiKey();
     }
 
     public AsyncHttpClientConnection(String apiKey) {

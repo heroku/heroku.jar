@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 /**
  * TODO: Javadoc
@@ -13,7 +13,7 @@ public class Key {
         return email;
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         this.email = email;
     }
 
@@ -21,7 +21,7 @@ public class Key {
         return contents;
     }
 
-    public void setContents(String contents) {
+    private void setContents(String contents) {
         this.contents = contents;
     }
 }

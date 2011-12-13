@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 import java.net.URL;
 
@@ -26,7 +26,7 @@ public class Proc {
         return upid;
     }
 
-    public void setUpid(String upid) {
+    private void setUpid(String upid) {
         this.upid = upid;
     }
 
@@ -34,7 +34,7 @@ public class Proc {
         return process;
     }
 
-    public void setProcess(String process) {
+    private void setProcess(String process) {
         this.process = process;
     }
 
@@ -42,7 +42,7 @@ public class Proc {
         return type;
     }
 
-    public void setType(String type) {
+    private void setType(String type) {
         this.type = type;
     }
 
@@ -50,15 +50,15 @@ public class Proc {
         return command;
     }
 
-    public void setCommand(String command) {
+    private void setCommand(String command) {
         this.command = command;
     }
 
-    public String getApp_name() {
+    public String getAppName() {
         return app_name;
     }
 
-    public void setApp_name(String app_name) {
+    private void setApp_name(String app_name) {
         this.app_name = app_name;
     }
 
@@ -66,7 +66,7 @@ public class Proc {
         return slug;
     }
 
-    public void setSlug(String slug) {
+    private void setSlug(String slug) {
         this.slug = slug;
     }
 
@@ -74,7 +74,7 @@ public class Proc {
         return action;
     }
 
-    public void setAction(String action) {
+    private void setAction(String action) {
         this.action = action;
     }
 
@@ -82,23 +82,23 @@ public class Proc {
         return state;
     }
 
-    public void setState(String state) {
+    private void setState(String state) {
         this.state = state;
     }
 
-    public String getPretty_state() {
+    public String getPrettyState() {
         return pretty_state;
     }
 
-    public void setPretty_state(String pretty_state) {
+    private void setPretty_state(String pretty_state) {
         this.pretty_state = pretty_state;
     }
 
-    public String getTransitioned_at() {
+    public String getTransitionedAt() {
         return transitioned_at;
     }
 
-    public void setTransitioned_at(String transitioned_at) {
+    private void setTransitioned_at(String transitioned_at) {
         this.transitioned_at = transitioned_at;
     }
 
@@ -106,7 +106,7 @@ public class Proc {
         return elapsed;
     }
 
-    public void setElapsed(int elapsed) {
+    private void setElapsed(int elapsed) {
         this.elapsed = elapsed;
     }
 
@@ -114,15 +114,15 @@ public class Proc {
         return attached;
     }
 
-    public void setAttached(boolean attached) {
+    private void setAttached(boolean attached) {
         this.attached = attached;
     }
 
-    public URL getRendezvous_url() {
+    public URL getRendezvousUrl() {
         return rendezvous_url;
     }
 
-    public void setRendezvous_url(URL rendezvous_url) {
+    private void setRendezvous_url(URL rendezvous_url) {
         this.rendezvous_url = rendezvous_url;
     }
 }

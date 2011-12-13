@@ -1,10 +1,10 @@
 package com.heroku.api.request.sharing;
 
+import com.heroku.api.Collaborator;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.Collaborator;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 

@@ -1,10 +1,10 @@
 package com.heroku.api.request.app;
 
+import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.App;
 import com.heroku.api.parser.Json;
 import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;

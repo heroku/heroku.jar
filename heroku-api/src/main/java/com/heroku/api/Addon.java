@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 import java.net.URL;
 
@@ -22,15 +22,15 @@ public class Addon {
         return configured;
     }
 
-    public void setConfigured(Boolean configured) {
+    private void setConfigured(Boolean configured) {
         this.configured = configured;
     }
 
-    public int getPrice_cents() {
+    public int getPriceCents() {
         return price_cents;
     }
 
-    public void setPrice_cents(int price_cents) {
+    private void setPrice_cents(int price_cents) {
         this.price_cents = price_cents;
     }
 
@@ -38,16 +38,16 @@ public class Addon {
         return id;
     }
 
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
     }
 
-    public String getPrice_unit() {
+    public String getPriceUnit() {
         return price_unit;
     }
 
 
-    public void setPrice_unit(String price_unit) {
+    private void setPrice_unit(String price_unit) {
         this.price_unit = price_unit;
     }
 
@@ -55,7 +55,7 @@ public class Addon {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -63,7 +63,7 @@ public class Addon {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -71,7 +71,7 @@ public class Addon {
         return url;
     }
 
-    public void setUrl(URL url) {
+    private void setUrl(URL url) {
         this.url = url;
     }
 
@@ -79,7 +79,7 @@ public class Addon {
         return state;
     }
 
-    public void setState(String state) {
+    private void setState(String state) {
         this.state = state;
     }
 
@@ -87,7 +87,7 @@ public class Addon {
         return beta;
     }
 
-    public void setBeta(String beta) {
+    private void setBeta(String beta) {
         this.beta = beta;
     }
 

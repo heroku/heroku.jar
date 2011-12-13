@@ -1,16 +1,16 @@
 package com.heroku.api.request.app;
 
+import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.App;
-import com.heroku.api.parser.Json;
-import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
@@ -21,20 +21,11 @@ public class AppCreate implements Request<App> {
 
     private final RequestConfig config;
 
-    public AppCreate(String stack) {
-        this(Heroku.Stack.valueOf(stack));
-    }
-
-    public AppCreate(Heroku.Stack stack) {
-        config = new RequestConfig().onStack(stack);
-    }
-
-    public AppCreate withName(String name) {
-        return new AppCreate(config.with(Heroku.RequestKey.CreateAppName, name));
-    }
-
-    private AppCreate(RequestConfig config) {
-        this.config = config;
+    public AppCreate(App app) {
+        RequestConfig builder = new RequestConfig();
+        builder = (app.getName() != null) ? builder.with(Heroku.RequestKey.CreateAppName, app.getName()) : builder;
+        builder = (app.getStack() != null) ? builder.onStack(Heroku.Stack.fromString(app.getStack())) : builder;
+        config = builder;
     }
 
     @Override
@@ -70,7 +61,7 @@ public class AppCreate implements Request<App> {
     @Override
     public App getResponse(byte[] in, int code) {
         if (code == Http.Status.ACCEPTED.statusCode)
-            return Json.getJsonParser().parse(in, new TypeReference<App>(){}.getType());
+            return parse(in, getClass());
         else
             throw new RequestFailedException("Failed to create app", code, in);
     }

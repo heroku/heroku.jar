@@ -1,8 +1,8 @@
 package com.heroku.api.asynchttpclient;
 
 import com.google.inject.Inject;
+import com.heroku.api.App;
 import com.heroku.api.AsyncHttpClientModule;
-import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.connection.AsyncHttpClientConnection;
 import org.testng.Assert;

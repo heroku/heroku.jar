@@ -1,10 +1,10 @@
 package com.heroku.api.request.addon;
 
+import com.heroku.api.Addon;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.model.Addon;
 import com.heroku.api.request.Request;
 
 import java.util.HashMap;

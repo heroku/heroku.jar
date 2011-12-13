@@ -1,10 +1,10 @@
 package com.heroku.api.request;
 
 import com.google.inject.Inject;
+import com.heroku.api.Key;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.model.Key;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;

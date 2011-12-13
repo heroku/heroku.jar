@@ -1,8 +1,8 @@
 package com.heroku.api.httpclient;
 
 import com.google.inject.Inject;
+import com.heroku.api.App;
 import com.heroku.api.HttpClientModule;
-import com.heroku.api.model.App;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.connection.HttpClientConnection;
 import org.testng.Assert;

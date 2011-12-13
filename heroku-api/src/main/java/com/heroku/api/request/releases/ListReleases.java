@@ -1,9 +1,9 @@
 package com.heroku.api.request.releases;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.Release;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.model.Release;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 

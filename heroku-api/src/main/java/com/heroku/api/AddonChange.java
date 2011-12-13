@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 /**
  * TODO: Javadoc
@@ -14,7 +14,7 @@ public class AddonChange {
         return status;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
@@ -22,7 +22,7 @@ public class AddonChange {
         return message;
     }
 
-    public void setMessage(String message) {
+    private void setMessage(String message) {
         this.message = message;
     }
 
@@ -30,7 +30,7 @@ public class AddonChange {
         return price;
     }
 
-    public void setPrice(String price) {
+    private void setPrice(String price) {
         this.price = price;
     }
 

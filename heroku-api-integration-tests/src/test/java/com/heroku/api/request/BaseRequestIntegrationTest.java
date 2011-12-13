@@ -1,11 +1,10 @@
 package com.heroku.api.request;
 
 import com.google.inject.Inject;
-import com.heroku.api.Heroku;
-import com.heroku.api.TestModuleFactory;
+import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.model.App;
-import com.heroku.api.model.Collaborator;
+import com.heroku.api.App;
+import com.heroku.api.Collaborator;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
@@ -20,7 +19,6 @@ import org.testng.annotations.Guice;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,7 +37,7 @@ public abstract class BaseRequestIntegrationTest {
     @Inject
     Connection<?> connection;
 
-    private static List<com.heroku.api.model.App> apps = new ArrayList<com.heroku.api.model.App>();
+    private static List<App> apps = new ArrayList<App>();
 
     @DataProvider
     public Object[][] app() {
@@ -60,7 +58,7 @@ public abstract class BaseRequestIntegrationTest {
     
     public App createApp() {
         System.out.println("Creating app...");
-        App app = connection.execute(new AppCreate(Heroku.Stack.Cedar));
+        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)));
         apps.add(app);
         System.out.format("%s created\n", app.getName());
         return app;

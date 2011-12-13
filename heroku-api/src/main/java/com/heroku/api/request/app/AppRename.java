@@ -1,9 +1,9 @@
 package com.heroku.api.request.app;
 
+import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.model.App;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -59,6 +59,6 @@ public class AppRename implements Request<App> {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }
-        throw new RequestFailedException("Unable to rename application.", status, bytes);
+        throw new RequestFailedException("Unable to renameApp application.", status, bytes);
     }
 }

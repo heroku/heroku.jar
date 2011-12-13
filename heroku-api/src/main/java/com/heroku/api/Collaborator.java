@@ -1,4 +1,4 @@
-package com.heroku.api.model;
+package com.heroku.api;
 
 /**
  * TODO: Javadoc
@@ -13,7 +13,7 @@ public class Collaborator {
         return access;
     }
 
-    public void setAccess(String access) {
+    private void setAccess(String access) {
         this.access = access;
     }
 
@@ -21,7 +21,7 @@ public class Collaborator {
         return email;
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         this.email = email;
     }
 }

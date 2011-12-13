@@ -2,8 +2,8 @@ package com.heroku.api.finagle;
 
 import com.google.inject.Inject;
 import com.heroku.api.FinagleModule;
+import com.heroku.api.Key;
 import com.heroku.api.connection.FinagleConnection;
-import com.heroku.api.model.Key;
 import com.heroku.api.request.key.KeyList;
 import com.twitter.util.Duration;
 import com.twitter.util.Future;
