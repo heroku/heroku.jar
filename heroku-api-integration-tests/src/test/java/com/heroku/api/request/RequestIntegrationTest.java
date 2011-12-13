@@ -124,8 +124,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         
         AppInfo appInfo = new AppInfo(app.getName());
         App appResp = connection.execute(appInfo);
-        // todo: test with the actual owner once the API returns it
-        //assertEquals(app.getOwner(), DEMO_EMAIL);
+        assertEquals(appResp.getOwner_email(), DEMO_EMAIL);
     }
 
     @Test(dataProvider = "newApp")
