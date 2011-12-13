@@ -9,7 +9,6 @@ import com.heroku.api.request.Request;
  */
 public interface Connection<F> {
 
-
     <T> T execute(Request<T> request);
 
     <T> F executeAsync(Request<T> request);

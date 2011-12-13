@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class App {
 
-    String id, name, domain_name, created_at, create_status;
+    String id, name, domain_name, created_at, create_status, owner_email;
     String web_url, stack, requested_stack, repo_migrate_status;
     String git_url;
     int slug_size, repo_size, dynos, workers;
@@ -122,6 +122,10 @@ public class App {
 
     public void setWorkers(int workers) {
         this.workers = workers;
+    }
+
+    public String getOwner_email() {
+        return owner_email;
     }
 
 }

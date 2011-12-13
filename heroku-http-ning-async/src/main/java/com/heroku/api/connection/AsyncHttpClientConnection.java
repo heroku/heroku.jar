@@ -1,9 +1,11 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.HerokuAPIConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
 
@@ -14,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>> {
+public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>>, ConnectionProvider<ListenableFuture<?>> {
 
     private String apiKey;
     private AsyncHttpClient httpClient;
@@ -71,6 +73,16 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
             default:
                 throw new UnsupportedOperationException(request.getHttpMethod().name() + " is not supported");
         }
+    }
+
+    @Override
+    public Connection<ListenableFuture<?>> get(HerokuAPIConfig config) {
+        if (config.getApiKey() != null) {
+            return new AsyncHttpClientConnection(config.getApiKey());
+        } else if (config.getUsername() != null && config.getPassword() != null) {
+            return new AsyncHttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
+        }
+        return null;
     }
 
     @Override

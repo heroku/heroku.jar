@@ -2,6 +2,7 @@ package com.heroku.api;
 
 
 import com.heroku.api.connection.Connection;
+import com.heroku.api.connection.ConnectionFactory;
 import com.heroku.api.model.Addon;
 import com.heroku.api.model.App;
 import com.heroku.api.model.Key;
@@ -16,13 +17,13 @@ import java.util.List;
 
 public class HerokuAPI {
 
-    Connection<?> connection;
+    final Connection<?> connection;
 
-    public static HerokuAPI connect(Connection<?> connection) {
-        return new HerokuAPI(connection);
+    public HerokuAPI(HerokuAPIConfig config) {
+        this(ConnectionFactory.get(config));
     }
 
-    protected HerokuAPI(Connection<?> connection) {
+    public HerokuAPI(Connection<?> connection) {
         this.connection = connection;
     }
 

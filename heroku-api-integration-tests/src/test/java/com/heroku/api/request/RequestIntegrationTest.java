@@ -97,7 +97,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // don't use the app dataprovider because it'll try to delete an already deleted app
     @Test
     public void testDestroyAppCommand() throws IOException {
-        AppDestroy cmd = new AppDestroy(HerokuAPI.connect(connection).newapp(Cedar).getAppName());
+        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection).newapp(Cedar).getAppName());
         Unit response = connection.execute(cmd);
         assertNotNull(response);
     }

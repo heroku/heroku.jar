@@ -1,11 +1,13 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.HerokuAPIConfig;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.model.LoginVerification;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
+import com.heroku.api.request.login.BasicAuthLogin;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -24,12 +26,16 @@ import java.util.concurrent.*;
 
 import static com.heroku.api.Heroku.Config.ENDPOINT;
 
-public class HttpClientConnection implements Connection<Future<?>> {
+public class HttpClientConnection implements Connection<Future<?>>, ConnectionProvider<Future<?>> {
 
     private DefaultHttpClient httpClient = getHttpClient();
     private volatile ExecutorService executorService;
     private Object lock = new Object();
     private final String apiKey;
+
+    public HttpClientConnection() {
+        this.apiKey = null;
+    }
 
     public HttpClientConnection(LoginRequest login) {
         LoginVerification loginVerification = execute(login);
@@ -59,6 +65,16 @@ public class HttpClientConnection implements Connection<Future<?>> {
         };
         return getExecutorService().submit(callable);
 
+    }
+
+    @Override
+    public Connection<Future<?>> get(HerokuAPIConfig config) {
+        if (config.getApiKey() != null) {
+            return new HttpClientConnection(config.getApiKey());
+        } else if (config.getUsername() != null && config.getPassword() != null) {
+            return new HttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
+        }
+        return null;
     }
 
     @Override
