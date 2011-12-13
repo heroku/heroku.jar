@@ -11,7 +11,7 @@ public class App {
 
     String id, name, domain_name, created_at, create_status;
     String web_url, stack, requested_stack, repo_migrate_status;
-    String git_url;
+    String git_url, owner_email;
     int slug_size, repo_size, dynos, workers;
 
     public String getId() {
@@ -44,8 +44,17 @@ public class App {
     public void setWeb_url(String web_url) {
         this.web_url = web_url;
     }
+
     public String getGit_url() {
         return git_url;
+    }
+
+    public String getOwner_email() {
+        return owner_email;
+    }
+
+    public void setOwner_email(String owner_email) {
+        this.owner_email = owner_email;
     }
 
     public void setGit_url(String git_url) {
