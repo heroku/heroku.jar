@@ -7,11 +7,9 @@ import com.heroku.api.request.Request;
  *
  * @author Naaman Newbold
  */
-public interface Connection<F> {
+public interface Connection {
 
     <T> T execute(Request<T> request);
-
-    <T> F executeAsync(Request<T> request);
 
     String getApiKey();
 

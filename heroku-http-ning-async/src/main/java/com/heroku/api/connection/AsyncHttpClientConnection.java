@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>>, ConnectionProvider<ListenableFuture<?>> {
+public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>> {
 
     private String apiKey;
     private AsyncHttpClient httpClient;
@@ -75,15 +75,6 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
         }
     }
 
-    @Override
-    public Connection<ListenableFuture<?>> get(HerokuAPIConfig config) {
-        if (config.getApiKey() != null) {
-            return new AsyncHttpClientConnection(config.getApiKey());
-        } else if (config.getUsername() != null && config.getPassword() != null) {
-            return new AsyncHttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
-        }
-        return null;
-    }
 
     @Override
     public <T> T execute(Request<T> req) {
@@ -122,5 +113,17 @@ public class AsyncHttpClientConnection implements Connection<ListenableFuture<?>
     @Override
     public String getApiKey() {
         return apiKey;
+    }
+
+    public static class Provider implements ConnectionProvider {
+        @Override
+        public Connection get(HerokuAPIConfig config) {
+            if (config.getApiKey() != null) {
+                return new AsyncHttpClientConnection(config.getApiKey());
+            } else if (config.getUsername() != null && config.getPassword() != null) {
+                return new AsyncHttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
+            }
+            return null;
+        }
     }
 }
