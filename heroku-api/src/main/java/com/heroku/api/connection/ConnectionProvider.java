@@ -7,8 +7,8 @@ import com.heroku.api.HerokuAPIConfig;
  *
  * @author Naaman Newbold
  */
-public interface ConnectionProvider<F> {
+public interface ConnectionProvider {
 
-    Connection<F> get(HerokuAPIConfig config);
+    Connection get(HerokuAPIConfig config);
 
 }

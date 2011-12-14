@@ -10,7 +10,7 @@ import java.io.IOException;
 import static com.heroku.api.IntegrationTestConfig.PASSWORD;
 import static com.heroku.api.IntegrationTestConfig.USER;
 
-public class HttpClientModule extends ConnectionTestModule<HttpClientConnection> {
+public class HttpClientModule extends ConnectionTestModule {
     @Provides()
     HttpClientConnection getConnectionImpl() throws IOException {
         try {

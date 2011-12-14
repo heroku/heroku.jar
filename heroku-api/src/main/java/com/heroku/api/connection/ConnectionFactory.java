@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
  */
 public class ConnectionFactory {
 
-    public static Connection<?> get(HerokuAPIConfig config) {
+    public static Connection get(HerokuAPIConfig config) {
         ServiceLoader<ConnectionProvider> loader = ServiceLoader.load(ConnectionProvider.class);
         for (ConnectionProvider conn : loader) {
             Connection newConnection = conn.get(config);

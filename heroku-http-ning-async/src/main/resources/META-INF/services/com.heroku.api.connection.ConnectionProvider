@@ -1,1 +1,1 @@
-com.heroku.api.connection.AsyncHttpClientConnection
+com.heroku.api.connection.AsyncHttpClientConnection$Provider

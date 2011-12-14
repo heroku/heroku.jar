@@ -31,17 +31,17 @@ import java.util.Map;
 
 public class HerokuAPI {
 
-    final Connection<?> connection;
+    final Connection connection;
     
     public HerokuAPI(HerokuAPIConfig config) {
         this(ConnectionFactory.get(config));
     }
 
-    public HerokuAPI(Connection<?> connection) {
+    public HerokuAPI(Connection connection) {
         this.connection = connection;
     }
     
-    public Connection<?> getConnection() {
+    public Connection getConnection() {
         return connection;
     }
     

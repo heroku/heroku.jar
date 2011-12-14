@@ -19,7 +19,7 @@ import scala.Either
 import com.heroku.api.request.login.BasicAuthLogin
 
 
-class FinagleConnection(val config: Either[LoginRequest, String]) extends Connection[Future[_]] with ConnectionProvider[Future[_]] {
+class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
@@ -35,7 +35,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
   def execute[T](command: Request[T]): T = executeAsync(command).get()
 
   def executeAsync[T](command: Request[T]): Future[T] = {
-    if(!client.isAvailable){
+    if (!client.isAvailable) {
       client.release()
       client = newClient()
     }
@@ -110,14 +110,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends Connec
 
   def getApiKey: String = apiKey
 
-  def get(config: HerokuAPIConfig): Connection[Future[_]] = {
-    if (config.getApiKey != null)
-      new FinagleConnection(Right(config.getApiKey))
-    else if (config.getUsername != null && config.getPassword != null)
-      new FinagleConnection(Left(new BasicAuthLogin(config.getUsername, config.getPassword)))
-    else
-      null
-  }
+
 }
 
 
@@ -128,6 +121,17 @@ object FinagleConnection {
 
   def apply(apiKey: String): FinagleConnection = {
     new FinagleConnection(Right(apiKey))
+  }
+
+  class Provider extends ConnectionProvider {
+    def get(config: HerokuAPIConfig): Connection = {
+      if (config.getApiKey != null)
+        new FinagleConnection(Right(config.getApiKey))
+      else if (config.getUsername != null && config.getPassword != null)
+        new FinagleConnection(Left(new BasicAuthLogin(config.getUsername, config.getPassword)))
+      else
+        null
+    }
   }
 
 }

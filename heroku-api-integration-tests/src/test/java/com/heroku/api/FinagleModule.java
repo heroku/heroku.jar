@@ -10,7 +10,7 @@ import java.io.IOException;
 import static com.heroku.api.IntegrationTestConfig.PASSWORD;
 import static com.heroku.api.IntegrationTestConfig.USER;
 
-public class FinagleModule extends ConnectionTestModule<FinagleConnection> {
+public class FinagleModule extends ConnectionTestModule {
 
     @Provides
     FinagleConnection getConnectionImpl() throws IOException {

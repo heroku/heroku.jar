@@ -35,7 +35,7 @@ import static org.testng.Assert.fail;
 public abstract class BaseRequestIntegrationTest {
 
     @Inject
-    Connection<?> connection;
+    Connection connection;
 
     private static List<App> apps = new ArrayList<App>();
 

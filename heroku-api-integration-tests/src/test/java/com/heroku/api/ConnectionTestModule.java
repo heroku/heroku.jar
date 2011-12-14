@@ -12,7 +12,7 @@ import java.io.IOException;
  *
  * @author Naaman Newbold
  */
-public abstract class ConnectionTestModule<F extends Connection> extends AbstractModule {
+public abstract class ConnectionTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -21,11 +21,11 @@ public abstract class ConnectionTestModule<F extends Connection> extends Abstrac
         }
     }
 
-    abstract F getConnectionImpl() throws IOException;
+    abstract Connection getConnectionImpl() throws IOException;
 
     @Provides
-    public Connection<?> getConnection() throws IOException {
-        return (Connection<?>) getConnectionImpl();
+    public Connection getConnection() throws IOException {
+        return (Connection) getConnectionImpl();
     }
 
 

@@ -26,7 +26,7 @@ import java.util.concurrent.*;
 
 import static com.heroku.api.Heroku.Config.ENDPOINT;
 
-public class HttpClientConnection implements Connection<Future<?>>, ConnectionProvider<Future<?>> {
+public class HttpClientConnection implements AsyncConnection<Future<?>> {
 
     private DefaultHttpClient httpClient = getHttpClient();
     private volatile ExecutorService executorService;
@@ -65,16 +65,6 @@ public class HttpClientConnection implements Connection<Future<?>>, ConnectionPr
         };
         return getExecutorService().submit(callable);
 
-    }
-
-    @Override
-    public Connection<Future<?>> get(HerokuAPIConfig config) {
-        if (config.getApiKey() != null) {
-            return new HttpClientConnection(config.getApiKey());
-        } else if (config.getUsername() != null && config.getPassword() != null) {
-            return new HttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
-        }
-        return null;
     }
 
     @Override
@@ -158,4 +148,17 @@ public class HttpClientConnection implements Connection<Future<?>>, ConnectionPr
     public String getApiKey() {
         return apiKey;
     }
+
+    public static class Provider implements ConnectionProvider {
+        @Override
+        public Connection get(HerokuAPIConfig config) {
+            if (config.getApiKey() != null) {
+                return new HttpClientConnection(config.getApiKey());
+            } else if (config.getUsername() != null && config.getPassword() != null) {
+                return new HttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
+            }
+            return null;
+        }
+    }
+
 }
