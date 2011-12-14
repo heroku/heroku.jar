@@ -1,7 +1,5 @@
 package com.heroku.api.connection;
 
-import com.heroku.api.HerokuAPIConfig;
-
 import java.util.ServiceLoader;
 
 /**
@@ -12,15 +10,24 @@ import java.util.ServiceLoader;
  */
 public class ConnectionFactory {
 
-    public static Connection get(HerokuAPIConfig config) {
-        ServiceLoader<ConnectionProvider> loader = ServiceLoader.load(ConnectionProvider.class);
-        for (ConnectionProvider conn : loader) {
-            Connection newConnection = conn.get(config);
-            if (newConnection != null) {
-                return newConnection;
-            }
+    static final ServiceLoader<ConnectionProvider> loader = ServiceLoader.load(ConnectionProvider.class);
+
+    public static Connection get(String username, String password) {
+        for (ConnectionProvider cp : loader) {
+            Connection conn = cp.get(username, password);
+            if (conn != null)
+                return conn;
         }
-        throw new IllegalArgumentException("No connection providers found for the provided config." + config.toString());
+        throw new IllegalArgumentException("ConnectionProvider not found for " + username);
+    }
+
+    public static Connection get(String apiKey) {
+        for (ConnectionProvider cp : loader) {
+            Connection conn = cp.get(apiKey);
+            if (conn != null)
+                return conn;
+        }
+        throw new IllegalArgumentException("ConnectionProvider not found for " + apiKey);
     }
 
 }

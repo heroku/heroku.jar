@@ -14,7 +14,7 @@ import java.nio.charset.Charset
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
 import com.heroku.api.Heroku.ApiVersion
-import com.heroku.api.{HerokuAPIConfig, Heroku}
+import com.heroku.api.Heroku
 import scala.Either
 import com.heroku.api.request.login.BasicAuthLogin
 
@@ -124,13 +124,12 @@ object FinagleConnection {
   }
 
   class Provider extends ConnectionProvider {
-    def get(config: HerokuAPIConfig): Connection = {
-      if (config.getApiKey != null)
-        new FinagleConnection(Right(config.getApiKey))
-      else if (config.getUsername != null && config.getPassword != null)
-        new FinagleConnection(Left(new BasicAuthLogin(config.getUsername, config.getPassword)))
-      else
-        null
+    def get(username: String, password: String) = {
+      FinagleConnection(new BasicAuthLogin(username, password))
+    }
+
+    def get(apiKey: String) = {
+      FinagleConnection(apiKey)
     }
   }
 

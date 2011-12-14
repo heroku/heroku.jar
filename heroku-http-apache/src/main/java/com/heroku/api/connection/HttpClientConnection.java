@@ -1,7 +1,6 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.HerokuAPIConfig;
 import com.heroku.api.LoginVerification;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
@@ -151,13 +150,13 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
 
     public static class Provider implements ConnectionProvider {
         @Override
-        public Connection get(HerokuAPIConfig config) {
-            if (config.getApiKey() != null) {
-                return new HttpClientConnection(config.getApiKey());
-            } else if (config.getUsername() != null && config.getPassword() != null) {
-                return new HttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
-            }
-            return null;
+        public Connection get(String username, String password) {
+            return new HttpClientConnection(new BasicAuthLogin(username, password));
+        }
+
+        @Override
+        public Connection get(String apiKey) {
+            return new HttpClientConnection(apiKey);
         }
     }
 

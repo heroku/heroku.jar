@@ -1,7 +1,6 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.HerokuAPIConfig;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
@@ -117,13 +116,13 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
 
     public static class Provider implements ConnectionProvider {
         @Override
-        public Connection get(HerokuAPIConfig config) {
-            if (config.getApiKey() != null) {
-                return new AsyncHttpClientConnection(config.getApiKey());
-            } else if (config.getUsername() != null && config.getPassword() != null) {
-                return new AsyncHttpClientConnection(new BasicAuthLogin(config.getUsername(), config.getPassword()));
-            }
-            return null;
+        public Connection get(String username, String password) {
+            return new AsyncHttpClientConnection(new BasicAuthLogin(username, password));
+        }
+
+        @Override
+        public Connection get(String apiKey) {
+            return new AsyncHttpClientConnection(apiKey);
         }
     }
 }

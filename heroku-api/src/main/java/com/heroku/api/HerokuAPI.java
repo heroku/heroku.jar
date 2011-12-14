@@ -33,8 +33,12 @@ public class HerokuAPI {
 
     final Connection connection;
     
-    public HerokuAPI(HerokuAPIConfig config) {
-        this(ConnectionFactory.get(config));
+    public static String obtainApiKey(String username, String password) {
+        return ConnectionFactory.get(username, password).getApiKey();
+    }
+    
+    public HerokuAPI(String apiKey) {
+        this(ConnectionFactory.get(apiKey));
     }
 
     public HerokuAPI(Connection connection) {
