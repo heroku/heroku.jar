@@ -10,7 +10,7 @@ import java.util.ServiceLoader;
  */
 public class ConnectionFactory {
 
-    static final ServiceLoader<ConnectionProvider> loader = ServiceLoader.load(ConnectionProvider.class);
+    static final ServiceLoader<ConnectionProvider> loader = ServiceLoader.load(ConnectionProvider.class, ConnectionFactory.class.getClassLoader());
 
     public static Connection get(String username, String password) {
         for (ConnectionProvider cp : loader) {

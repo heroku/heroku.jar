@@ -15,7 +15,7 @@ public class Json {
         static Parser parser;
 
         static {
-            ServiceLoader<Parser> loader = ServiceLoader.load(Parser.class);
+            ServiceLoader<Parser> loader = ServiceLoader.load(Parser.class, Parser.class.getClassLoader());
             Iterator<Parser> iterator = loader.iterator();
             if (iterator.hasNext()) {
                 parser = iterator.next();
@@ -33,21 +33,21 @@ public class Json {
     /**
      * Calls Parser.parse() using the generic type T for Request<T> given Request<T> is the interface for the
      * classType parameter. If it can't find an appropriate type, it errors out with a ParseException.
-     *
+     * <p/>
      * The following code sample illustrates typical usage in the context of a request to Heroku's API.
      * The byte array is provided from a connection.execute(request) call, which is a JSON response from
      * the server. getClass() provides the classType, which in this case extends Request<T>. The return
      * value from the parse method will be App.
      * <code>
-     *     public class SampleRequest implements Request<App> {
-     *         ...
-     *         public App getResponse(byte[] data, int status) {
-     *             return Json.parse(data, getClass());
-     *         }
-     *     }
+     * public class SampleRequest implements Request<App> {
+     * ...
+     * public App getResponse(byte[] data, int status) {
+     * return Json.parse(data, getClass());
+     * }
+     * }
      * </code>
      *
-     * @param data JSON byte array to be parsed
+     * @param data      JSON byte array to be parsed
      * @param classType The Request implementation class type. This is typically given the calling class as
      *                  an argument.
      * @return T
@@ -58,7 +58,7 @@ public class Json {
         for (Type interfaceType : genericInterfaces) {
             // ensure the Type is a generic before doing a conversion
             if (interfaceType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType)interfaceType;
+                ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
                 // make sure the parameterized type is a Request<T>
                 if (Request.class.equals(parameterizedType.getRawType())) {
                     // get the first type since we only have one generic defined for Request<T>
