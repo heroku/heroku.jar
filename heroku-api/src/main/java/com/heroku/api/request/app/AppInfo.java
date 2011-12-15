@@ -5,6 +5,7 @@ import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -48,7 +49,7 @@ public class AppInfo implements Request<App> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.JSON;
+        return Http.Accept.XML;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class AppInfo implements Request<App> {
     @Override
     public App getResponse(byte[] data, int code) {
         if (code == 200)
-            return parse(data, getClass());
+            return new XmlParser().parse(data, App.class);
         else
             throw new RequestFailedException("Unable to get app appInfo", code, data);
     }

@@ -1,27 +1,31 @@
 package com.heroku.api;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
+@XmlRootElement(name = "app")
 public class App {
 
-    String id;
-    String name;
-    String domain_name;
-    String created_at;
-    String create_status;
-    String owner_email;
-    String web_url;
-    String stack;
-    String requested_stack;
-    String repo_migrate_status;
-    String git_url;
-    int slug_size;
-	int repo_size;
-    int dynos;
-	int workers;
+    @XmlElement String id;
+    @XmlElement String name;
+    @XmlElement String domain_name;
+    @XmlElement String created_at;
+    @XmlElement String create_status;
+    @XmlElement(name = "owner") String owner_email;
+    @XmlElement String web_url;
+    @XmlElement String stack;
+    @XmlElement String requested_stack;
+    @XmlElement String repo_migrate_status;
+    @XmlElement String git_url;
+    @XmlElement int slug_size;
+	@XmlElement int repo_size;
+    @XmlElement int dynos;
+	@XmlElement int workers;
 
     public App named(String name) {
         App newApp = copy();

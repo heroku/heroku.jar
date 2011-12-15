@@ -49,7 +49,7 @@ public class SharingTransfer implements Request<Unit> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.JSON;
+        return Http.Accept.XML;
     }
 
     @Override

@@ -4,8 +4,10 @@ import com.heroku.api.Heroku;
 import com.heroku.api.Key;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class KeyList implements Request<List<Key>> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.JSON;
+        return Http.Accept.XML;
     }
 
     @Override
@@ -52,9 +54,24 @@ public class KeyList implements Request<List<Key>> {
 
     @Override
     public List<Key> getResponse(byte[] bytes, int status) {
-        if (status == Http.Status.OK.statusCode)
-            return parse(bytes, getClass());
-        else
+        if (status == Http.Status.OK.statusCode) {
+            Keys keys = new XmlParser().parse(bytes, Keys.class);
+            return keys.getKey();
+        } else {
             throw new RequestFailedException("Unable to list keys.", status, bytes);
+        }
+    }
+
+    @XmlRootElement
+    static class Keys {
+        List<Key> keys;
+
+        public List<Key> getKey() {
+            return keys;
+        }
+
+        public void setKey(List<Key> keylist) {
+            this.keys = keylist;
+        }
     }
 }
