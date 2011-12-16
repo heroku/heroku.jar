@@ -38,39 +38,73 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
         <version>0.1-SNAPSHOT</version>
     </dependency>
 
-##Examples
+##Usage
+HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
+API key in order to authenticate and make API calls.
 
-###Create a Connection
+###API Key and Authentication
+Heroku uses an API key for authentication. The API key can be found on the [account page](https://api.heroku.com/account).
+API keys can be regenerated at any time by the user. Only the current API key shown on the account page will work. The API
+key only changes when a user chooses to [regenerate](https://api.heroku.com/account) -- keys do not expire automatically.
+
+[Basic Authentication](http://www.ietf.org/rfc/rfc2617.txt) over HTTPS is used for authentication. An empty username and
+an API key are used to construct the Authorization HTTP header. HerokuAPI constructed with an API key, will handle 
+authentication for API requests.
+
+When using API keys:
+* If they need to be stored, store them securely (e.g. encrypt the file or database column).
+* Catch RequestFailedException in case of an authorization failure.
+
+###Examples
+
+####Instantiate HerokuAPI with an API Key
 ```java
-String username = ...;
-String password = ...;
-Connection<?> connection = new HttpClientConnection(new BasicAuthLogin(username, password));
+String apiKey = "...";
+HerokuAPI api = new HerokuAPI(apiKey);
 ```
 
-###Obtain an API Key -- usually used for persisting credentials
+####Create an Application
 ```java
-String apiKey = connection.getApiKey();
+HerokuAPI api = new HerokuAPI(apiKey);
+App app = api.createApp();
 ```
 
-###Create a Connection using an API Key
+####Create a named application on the cedar stack
 ```java
-String apiKey = ...;
-Connection<?> connection = new HttpClientConnection(apiKey);
+HerokuAPI api = new HerokuAPI(apiKey);
+App app = api.createApp(new App().on(Heroku.Stack.Cedar).named("MyApp"));
 ```
 
-###Create an Application
+####List applications
 ```java
-HerokuAPI api = HerokuAPI.connect(connection);
-HerokuAppAPI appApi = api.newapp(Heroku.Stack.Cedar);
-```
-
-###List applications
-```java
-HerokuAPI api = HerokuAPI.connect(connection);
-List<App> apps = api.apps();
+HerokuAPI api = new HerokuAPI(apiKey);
+List<App> apps = api.listApps();
 for (App app : apps) {
     System.out.println(app.getName());
 }
+```
+
+####Add config
+The addConfig call expects a JSON string of name-value parameters.
+```java
+HerokuAPI api = new HerokuAPI(apiKey);
+api.addConfig("myExistingApp", "\{\"NAME\":\"\VALUE"\}");
+```
+
+####Get Config
+```java
+HerokuAPI api = new HerokuAPI(apiKey);
+Map<String, String> config = api.listConfig("myExistingApp");
+for (Map.Entry<String, String> var : config.entrySet()) {
+    System.out.println(var.getKey() + "=" + var.getValue());
+}
+```
+
+####Remove Config
+The removeConfig call expects a single config var name to be removed.
+```java
+HerokuAPI api = new HerokuAPI(apiKey);
+Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemove");
 ```
 
 ## Some Design Considerations
