@@ -8,6 +8,7 @@ import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,9 @@ public class KeyList implements Request<List<Key>> {
     @Override
     public List<Key> getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
+            if (new String(bytes).contains("nil-classes")) {
+                return new ArrayList<Key>();
+            }
             Keys keys = new XmlParser().parse(bytes, Keys.class);
             return keys.getKey();
         } else {

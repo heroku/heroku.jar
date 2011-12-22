@@ -7,14 +7,12 @@ import com.heroku.api.exception.RequestFailedException;
 
 import java.io.IOException;
 
-import static com.heroku.api.IntegrationTestConfig.PASSWORD;
-import static com.heroku.api.IntegrationTestConfig.USER;
-
 public class AsyncHttpClientModule extends ConnectionTestModule {
     @Provides()
     AsyncHttpClientConnection getConnectionImpl() throws IOException {
         try {
-            return new AsyncHttpClientConnection(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
+            IntegrationTestConfig.TestUser testUser = IntegrationTestConfig.CONFIG.getDefaultUser();
+            return new AsyncHttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

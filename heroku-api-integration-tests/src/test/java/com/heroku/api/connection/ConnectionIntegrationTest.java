@@ -1,5 +1,6 @@
 package com.heroku.api.connection;
 
+import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.request.login.BasicAuthLogin;
@@ -9,8 +10,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static com.heroku.api.IntegrationTestConfig.PASSWORD;
-import static com.heroku.api.IntegrationTestConfig.USER;
+import static com.heroku.api.IntegrationTestConfig.CONFIG;
 
 /**
  * Integration tests for authenticating with the Heroku API.
@@ -22,7 +22,8 @@ public class ConnectionIntegrationTest {
 
     @Test(groups = "integration")
     public void testValidUsernameAndPassword() throws IOException {
-        Connection conn = new HttpClientConnection(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
+        IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
+        Connection conn = new HttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
     }
 
     @DataProvider

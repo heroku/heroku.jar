@@ -7,8 +7,7 @@ import com.heroku.api.exception.RequestFailedException;
 
 import java.io.IOException;
 
-import static com.heroku.api.IntegrationTestConfig.PASSWORD;
-import static com.heroku.api.IntegrationTestConfig.USER;
+import static com.heroku.api.IntegrationTestConfig.CONFIG;
 
 public class FinagleModule extends ConnectionTestModule {
 
@@ -16,7 +15,8 @@ public class FinagleModule extends ConnectionTestModule {
     FinagleConnection getConnectionImpl() throws IOException {
 
         try {
-            return FinagleConnection.apply(new BasicAuthLogin(USER.getRequiredConfig(), PASSWORD.getRequiredConfig()));
+            IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
+            return FinagleConnection.apply(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());
