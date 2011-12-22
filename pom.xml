@@ -15,7 +15,6 @@
     <version>0.1-SNAPSHOT</version>
 
     <name>heroku.jar</name>
-    <packaging>pom</packaging>
     <description>Heroku API Java Client</description>
     <url>http://www.heroku.com/</url>
     <licenses>
@@ -83,6 +82,9 @@
         <netty.version>3.2.5.Final</netty.version>
         <jackson.version>1.9.2</jackson.version>
         <gson.version>1.7.1</gson.version>
+        <source.plugin.version>1.6</source.plugin.version>
+        <gpg.plugin.version>1.2</gpg.plugin.version>
+        <javadoc.plugin.version>2.7</javadoc.plugin.version>
     </properties>
 
 
@@ -95,8 +97,8 @@
                     <version>2.3.2</version>
                     <configuration>
                         <encoding>UTF-8</encoding>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>${source.plugin.version}</source>
+                        <target>${source.plugin.version}</target>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -121,6 +123,8 @@
                     <value>true</value>
                 </property>
             </activation>
+            <build>
+            <plugins>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${source.plugin.version}</version>
@@ -161,7 +165,8 @@
                     </execution>
                 </executions>
             </plugin>
-
+            </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
