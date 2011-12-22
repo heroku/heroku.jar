@@ -15,9 +15,7 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 
     * Or run with tests:
 
-            export HEROKU_USER=foo@bar.com
-            export HEROKU_PASSWORD=password
-            export HEROKU_TEST_PRODUCTION=true
+            export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
             mvn install
 
 ##Add Dependencies to your pom.xml
