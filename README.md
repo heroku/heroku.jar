@@ -1,24 +1,9 @@
 #Heroku JAR
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
-##Installation
+##Usage
 
-1. Clone the repo:
-
-        `git clone git@github.com:heroku/heroku-jar.git`
-
-2. Build and install the jars:
-
-    * Without running the tests:
-
-            mvn install -DskipTests
-
-    * Or run with tests:
-
-            export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
-            mvn install
-
-##Add Dependencies to your pom.xml
+###Add Dependencies to your pom.xml
 
     <dependency>
         <groupId>com.heroku.api</groupId>
@@ -36,9 +21,26 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
         <version>0.1-SNAPSHOT</version>
     </dependency>
 
-##Usage
+###Add the snapshot repository to your pom.xml
+
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <snapshots/>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+###Use HerokuAPI
 HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
 API key in order to authenticate and make API calls.
+
+```java
+String apiKey = "...";
+HerokuAPI api = new HerokuAPI(apiKey);
+App app = api.createApp();
+```
+
 
 ###API Key and Authentication
 Heroku uses an API key for authentication. The API key can be found on the [account page](https://api.heroku.com/account).
@@ -104,6 +106,24 @@ The removeConfig call expects a single config var name to be removed.
 HerokuAPI api = new HerokuAPI(apiKey);
 Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemove");
 ```
+
+##Building Locally
+
+1. Clone the repo:
+
+        `git clone git@github.com:heroku/heroku-jar.git`
+
+2. Build and install the jars:
+
+    * Without running the tests:
+
+            mvn install -DskipTests
+
+    * Or run with tests:
+
+            export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
+            mvn install
+
 
 ## Some Design Considerations
 
