@@ -170,12 +170,12 @@ We opted for a slightly more verbose dependency declaration an a flexible implem
 ###Flexible async model
 
 Since we have decided to allow pluggable http client implementations, we also decided to allow asynchronous apis provided by the underlying httpclient
-implementations to surface themselves in the API. The com.heroku.api.connection.Connection interface allows implementations to parameterize the type of
+implementations to surface themselves in the API. The com.heroku.api.connection.AsyncConnection interface allows implementations to parameterize the type of
 "Future" object they return from an async request. So for instance...
 
-The provided implementation of Connection that uses apache httpclient `implements Connection<java.util.concurrent.Future>` and so
+The provided implementation of Connection that uses apache httpclient `implements AsyncConnection<java.util.concurrent.Future>` and so
 calls to executeCommandAsync will return a `<T extends CommandResponse> java.util.concurrent.Future<T>`
 
-The provided implementation of Connection that uses twitter finagle `implements Connection<com.twitter.util.Future>` and so
+The provided implementation of Connection that uses twitter finagle `implements AsyncConnection<com.twitter.util.Future>` and so
 calls to executeCommandAsync will return a `<T extends CommandResponse> com.twitter.util.Future<T>`, which has a much richer, composable api
 than the java.util.concurrent.Future api.
