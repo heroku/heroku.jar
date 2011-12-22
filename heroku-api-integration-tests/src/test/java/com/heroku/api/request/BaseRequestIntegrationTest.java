@@ -11,10 +11,7 @@ import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Guice;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +35,7 @@ public abstract class BaseRequestIntegrationTest {
     Connection connection;
 
     private static List<App> apps = new ArrayList<App>();
+    protected IntegrationTestConfig.TestUser sharingUser;
 
     @DataProvider
     public Object[][] app() {
@@ -67,6 +65,17 @@ public abstract class BaseRequestIntegrationTest {
     @AfterSuite
     public void closeConnection() {
         connection.close();
+    }
+
+    @BeforeClass
+    public void setupSharingUser() {
+        for (IntegrationTestConfig.TestUser tu : IntegrationTestConfig.CONFIG.getTestUsers()) {
+            if (!tu.isDefaultUser()) {
+                sharingUser = tu;
+                return;
+            }
+        }
+        fail("Unable to get a non-default test user for sharing purposes.");
     }
 
     @AfterClass(alwaysRun = true)

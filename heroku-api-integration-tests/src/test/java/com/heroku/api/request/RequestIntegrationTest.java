@@ -40,9 +40,6 @@ import static org.testng.Assert.*;
  */
 public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
-    // test app gets transferred to this user until we have a second user in auth-test.properties
-    private static final String DEMO_EMAIL = "jw+demo@heroku.com";
-
     @Test
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate(new App().on(Cedar));
@@ -102,7 +99,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(App app) throws IOException {
-        SharingAdd cmd = new SharingAdd(app.getName(), DEMO_EMAIL);
+        SharingAdd cmd = new SharingAdd(app.getName(), sharingUser.getUsername());
         Unit response = connection.execute(cmd);
         assertNotNull(response);
     }
@@ -110,33 +107,31 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // if we do this then we will no longer be able to remove the app
     // we need two users in auth-test.properties so that we can transfer it to one and still control it,
     // rather than transferring it to a black hole
-    @Test(dataProvider = "newApp")
-    public void testSharingTransferCommand(App app) throws IOException {
-        Request<Unit> sharingAddReq = new SharingAdd(app.getName(), DEMO_EMAIL);
-        Unit sharingAddResp = connection.execute(sharingAddReq);
-        assertNotNull(sharingAddResp);
-
-        SharingTransfer sharingTransferCommand = new SharingTransfer(app.getName(), DEMO_EMAIL);
-        Unit sharingTransferResponse = connection.execute(sharingTransferCommand);
-        assertNotNull(sharingTransferResponse);
+    @Test
+    public void testSharingTransferCommand() throws IOException {
+        HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
+        App app = api.createApp(new App().on(Cedar));
+        api.addCollaborator(app.getName(), sharingUser.getUsername());
+        api.transferApp(app.getName(), sharingUser.getUsername());
         
-        AppInfo appInfo = new AppInfo(app.getName());
-        App appResp = connection.execute(appInfo);
-        assertEquals(appResp.getOwnerEmail(), DEMO_EMAIL);
+        HerokuAPI sharedUserAPI = new HerokuAPI(sharingUser.getApiKey());
+        App transferredApp = sharedUserAPI.getApp(app.getName());
+        assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
+        sharedUserAPI.destroyApp(transferredApp.getName());
     }
 
     @Test(dataProvider = "newApp")
     public void testSharingRemoveCommand(App app) throws IOException {
-        SharingAdd sharingAddCommand = new SharingAdd(app.getName(), DEMO_EMAIL);
+        SharingAdd sharingAddCommand = new SharingAdd(app.getName(), sharingUser.getUsername());
         Unit sharingAddResp = connection.execute(sharingAddCommand);
         assertNotNull(sharingAddResp);
 
-        SharingRemove cmd = new SharingRemove(app.getName(), DEMO_EMAIL);
+        SharingRemove cmd = new SharingRemove(app.getName(), sharingUser.getUsername());
         Unit response = connection.execute(cmd);
         assertNotNull(response);
         
         CollabList collabList = new CollabList(app.getName());
-        assertCollaboratorNotPresent(DEMO_EMAIL, collabList);
+        assertCollaboratorNotPresent(sharingUser.getUsername(), collabList);
     }
 
     @Test(dataProvider = "app")
