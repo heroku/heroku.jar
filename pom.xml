@@ -3,11 +3,66 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <groupId>com.heroku.api</groupId>
     <artifactId>heroku-api-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
+
+    <name>heroku.jar</name>
+    <packaging>pom</packaging>
+    <description>Heroku API Java Client</description>
+    <url>http://www.heroku.com/</url>
+    <licenses>
+        <license>
+            <name>BSD License (BSD 3-Clause)</name>
+            <url>https://github.com/heroku/heroku.jar/blob/master/license.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/heroku/heroku.jar</url>
+        <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
+        <developerConnection>scm:git:git@github.com:heroku/heroku.jar.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <developers>
+        <developer>
+            <id>sclasen</id>
+            <name>Scott Clasen</name>
+            <email>scott@heroku.com</email>
+        </developer>
+        <developer>
+            <id>naamannewbold</id>
+            <name>Naaman Newbold</name>
+            <email>naaman@heroku.com</email>
+        </developer>
+        <developer>
+            <id>jamesward</id>
+            <name>James Ward</name>
+            <email>jw@heroku.com</email>
+        </developer>
+    </developers>
+    <mailingLists>
+        <mailingList>
+            <name>Heroku.jar issues</name>
+            <archive>https://github.com/heroku/heroku.jar/issues?state=closed</archive>
+            <subscribe>https://github.com/heroku/heroku.jar/toggle_watch</subscribe>
+            <unsubscribe>https://github.com/heroku/heroku.jar/toggle_watch</unsubscribe>
+            <post>https://github.com/heroku/heroku.jar/issues/new</post>
+        </mailingList>
+    </mailingLists>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/heroku/heroku.jar/issues/new</url>
+    </issueManagement>
+
+
     <modules>
         <module>heroku-api</module>
         <module>heroku-json-gson</module>
@@ -55,4 +110,58 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>package-for-deployment</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>packageForDeployment</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${javadoc.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${gpg.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </profile>
+    </profiles>
 </project>
