@@ -12,6 +12,25 @@ import static org.testng.Assert.assertNotNull;
 
 public enum IntegrationTestConfig {
 
+    /**
+     * A JSON array of users to be used in testing. A default user must be specified with the attribute
+     * default:true.
+     *
+     * e.g.
+     * <code>
+     *     [ {"username":"username@heroku.com","password":"password","apikey":"apikey","default":"true"},
+     *       {"username":"username2@heroku.com","password":"password2","apikey":"apikey2"},
+     *       {"username":"username@heroku.com3","password":"password3","apikey":"apikey3"},
+     *       ...
+     *     ]
+     * </code>
+     *
+     * In many cases, special characters need to be escaped. For example, when setting an environment variable
+     * in Linux:
+     * <code>
+     *     export HEROKU_TEST_USERS=[\{\"username\":\"username@heroku.com\",\"password\":\"password\",\"apikey\":\"apikey\",\"defaultuser\":\"true\"\} ...
+     * </code>
+     */
     CONFIG("HEROKU_TEST_USERS", "heroku.test.users");
 
     private String environmentVariable;
@@ -71,14 +90,6 @@ public enum IntegrationTestConfig {
 
     private String getConfig() {
         return System.getProperty(systemProperty, System.getenv(environmentVariable));
-    }
-
-    public String getRequiredConfig() {
-        String value = getConfig();
-        if (value == null) {
-            throw new IllegalStateException(String.format("Either environment variable %s or system property %s must be defined", environmentVariable, systemProperty));
-        }
-        return value;
     }
 
     public static class TestUser {
