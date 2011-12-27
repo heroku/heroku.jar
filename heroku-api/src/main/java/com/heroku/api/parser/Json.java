@@ -2,6 +2,7 @@ package com.heroku.api.parser;
 
 
 import com.heroku.api.exception.ParseException;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 
 import java.lang.reflect.ParameterizedType;
@@ -63,7 +64,12 @@ public class Json {
                 if (Request.class.equals(parameterizedType.getRawType())) {
                     // get the first type since we only have one generic defined for Request<T>
                     Type type = parameterizedType.getActualTypeArguments()[0];
-                    return getJsonParser().parse(data, type);
+                    try {
+                        return getJsonParser().parse(data, type);
+                    } catch (RuntimeException e) {
+                        String json = HttpUtil.getUTF8String(data);
+                        throw new RuntimeException("Failed to parse JSON:" + json, e);
+                    }
                 }
             }
         }
