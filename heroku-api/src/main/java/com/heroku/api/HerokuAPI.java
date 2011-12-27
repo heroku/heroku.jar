@@ -138,9 +138,16 @@ public class HerokuAPI {
     public void removeCollaborator(String appName, String collaborator) {
         connection.execute(new SharingRemove(appName, collaborator));
     }
-
-    public void addConfig(String appName, String config) {
-        connection.execute(new ConfigAdd(appName, config));
+    
+    public void addConfig(String appName, Map<String, String> config) {
+        String jsonConfig = "{";
+        String separator = "";
+        for (Map.Entry<String, String> configEntry : config.entrySet()) {
+            jsonConfig = jsonConfig.concat(String.format("%s \"%s\":\"%s\"", separator, configEntry.getKey(), configEntry.getValue()));
+            separator = ",";
+        }
+        jsonConfig = jsonConfig.concat("}");
+        connection.execute(new ConfigAdd(appName, jsonConfig));
     }
 
     public Map<String, String> listConfig(String appName) {

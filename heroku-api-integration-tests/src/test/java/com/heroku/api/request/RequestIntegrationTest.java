@@ -26,6 +26,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +110,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // rather than transferring it to a black hole
     @Test
     public void testSharingTransferCommand() throws IOException {
+        assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
         HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
         App app = api.createApp(new App().on(Cedar));
         api.addCollaborator(app.getName(), sharingUser.getUsername());
@@ -134,11 +136,17 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertCollaboratorNotPresent(sharingUser.getUsername(), collabList);
     }
 
-    @Test(dataProvider = "app")
-    public void testConfigAddCommand(App app) throws IOException {
-        ConfigAdd cmd = new ConfigAdd(app.getName(), "{\"FOO\":\"bar\", \"BAR\":\"foo\"}");
-        Unit response = connection.execute(cmd);
-        assertNotNull(response);
+    @Test
+    public void testConfigAddCommand() throws IOException {
+        HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
+        App app = api.createApp();
+        Map<String, String> config = new HashMap<String, String>();
+        config.put("FOO", "bar");
+        config.put("BAR", "foo");
+        api.addConfig(app.getName(), config);
+        Map<String, String> retrievedConfig = api.listConfig(app.getName());
+        assertEquals(retrievedConfig.get("FOO"), "bar");
+        assertEquals(retrievedConfig.get("BAR"), "foo");
     }
 
     @Test(dataProvider = "app")
