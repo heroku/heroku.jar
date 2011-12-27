@@ -85,10 +85,9 @@ for (App app : apps) {
 ```
 
 ####Add config
-The addConfig call expects a JSON string of name-value parameters.
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
-api.addConfig("myExistingApp", "\{\"NAME\":\"\VALUE"\}");
+api.addConfig("myExistingApp", new HashMap<String,String>(){{put("SOME_KEY", "SOMEVALUE")}});
 ```
 
 ####Get Config
