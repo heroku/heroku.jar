@@ -33,7 +33,8 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 
 ###Use HerokuAPI
 HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
-API key in order to authenticate and make API calls.
+API key in order to authenticate and make API calls. Requests to the API typically take no arguments, or simple strings. 
+Responses come in the form of read-only POJOs, Maps, or void. 
 
 ```java
 String apiKey = "...";
