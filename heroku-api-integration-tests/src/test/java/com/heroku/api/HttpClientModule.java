@@ -15,13 +15,17 @@ public class HttpClientModule extends ConnectionTestModule {
 
     Parser parser;
 
+    public HttpClientModule() {
+
+    }
+
     public HttpClientModule(Parser p) {
         this.parser = p;
     }
 
     @Override
     protected void configure() {
-        JsonSelector.selectParser(parser);
+        if (parser != null) JsonSelector.selectParser(parser);
     }
 
     @Provides()
