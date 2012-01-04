@@ -13,7 +13,7 @@ public class App {
 
     @XmlElement String id;
     @XmlElement String name;
-    @XmlElement String domain_name;
+    @XmlElement(name = "domain_name", type = Domain.class) Domain domain_name;
     @XmlElement String created_at;
     @XmlElement String create_status;
     @XmlElement(name = "owner") String owner_email;
@@ -51,8 +51,8 @@ public class App {
         this.name = name;
     }
 
-    private void setDomain_name(String domain_name) {
-        this.domain_name = domain_name;
+    private void setDomain(Domain domain) {
+        this.domain_name = domain;
     }
 
     private void setCreated_at(String created_at) {
@@ -107,7 +107,7 @@ public class App {
         return name;
     }
 
-    public String getDomainName() {
+    public Domain getDomain() {
         return domain_name;
     }
 
