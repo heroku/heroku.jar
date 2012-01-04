@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
 
 public class Json {
 
-    private static class Holder {
+    static class Holder {
         static Parser parser;
 
         static {

@@ -1,15 +1,29 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
-import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.parser.JsonSelector;
+import com.heroku.api.parser.Parser;
+import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
 
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 
 public class HttpClientModule extends ConnectionTestModule {
+
+    Parser parser;
+
+    public HttpClientModule(Parser p) {
+        this.parser = p;
+    }
+
+    @Override
+    protected void configure() {
+        JsonSelector.selectParser(parser);
+    }
+
     @Provides()
     HttpClientConnection getConnectionImpl() throws IOException {
         try {
