@@ -103,7 +103,12 @@ public class App {
         return id;
     }
 
+    public void setDomain_name(Domain domain_name) {
+        this.domain_name = domain_name;
+    }
+
     public String getName() {
+
         return name;
     }
 
@@ -114,6 +119,8 @@ public class App {
     public String getWebUrl() {
         return web_url;
     }
+
+
 
     public String getGitUrl() {
         return git_url;

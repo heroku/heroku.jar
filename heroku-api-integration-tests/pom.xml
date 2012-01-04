@@ -37,6 +37,11 @@
         </dependency>
         <dependency>
             <groupId>com.heroku.api</groupId>
+            <artifactId>heroku-json-gson</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.heroku.api</groupId>
             <artifactId>heroku-http-finagle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

@@ -12,11 +12,7 @@ public class GsonParser implements Parser {
 
     @Override
     public <T> T parse(byte[] data, final Type type) {
-		try {
-        	return new Gson().<T>fromJson(getReader(data), type);
-		} catch(Exception e) {
-			throw new RuntimeException("Error parsing result "+new String(data),e);
-		}
+        return new Gson().<T>fromJson(getReader(data), type);
     }
 
     private Reader getReader(byte[] raw) {

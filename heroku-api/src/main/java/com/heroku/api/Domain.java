@@ -57,7 +57,7 @@ public class Domain {
         this.updated_at = updated_at;
     }
 
-    private void setDefault_name(String default_name) {
+    private void setDefault(String default_name) {
         this.default_name = default_name;
     }
 
