@@ -28,7 +28,6 @@ public class Json {
     }
 
 
-
     /**
      * Calls Parser.parse() using the generic type T for Request<T> given Request<T> is the interface for the
      * classType parameter. If it can't find an appropriate type, it errors out with a ParseException.
@@ -52,6 +51,17 @@ public class Json {
      * @return T
      */
     public static <T> T parse(byte[] data, Class<? extends Request<T>> classType) {
+        ParameterizedType parameterizedType = findParameterizedType(classType);
+        Type type = parameterizedType.getActualTypeArguments()[0];
+        try {
+            return Holder.parser.parse(data, type);
+        } catch (RuntimeException e) {
+            String json = HttpUtil.getUTF8String(data);
+            throw new RuntimeException("Failed to parse JSON:" + json, e);
+        }
+    }
+
+    private static ParameterizedType findParameterizedType(Class<?> classType) {
         // get all interfaces for the class
         Type[] genericInterfaces = classType.getGenericInterfaces();
         for (Type interfaceType : genericInterfaces) {
@@ -60,18 +70,14 @@ public class Json {
                 ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
                 // make sure the parameterized type is a Request<T>
                 if (Request.class.equals(parameterizedType.getRawType())) {
-                    // get the first type since we only have one generic defined for Request<T>
-                    Type type = parameterizedType.getActualTypeArguments()[0];
-                    try {
-                        return Holder.parser.parse(data, type);
-                    } catch (RuntimeException e) {
-                        String json = HttpUtil.getUTF8String(data);
-                        throw new RuntimeException("Failed to parse JSON:" + json, e);
-                    }
+                    return parameterizedType;
                 }
+            } else if (interfaceType instanceof Class) {
+                return findParameterizedType((Class) interfaceType);
             }
         }
         throw new ParseException("Request<T> was not found for " + classType.toString());
     }
+
 
 }
