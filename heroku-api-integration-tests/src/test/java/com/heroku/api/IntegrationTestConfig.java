@@ -1,11 +1,10 @@
 package com.heroku.api;
 
 
-import com.heroku.api.parser.Json;
+import com.heroku.api.parser.JsonSelector;
 import com.heroku.api.parser.Parser;
 import com.heroku.api.parser.TypeReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
@@ -15,20 +14,20 @@ public enum IntegrationTestConfig {
     /**
      * A JSON array of users to be used in testing. A default user must be specified with the attribute
      * default:true.
-     *
+     * <p/>
      * e.g.
      * <code>
-     *     [ {"username":"username@heroku.com","password":"password","apikey":"apikey","default":"true"},
-     *       {"username":"username2@heroku.com","password":"password2","apikey":"apikey2"},
-     *       {"username":"username@heroku.com3","password":"password3","apikey":"apikey3"},
-     *       ...
-     *     ]
+     * [ {"username":"username@heroku.com","password":"password","apikey":"apikey","default":"true"},
+     * {"username":"username2@heroku.com","password":"password2","apikey":"apikey2"},
+     * {"username":"username@heroku.com3","password":"password3","apikey":"apikey3"},
+     * ...
+     * ]
      * </code>
-     *
+     * <p/>
      * In many cases, special characters need to be escaped. For example, when setting an environment variable
      * in Linux:
      * <code>
-     *     export HEROKU_TEST_USERS=[\{\"username\":\"username@heroku.com\",\"password\":\"password\",\"apikey\":\"apikey\",\"defaultuser\":\"true\"\} ...
+     * export HEROKU_TEST_USERS=[\{\"username\":\"username@heroku.com\",\"password\":\"password\",\"apikey\":\"apikey\",\"defaultuser\":\"true\"\} ...
      * </code>
      */
     CONFIG("HEROKU_TEST_USERS", "heroku.test.users");
@@ -42,7 +41,7 @@ public enum IntegrationTestConfig {
         this.environmentVariable = envvar;
         this.systemProperty = sysprop;
     }
-    
+
     public TestUser getDefaultUser() {
         if (defaultUser == null) {
             loadUsers();
@@ -60,8 +59,9 @@ public enum IntegrationTestConfig {
 
     private void loadUsers() {
         assertConfigIsPresent();
-        Parser jsonParser = Json.getJsonParser();
-        testUsers = jsonParser.parse(getConfig().getBytes(), new TypeReference<List<TestUser>>(){}.getType());
+        Parser jsonParser = JsonSelector.getParser();
+        testUsers = jsonParser.parse(getConfig().getBytes(), new TypeReference<List<TestUser>>() {
+        }.getType());
 
         for (TestUser tu : testUsers) {
             if (tu.isDefaultUser()) {

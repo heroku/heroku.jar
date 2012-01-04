@@ -27,9 +27,7 @@ public class Json {
         }
     }
 
-    public static Parser getJsonParser() {
-        return Holder.parser;
-    }
+
 
     /**
      * Calls Parser.parse() using the generic type T for Request<T> given Request<T> is the interface for the
@@ -65,7 +63,7 @@ public class Json {
                     // get the first type since we only have one generic defined for Request<T>
                     Type type = parameterizedType.getActualTypeArguments()[0];
                     try {
-                        return getJsonParser().parse(data, type);
+                        return Holder.parser.parse(data, type);
                     } catch (RuntimeException e) {
                         String json = HttpUtil.getUTF8String(data);
                         throw new RuntimeException("Failed to parse JSON:" + json, e);

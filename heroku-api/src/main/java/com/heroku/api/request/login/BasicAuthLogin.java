@@ -7,7 +7,6 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
-import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.RequestConfig;
 
@@ -62,8 +61,7 @@ public class BasicAuthLogin implements LoginRequest {
     @Override
     public LoginVerification getResponse(byte[] in, int code) {
         if (code == 200) {
-            return Json.getJsonParser().parse(in, new TypeReference<LoginVerification>() {
-            }.getType());
+            return Json.parse(in, this.getClass());
         } else if (code == 404) {
             throw new LoginFailedException("Invalid username and password combination.", code, in);
         } else {

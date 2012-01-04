@@ -7,4 +7,8 @@ public class JsonSelector {
         Json.Holder.parser = parser;
     }
 
+    public static Parser getParser() {
+        return Json.Holder.parser;
+    }
+
 }

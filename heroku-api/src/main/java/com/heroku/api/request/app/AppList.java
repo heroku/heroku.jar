@@ -6,7 +6,6 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
-import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;
 
 import java.util.HashMap;
@@ -53,7 +52,7 @@ public class AppList implements Request<List<App>> {
     @Override
     public List<App> getResponse(byte[] in, int code) {
         if (code == 200)
-            return Json.getJsonParser().parse(in, new TypeReference<List<App>>(){}.getType());
+            return Json.parse(in, AppList.class);
         else
             throw new RequestFailedException("AppList Failed", code, in);
     }

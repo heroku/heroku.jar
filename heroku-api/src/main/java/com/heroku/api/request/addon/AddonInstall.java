@@ -6,7 +6,6 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
-import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -58,7 +57,7 @@ public class AddonInstall implements Request<AddonChange> {
     @Override
     public AddonChange getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            return Json.getJsonParser().parse(bytes, new TypeReference<AddonChange>(){}.getType());
+            return Json.parse(bytes, this.getClass());
         } else {
             throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.AddonName), status, bytes);
         }
