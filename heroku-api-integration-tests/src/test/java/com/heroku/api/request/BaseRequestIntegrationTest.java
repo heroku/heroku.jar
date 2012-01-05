@@ -34,15 +34,15 @@ public abstract class BaseRequestIntegrationTest {
     @Inject
     Connection connection;
 
-    private static List<App> apps = new ArrayList<App>();
+    private List<App> apps = new ArrayList<App>();
     protected IntegrationTestConfig.TestUser sharingUser;
 
-    @DataProvider
+    @DataProvider(parallel = true)
     public Object[][] app() {
         return new Object[][]{{getApp()}};
     }
     
-    @DataProvider
+    @DataProvider(parallel = true)
     public Object[][] newApp() {
         return new Object[][] {{createApp()}};
     }

@@ -111,6 +111,12 @@
                 <configuration>
                     <parallel>methods</parallel>
                     <threadCount>25</threadCount>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng-httpclient-jackson.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/testng-httpclient-gson.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/testng-finagle.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/testng-asynchttpclient.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
         </plugins>
