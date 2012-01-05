@@ -15,7 +15,7 @@ public class Heroku {
 
 
     public enum Config {
-        ENDPOINT("HEROKU_HOST", "heroku.host", "https://api.heroku.com");
+        ENDPOINT("HEROKU_HOST", "heroku.host", "api.heroku.com");
         public final String environmentVariable;
         public final String systemProperty;
         public final String defaultValue;
@@ -26,7 +26,7 @@ public class Heroku {
             this.systemProperty = systemProperty;
             this.defaultValue = defaultValue;
             String envVal = System.getenv(environmentVariable);
-            this.value = System.getProperty(systemProperty, envVal == null ? defaultValue : envVal);
+            this.value = "https://" + System.getProperty(systemProperty, envVal == null ? defaultValue : envVal);
         }
 
         public boolean isDefault() {
