@@ -88,7 +88,8 @@
         <netty.version>3.2.5.Final</netty.version>
         <jackson.version>1.9.2</jackson.version>
         <gson.version>1.7.1</gson.version>
-        <source.plugin.version>1.6</source.plugin.version>
+        <jdk.version>1.6</jdk.version>
+        <source.plugin.version>2.1.2</source.plugin.version>
         <gpg.plugin.version>1.2</gpg.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
         <maven.clover.version>3.1.0</maven.clover.version>
@@ -104,8 +105,8 @@
                     <version>2.3.2</version>
                     <configuration>
                         <encoding>UTF-8</encoding>
-                        <source>${source.plugin.version}</source>
-                        <target>${source.plugin.version}</target>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
                     </configuration>
                 </plugin>
                 <plugin>
