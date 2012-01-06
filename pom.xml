@@ -24,7 +24,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <scm>
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+   </distributionManagement>
+   <scm>
         <url>https://github.com/heroku/heroku.jar</url>
         <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
         <developerConnection>scm:git:git@github.com:heroku/heroku.jar.git</developerConnection>
