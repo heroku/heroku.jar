@@ -217,7 +217,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.getStatus(), "Installed");
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testCollaboratorList(App app) {
         Request<List<Collaborator>> req = new CollabList(app.getName());
         List<Collaborator> xmlArrayResponse = connection.execute(req);
