@@ -93,6 +93,7 @@ public abstract class BaseRequestIntegrationTest {
             });
         }
         // await termination of all the threads to complete app deletion.
+        executorService.shutdown();
         executorService.awaitTermination(30L, TimeUnit.SECONDS);
         System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
     }
