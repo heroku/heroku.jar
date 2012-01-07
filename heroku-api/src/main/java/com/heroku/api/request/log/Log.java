@@ -108,8 +108,12 @@ public class Log implements Request<LogStreamResponse> {
     @Override
     public LogStreamResponse getResponse(byte[] bytes, int status) {
         if (status == 200) {
-            URL logs = HttpUtil.toURL(new String(bytes));
-            return new LogStreamResponse(logs);
+            try {
+                URL logs = HttpUtil.toURL(new String(bytes));
+                return new LogStreamResponse(logs);
+            } catch (RuntimeException e) {
+                throw new RequestFailedException(e.getMessage(), status, bytes);
+            }
         } else {
             throw new RequestFailedException("Unable to get logs", status, bytes);
         }

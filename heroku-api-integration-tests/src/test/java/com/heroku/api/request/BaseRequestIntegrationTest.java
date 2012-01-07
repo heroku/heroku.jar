@@ -128,8 +128,6 @@ public abstract class BaseRequestIntegrationTest {
         try {
             in = logsResponse.openStream();
             in.close();
-        } catch (Exception e) {
-            fail("Unable to read logs", e);
         } finally {
             in.close();
         }

@@ -41,7 +41,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
     }
     client(toReq(command)).map {
       resp =>
-        command.getResponse(resp.getContent.toByteBuffer.array(), resp.getStatus.getCode)
+        command.getResponse(resp.getContent.array(), resp.getStatus.getCode)
     }
   }
 
