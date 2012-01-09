@@ -139,11 +139,11 @@
 
     <profiles>
         <profile>
-            <id>package-for-deployment</id>
+            <id>prepare-for-central</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>
-                    <name>packageForDeployment</name>
+                    <name>prepareForCentral</name>
                     <value>true</value>
                 </property>
             </activation>
