@@ -138,7 +138,7 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.2.2</version>
                     <configuration>
-                        <preparationGoals>-X</preparationGoals>
+                        <preparationGoals>clean package -X -DskipTests</preparationGoals>
                     </configuration>
                 </plugin>
             </plugins>
