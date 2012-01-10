@@ -49,7 +49,7 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
             try {
                 builder.setHeader("Authorization", "Basic " + Base64.encode((":" + apiKey).getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
-                throw new HerokuAPIException("UnsupportedEncodingException while encoding api key");
+                throw new HerokuAPIException("UnsupportedEncodingException while encoding api key",e);
             }
         }
         if (req.hasBody()) {

@@ -2,7 +2,6 @@ package com.heroku.api.parser;
 
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +15,6 @@ public class GsonParser implements Parser {
     @Override
     public <T> T parse(byte[] data, final Type type) {
         Reader dataReader = getReader(data);
-        GsonBuilder gsonBuilder = new GsonBuilder();
         JsonReader jsonReader = new JsonReader(dataReader);
         jsonReader.setLenient(true);
         return new Gson().<T>fromJson(jsonReader, type);
@@ -26,7 +24,7 @@ public class GsonParser implements Parser {
         try {
             return new InputStreamReader(new ByteArrayInputStream(raw), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Somehow UTF-8 is unsupported");
+            throw new RuntimeException("Somehow UTF-8 is unsupported", e);
         }
     }
 }

@@ -61,7 +61,7 @@ public class HttpUtil {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            throw new RuntimeException("The URL was malformed: "+url);
+            throw new RuntimeException("The URL was malformed: " + url, e);
         }
     }
 
@@ -93,7 +93,7 @@ public class HttpUtil {
             rbc.close();
             return os.toByteArray();
         } catch (IOException e) {
-            throw new HerokuAPIException("IOException while reading response");
+            throw new HerokuAPIException("IOException while reading response", e);
         }
     }
 
@@ -101,7 +101,7 @@ public class HttpUtil {
         try {
             return new String(in, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new HerokuAPIException("Somehow UTF-8 is unsupported");
+            throw new HerokuAPIException("Somehow UTF-8 is unsupported", e);
         }
     }
 }
