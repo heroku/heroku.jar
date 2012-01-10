@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
-import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc

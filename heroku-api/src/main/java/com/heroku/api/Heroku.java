@@ -161,7 +161,7 @@ Likewise, the secure random parameter may be null in which case the default impl
         public final String value;
 
         // From Effective Java, Second Edition
-        private final static Map<String, Stack> stringToEnum = new HashMap<String, Stack>();
+        private static final Map<String, Stack> stringToEnum = new HashMap<String, Stack>();
         static {
             for (Stack s : values())
                 stringToEnum.put(s.toString(), s);

@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.heroku.api.parser.Json.parse;
-
 /**
  * TODO: Javadoc
  *
@@ -28,7 +26,7 @@ public class CollabList implements Request<List<Collaborator>> {
     public CollabList(String appName) {
         config = new RequestConfig().app(appName);
     }
-    
+
     @Override
     public Http.Method getHttpMethod() {
         return Http.Method.GET;
