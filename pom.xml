@@ -25,9 +25,13 @@
         </license>
     </licenses>
     <distributionManagement>
+        <!--<repository>-->
+            <!--<id>sonatype-nexus-staging</id>-->
+            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--</repository>-->
         <repository>
-            <id>sonatype-nexus-staging</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>s3-maven</id>
+            <url>s3://heroku.jar/release</url>
         </repository>
    </distributionManagement>
    <scm>
@@ -97,6 +101,14 @@
 
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build.aws</groupId>
+                <artifactId>org.springframework.build.aws.maven</artifactId>
+                <version>3.0.0.RELEASE</version>
+            </extension>
+        </extensions>
+
         <pluginManagement>
             <plugins>
                 <plugin>
