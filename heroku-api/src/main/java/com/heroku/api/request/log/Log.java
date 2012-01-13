@@ -7,6 +7,7 @@ import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
+import com.heroku.api.request.log.Log.LogRequestBuilder;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -26,11 +27,15 @@ public class Log implements Request<LogStreamResponse> {
         this(logFor(app).tail(tail).getConfig());
     }
     
-    public Log(RequestConfig config) {
+    Log(RequestConfig config) {
         this.config = config;
     }
     
-    public static LogRequestBuilder logFor(String app) {
+    public Log(LogRequestBuilder logRequest) {
+		this(logRequest.getConfig());
+	}
+
+	public static LogRequestBuilder logFor(String app) {
         return new LogRequestBuilder().app(app);
     }
     
@@ -41,7 +46,7 @@ public class Log implements Request<LogStreamResponse> {
             return new Log(config);
         }
         
-        public RequestConfig getConfig() {
+        RequestConfig getConfig() {
             return config;
         }
 
