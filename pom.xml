@@ -25,13 +25,9 @@
         </license>
     </licenses>
     <distributionManagement>
-        <!--<repository>-->
-            <!--<id>sonatype-nexus-staging</id>-->
-            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-        <!--</repository>-->
         <repository>
-            <id>s3-maven</id>
-            <url>s3://heroku.jar/release</url>
+            <id>sonatype-nexus-staging</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
    </distributionManagement>
    <scm>
