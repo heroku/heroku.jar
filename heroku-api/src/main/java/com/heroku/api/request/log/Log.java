@@ -26,7 +26,7 @@ public class Log implements Request<LogStreamResponse> {
         this(logFor(app).tail(tail).getConfig());
     }
     
-    Log(RequestConfig config) {
+    public Log(RequestConfig config) {
         this.config = config;
     }
     
@@ -41,7 +41,7 @@ public class Log implements Request<LogStreamResponse> {
             return new Log(config);
         }
         
-        RequestConfig getConfig() {
+        public RequestConfig getConfig() {
             return config;
         }
 

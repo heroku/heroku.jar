@@ -165,5 +165,9 @@ public class HerokuAPI {
     public LogStreamResponse getLogs(String appName) {
         return connection.execute(new Log(appName));
     }
+    
+    public LogStreamResponse getLogs(Log.LogRequestBuilder logRequest) {
+        return connection.execute(new Log(logRequest.getConfig()));
+    }
 
 }
