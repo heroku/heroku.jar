@@ -17,6 +17,7 @@ import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
+import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
@@ -34,11 +35,11 @@ import java.util.Map;
 public class HerokuAPI {
 
     final Connection connection;
-    
+
     public static String obtainApiKey(String username, String password) {
         return ConnectionFactory.get(username, password).getApiKey();
     }
-    
+
     public HerokuAPI(String apiKey) {
         this(ConnectionFactory.get(apiKey));
     }
@@ -46,11 +47,11 @@ public class HerokuAPI {
     public HerokuAPI(Connection connection) {
         this.connection = connection;
     }
-    
+
     public Connection getConnection() {
         return connection;
     }
-    
+
     public String getApiKey() {
         return connection.getApiKey();
     }
@@ -66,7 +67,7 @@ public class HerokuAPI {
     public List<Key> listKeys() {
         return connection.execute(new KeyList());
     }
-    
+
     public List<App> listApps() {
         return connection.execute(new AppList());
     }
@@ -140,7 +141,7 @@ public class HerokuAPI {
     public void removeCollaborator(String appName, String collaborator) {
         connection.execute(new SharingRemove(appName, collaborator));
     }
-    
+
     public void addConfig(String appName, Map<String, String> config) {
         String jsonConfig = "{";
         String separator = "";
@@ -167,12 +168,24 @@ public class HerokuAPI {
     public LogStreamResponse getLogs(String appName) {
         return connection.execute(new Log(appName));
     }
-    
-    public void run(String appName, String command){
-        connection.execute(new Run(appName, command));    
+
+    public void run(String appName, String command) {
+        connection.execute(new Run(appName, command));
     }
 
-    public RunResponse runAttached(String appName, String command){
-         return connection.execute(new Run(appName, command, true));
+    public RunResponse runAttached(String appName, String command) {
+        return connection.execute(new Run(appName, command, true));
+    }
+
+    public void restart(String appName) {
+        connection.execute(new Restart(appName));
+    }
+
+    public void restartProcessByType(String appName, String type) {
+        connection.execute(new Restart.ProcessTypeRestart(appName, type));
+    }
+
+    public void restartProcessByName(String appName, String procName) {
+        connection.execute(new Restart.NamedProcessRestart(appName, procName));
     }
 }
