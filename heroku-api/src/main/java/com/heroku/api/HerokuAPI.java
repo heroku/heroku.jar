@@ -3,6 +3,7 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
+import com.heroku.api.request.RequestConfig;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -166,8 +167,8 @@ public class HerokuAPI {
         return connection.execute(new Log(appName));
     }
     
-    public LogStreamResponse getLogs(Log.LogRequestBuilder logRequest) {
-        return connection.execute(new Log(logRequest.getConfig()));
+    public LogStreamResponse getLogs(RequestConfig cfg) {
+        return connection.execute(new Log(cfg));
     }
 
 }
