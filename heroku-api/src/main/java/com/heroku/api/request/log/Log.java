@@ -7,7 +7,6 @@ import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.log.Log.LogRequestBuilder;
 
 import java.net.URL;
 import java.util.HashMap;
