@@ -30,7 +30,11 @@ public class Log implements Request<LogStreamResponse> {
         this.config = config;
     }
     
-    public static LogRequestBuilder logFor(String app) {
+    public Log(LogRequestBuilder logRequest) {
+		this(logRequest.getConfig());
+	}
+
+	public static LogRequestBuilder logFor(String app) {
         return new LogRequestBuilder().app(app);
     }
     
