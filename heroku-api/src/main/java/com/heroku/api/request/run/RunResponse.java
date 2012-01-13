@@ -134,6 +134,10 @@ public class RunResponse {
             final BufferedWriter writer = new BufferedWriter(owriter);
             writer.write(secret);
             writer.flush();
+            InputStreamReader ireader = new InputStreamReader(in);
+            BufferedReader reader = new BufferedReader(ireader);
+            /*this line reads the string "rendezvous" */
+            reader.readLine();
             return in;
         } catch (IOException e) {
             throw new HerokuAPIException("IOException while running process", e);

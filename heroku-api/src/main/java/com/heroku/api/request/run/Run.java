@@ -13,15 +13,19 @@ import java.util.Map;
 
 public class Run implements Request<RunResponse> {
 
-    private final RequestConfig config;
+    private RequestConfig config;
+
 
     public Run(String app, String command) {
-        config = new RequestConfig().app(app).with(Heroku.RequestKey.Command, command).with(Heroku.RequestKey.Attach, "false");
+        config = new RequestConfig().app(app).with(Heroku.RequestKey.Command, command);
     }
 
 
     public Run(String app, String command, boolean attach) {
-        config = new RequestConfig().app(app).with(Heroku.RequestKey.Command, command).with(Heroku.RequestKey.Attach, Boolean.toString(attach));
+       this(app,command);
+       if(attach){
+           config = config.with(Heroku.RequestKey.Attach, "true");
+       }
     }
 
 
@@ -43,7 +47,11 @@ public class Run implements Request<RunResponse> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.AppName, Heroku.RequestKey.Command, Heroku.RequestKey.Attach);
+        if (config.has(Heroku.RequestKey.Attach)) {
+            return HttpUtil.encodeParameters(config, Heroku.RequestKey.AppName, Heroku.RequestKey.Command, Heroku.RequestKey.Attach);
+        } else {
+            return HttpUtil.encodeParameters(config, Heroku.RequestKey.AppName, Heroku.RequestKey.Command);
+        }
     }
 
     @Override
@@ -53,7 +61,10 @@ public class Run implements Request<RunResponse> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        Map<String, String> map = Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        //workaround should be removed when core is updated to not require this
+        map.put("User-Agent", "heroku-gem/2.4");
+        return map;
     }
 
     @Override
@@ -65,3 +76,4 @@ public class Run implements Request<RunResponse> {
         }
     }
 }
+                                                   

@@ -10,6 +10,7 @@ import com.ning.http.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,11 +46,14 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
+        for (Map.Entry<String, String> entry : req.getHeaders().entrySet()) {
+            builder.setHeader(entry.getKey(), entry.getValue());
+        }
         if (apiKey != null) {
             try {
                 builder.setHeader("Authorization", "Basic " + Base64.encode((":" + apiKey).getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
-                throw new HerokuAPIException("UnsupportedEncodingException while encoding api key",e);
+                throw new HerokuAPIException("UnsupportedEncodingException while encoding api key", e);
             }
         }
         if (req.hasBody()) {

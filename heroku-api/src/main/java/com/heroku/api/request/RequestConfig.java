@@ -36,4 +36,8 @@ public class RequestConfig {
         return config;
     }
 
+    public boolean has(Heroku.RequestKey key){
+        return config.containsKey(key);
+    }
+
 }
