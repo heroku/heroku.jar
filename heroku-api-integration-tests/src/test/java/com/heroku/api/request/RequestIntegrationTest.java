@@ -2,6 +2,7 @@ package com.heroku.api.request;
 
 import com.heroku.api.*;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
@@ -9,7 +10,6 @@ import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;
 import com.heroku.api.request.app.AppList;
-import com.heroku.api.request.config.ConfigAdd;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
@@ -17,10 +17,11 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
+import com.heroku.api.request.run.Run;
+import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
-import com.heroku.api.request.sharing.SharingTransfer;
 import com.heroku.api.response.Unit;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -51,16 +52,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(response.getCreateStatus().equals("complete")); //todo: move "complete" to a static final?
         deleteApp(response.getName());
     }
-    
+
     @DataProvider
     public Object[][] logParameters() {
-        return new Object[][] {
-                { new Log(getApp().getName()) },
-                { new Log(getApp().getName(), true) },
-                { Log.logFor(getApp().getName()).tail(false).num(1).getRequest() }
+        return new Object[][]{
+                {new Log(getApp().getName())},
+                {new Log(getApp().getName(), true)},
+                {Log.logFor(getApp().getName()).tail(false).num(1).getRequest()}
         };
     }
-    
+
     @Test(dataProvider = "logParameters")
     public void testLogCommand(Log log) throws IOException, InterruptedException {
         for (int i = 0; i < 10; i++) {
@@ -115,7 +116,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         App app = api.createApp(new App().on(Cedar));
         api.addCollaborator(app.getName(), sharingUser.getUsername());
         api.transferApp(app.getName(), sharingUser.getUsername());
-        
+
         HerokuAPI sharedUserAPI = new HerokuAPI(sharingUser.getApiKey());
         App transferredApp = sharedUserAPI.getApp(app.getName());
         assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
@@ -131,7 +132,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         SharingRemove cmd = new SharingRemove(app.getName(), sharingUser.getUsername());
         Unit response = connection.execute(cmd);
         assertNotNull(response);
-        
+
         CollabList collabList = new CollabList(app.getName());
         assertCollaboratorNotPresent(sharingUser.getUsername(), collabList);
     }
@@ -225,7 +226,22 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(xmlArrayResponse.get(0).getEmail());
     }
 
-
+    @Test(dataProvider = "app")
+    public void testRunCommand(App app) throws IOException {
+        Run run = new Run(app.getName(), "echo helloworld");
+        Run runAttached = new Run(app.getName(), "echo helloworld", true);
+        RunResponse response = connection.execute(run);
+        try {
+            response.attach();
+            fail("Should throw an illegal state exception");
+        } catch (IllegalStateException ex) {
+            //ok
+        }
+        RunResponse responseAttach = connection.execute(runAttached);
+        String output = HttpUtil.getUTF8String(HttpUtil.getBytes(responseAttach.attach()));
+        System.out.println("RUN OUTPUT:" + output);
+        assertTrue(output.contains("helloworld"));
+    }
 
 
 }
