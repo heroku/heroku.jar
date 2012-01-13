@@ -21,6 +21,8 @@ import com.heroku.api.request.ps.Scale;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
+import com.heroku.api.request.run.Run;
+import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
@@ -165,5 +167,12 @@ public class HerokuAPI {
     public LogStreamResponse getLogs(String appName) {
         return connection.execute(new Log(appName));
     }
+    
+    public void run(String appName, String command){
+        connection.execute(new Run(appName, command));    
+    }
 
+    public RunResponse runAttached(String appName, String command){
+         return connection.execute(new Run(appName, command, true));
+    }
 }
