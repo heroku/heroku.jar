@@ -8,28 +8,19 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-api</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-json-jackson</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-http-apache</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2</version>
     </dependency>
 
-###Add the snapshot repository to your pom.xml
-
-    <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <snapshots/>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
 
 ###Use HerokuAPI
 HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
@@ -106,6 +97,35 @@ The removeConfig call expects a single config var name to be removed.
 HerokuAPI api = new HerokuAPI(apiKey);
 Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemove");
 ```
+
+###For the latest snapshots...
+Use the snapshot version:
+
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-api</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-json-jackson</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>com.heroku.api</groupId>
+        <artifactId>heroku-http-apache</artifactId>
+        <version>0.3-SNAPSHOT</version>
+    </dependency>
+
+Add the snapshot repository to your pom.xml
+
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <snapshots/>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
 ##Building Locally
 
