@@ -204,7 +204,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Stop(Process.value + "/stop"),
         Scale(Process.value + "/scale"),
         Releases(App.value + "/releases"),
-        Release(Releases.value + "/%s");
+        Release(Releases.value + "/%s"),
+        Status(App.value + "/status");
 
         public final String value;
 

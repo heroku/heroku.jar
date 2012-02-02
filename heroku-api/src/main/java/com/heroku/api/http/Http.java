@@ -75,7 +75,7 @@ public class Http {
 
 
     public static enum Status {
-        OK(200), ACCEPTED(202), PAYMENT_REQUIRED(402), FORBIDDEN(403), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422);
+        OK(200), CREATED(201), ACCEPTED(202), PAYMENT_REQUIRED(402), FORBIDDEN(403), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422);
 
         public final int statusCode;
 

@@ -5,6 +5,7 @@ import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.App;
 import com.heroku.api.Collaborator;
+import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -140,6 +142,44 @@ public abstract class BaseRequestIntegrationTest {
             if (collaborator.getEmail().equals(collabEmail)) {
                 fail("Collaborator was not removed");
             }
+        }
+    }
+
+    protected void waitFor(Callable<Boolean> callable) throws Exception {
+        for (int i = 0; i < 10; i++) {
+            if (callable.call()) {
+                return;
+            } else {
+                Thread.sleep(1000);
+            }
+        }
+        fail(callable.toString() + " took too long.");
+    }
+
+    protected static class LogProvisionCheck implements Callable<Boolean> {
+
+        private final Connection conn;
+        private final String appName;
+
+        public LogProvisionCheck(Connection conn, String appName) {
+            this.conn = conn;
+            this.appName = appName;
+        }
+
+        @Override
+        public Boolean call() throws Exception {
+            List<Addon> addons = conn.execute(new AppAddonsList(appName));
+            for (Addon addon : addons) {
+                if (addon.getName().equalsIgnoreCase("logging:basic")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("LogProvisionCheck(appname=%s)", appName);
         }
     }
 }

@@ -1,15 +1,13 @@
 package com.heroku.api.request;
 
 import com.heroku.api.*;
+import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.AppCreate;
-import com.heroku.api.request.app.AppDestroy;
-import com.heroku.api.request.app.AppInfo;
-import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.app.*;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
@@ -30,6 +28,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static org.testng.Assert.*;
@@ -55,25 +54,19 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @DataProvider
     public Object[][] logParameters() {
+        final String appName = getApp().getName();
         return new Object[][]{
-                {new Log(getApp().getName())},
-                {new Log(getApp().getName(), true)},
-                {Log.logFor(getApp().getName()).tail(false).num(1).getRequest()}
+                {appName, new Log(appName)},
+                {appName, new Log(appName, true)},
+                {appName, Log.logFor(appName).tail(false).num(1).getRequest()}
         };
     }
 
     @Test(dataProvider = "logParameters")
-    public void testLogCommand(Log log) throws IOException, InterruptedException {
-        for (int i = 0; i < 10; i++) {
-            try {
-                LogStreamResponse logsResponse = connection.execute(log);
-                assertLogIsReadable(logsResponse);
-                return;
-            } catch (HerokuAPIException e) {
-                Thread.sleep(1000);
-            }
-        }
-        fail("Logs were never read.");
+    public void testLogCommand(String appName, Log log) throws Exception {
+        waitFor(new LogProvisionCheck(connection, appName));
+        LogStreamResponse logsResponse = connection.execute(log);
+        assertLogIsReadable(logsResponse);
     }
 
     @Test(dataProvider = "app")
