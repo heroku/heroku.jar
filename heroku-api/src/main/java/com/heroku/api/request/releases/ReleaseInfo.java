@@ -7,7 +7,7 @@ import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
@@ -53,7 +53,7 @@ public class ReleaseInfo implements Request<Release> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

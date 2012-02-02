@@ -1,9 +1,9 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
-import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.connection.FinagleConnection;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
 

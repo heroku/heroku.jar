@@ -1,13 +1,14 @@
 package com.heroku.api.request;
 
 import com.heroku.api.*;
-import com.heroku.api.connection.Connection;
-import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.*;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.app.AppInfo;
+import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static org.testng.Assert.*;

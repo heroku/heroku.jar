@@ -10,7 +10,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ public class CollabList implements Request<List<Collaborator>> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

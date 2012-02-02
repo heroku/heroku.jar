@@ -7,7 +7,7 @@ import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.parser.Json.parse;
@@ -52,7 +52,7 @@ public class ConfigRemove implements Request<Map<String, String>> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

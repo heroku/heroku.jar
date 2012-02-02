@@ -3,8 +3,6 @@ package com.heroku.api.request;
 import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.App;
-import com.heroku.api.Collaborator;
 import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;

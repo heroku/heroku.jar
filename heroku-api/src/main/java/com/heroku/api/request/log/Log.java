@@ -9,7 +9,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import java.net.URL;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.Heroku.RequestKey.*;
@@ -106,7 +106,7 @@ public class Log implements Request<LogStreamResponse> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

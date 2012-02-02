@@ -8,7 +8,7 @@ import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class AppList implements Request<List<App>> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

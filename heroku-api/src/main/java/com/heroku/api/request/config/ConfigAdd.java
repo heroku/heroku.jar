@@ -7,7 +7,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.response.Unit;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -50,7 +50,7 @@ public class ConfigAdd implements Request<Unit> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override
