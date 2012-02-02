@@ -76,6 +76,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <dependency>
             <!-- ssh key generator -->
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
@@ -90,6 +95,9 @@
         </dependency>
 
     </dependencies>
+    <properties>
+        <guava.version>11.0.1</guava.version>
+    </properties>
 
     <build>
         <plugins>

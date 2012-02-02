@@ -64,7 +64,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "logParameters")
     public void testLogCommand(String appName, Log log) throws Exception {
-        waitFor(new LogProvisionCheck(connection, appName));
+        waitFor(appName, new LogProvisionCheck(connection));
         LogStreamResponse logsResponse = connection.execute(log);
         assertLogIsReadable(logsResponse);
     }

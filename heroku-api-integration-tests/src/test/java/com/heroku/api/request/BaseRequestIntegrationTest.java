@@ -1,5 +1,6 @@
 package com.heroku.api.request;
 
+import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
@@ -12,11 +13,11 @@ import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
 import org.testng.annotations.*;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -143,29 +144,27 @@ public abstract class BaseRequestIntegrationTest {
         }
     }
 
-    protected void waitFor(Callable<Boolean> callable) throws Exception {
+    protected void waitFor(String in, Function<String, Boolean> fn) throws Exception {
         for (int i = 0; i < 10; i++) {
-            if (callable.call()) {
+            if (fn.apply(in)) {
                 return;
             } else {
                 Thread.sleep(1000);
             }
         }
-        fail(callable.toString() + " took too long.");
+        fail(fn.toString() + " took too long.");
     }
 
-    protected static class LogProvisionCheck implements Callable<Boolean> {
+    protected static class LogProvisionCheck implements Function<String, Boolean> {
 
-        private final Connection conn;
-        private final String appName;
+        Connection conn;
 
-        public LogProvisionCheck(Connection conn, String appName) {
+        public LogProvisionCheck(Connection conn) {
             this.conn = conn;
-            this.appName = appName;
         }
-
+        
         @Override
-        public Boolean call() throws Exception {
+        public Boolean apply(@Nullable String appName) {
             List<Addon> addons = conn.execute(new AppAddonsList(appName));
             for (Addon addon : addons) {
                 if (addon.getName().equalsIgnoreCase("logging:basic")) {
@@ -175,9 +174,5 @@ public abstract class BaseRequestIntegrationTest {
             return false;
         }
 
-        @Override
-        public String toString() {
-            return String.format("LogProvisionCheck(appname=%s)", appName);
-        }
     }
 }
