@@ -82,10 +82,10 @@
         <testng.version>6.0</testng.version>
         <guice.version>3.0</guice.version>
         <apache.commons-httpclient.version>4.1.2</apache.commons-httpclient.version>
-        <finagle.version>1.9.11</finagle.version>
-        <twitter.util.version>1.12.9</twitter.util.version>
+        <finagle.version>1.11.1</finagle.version>
+        <twitter.util.version>1.12.13</twitter.util.version>
         <ning.async.version>1.6.5</ning.async.version>
-        <netty.version>3.2.5.Final</netty.version>
+        <netty.version>3.3.1.Final</netty.version>
         <jackson.version>1.9.2</jackson.version>
         <gson.version>1.7.1</gson.version>
         <jdk.version>1.6</jdk.version>
