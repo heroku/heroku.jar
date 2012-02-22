@@ -51,8 +51,10 @@ public class Json {
      * @return T
      */
     public static <T> T parse(byte[] data, Class<? extends Request<T>> classType) {
-        ParameterizedType parameterizedType = findParameterizedType(classType);
-        Type type = parameterizedType.getActualTypeArguments()[0];
+        Type type = doResolveTypeArguments(classType, classType, Request.class)[0];
+        if (type == null) {
+            throw new ParseException("Request<T> was not found for " + classType.toString());
+        }
         try {
             return Holder.parser.parse(data, type);
         } catch (RuntimeException e) {
@@ -61,22 +63,47 @@ public class Json {
         }
     }
 
-    private static ParameterizedType findParameterizedType(Class<?> classType) {
-        // get all interfaces for the class
-        Type[] genericInterfaces = classType.getGenericInterfaces();
-        for (Type interfaceType : genericInterfaces) {
-            // ensure the Type is a generic before doing a conversion
-            if (interfaceType instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
-                // make sure the parameterized type is a Request<T>
-                if (Request.class.equals(parameterizedType.getRawType())) {
-                    return parameterizedType;
+
+    /*
+     * slightly modded version of spring GenericTypeResolver methods
+     */
+
+
+    private static Type[] doResolveTypeArguments(Class ownerClass, Class classToIntrospect, Class genericIfc) {
+        while (classToIntrospect != null) {
+            if (genericIfc.isInterface()) {
+                Type[] ifcs = classToIntrospect.getGenericInterfaces();
+                for (Type ifc : ifcs) {
+                    Type[] result = doResolveTypeArguments(ownerClass, ifc, genericIfc);
+                    if (result != null) {
+                        return result;
+                    }
                 }
-            } else if (interfaceType instanceof Class) {
-                return findParameterizedType((Class) interfaceType);
+            } else {
+                Type[] result = doResolveTypeArguments(ownerClass, classToIntrospect.getGenericSuperclass(), genericIfc);
+                if (result != null) {
+                    return result;
+                }
             }
+            classToIntrospect = classToIntrospect.getSuperclass();
         }
-        throw new ParseException("Request<T> was not found for " + classType.toString());
+        return null;
+    }
+
+    private static Type[] doResolveTypeArguments(Class ownerClass, Type ifc, Class genericIfc) {
+        if (ifc instanceof ParameterizedType) {
+            ParameterizedType paramIfc = (ParameterizedType) ifc;
+            Type rawType = paramIfc.getRawType();
+            if (genericIfc.equals(rawType)) {
+                return paramIfc.getActualTypeArguments();
+
+            } else if (genericIfc.isAssignableFrom((Class) rawType)) {
+                return doResolveTypeArguments(ownerClass, (Class) rawType, genericIfc);
+            }
+        } else if (ifc != null && genericIfc.isAssignableFrom((Class) ifc)) {
+            return doResolveTypeArguments(ownerClass, (Class) ifc, genericIfc);
+        }
+        return null;
     }
 
 
