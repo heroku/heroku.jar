@@ -195,7 +195,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testListAppAddons(App app) {
         connection.execute(new AddonInstall(app.getName(), "shared-database:5mb"));
         Request<List<Addon>> req = new AppAddonsList(app.getName());
