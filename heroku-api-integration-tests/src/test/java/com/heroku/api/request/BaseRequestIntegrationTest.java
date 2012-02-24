@@ -4,10 +4,12 @@ import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.request.addon.AppAddonsList;
+import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
+import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
@@ -22,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
 import static org.testng.Assert.fail;
 
 /**
@@ -163,15 +166,23 @@ public abstract class BaseRequestIntegrationTest {
             this.conn = conn;
         }
         
+        LogProvisionCheck provisionLogging(String appName) {
+            conn.execute(new AddonInstall(appName, "logging:basic"));
+            return this;
+        }
+        
         @Override
         public Boolean apply(@Nullable String appName) {
-            List<Addon> addons = conn.execute(new AppAddonsList(appName));
-            for (Addon addon : addons) {
-                if (addon.getName().equalsIgnoreCase("logging:basic")) {
-                    return true;
+            // if a log request doesn't throw an error, then it's been provisioned
+            try {
+                conn.execute(new Log(appName));
+                return true;
+            } catch (RequestFailedException e) {
+                if (e.getStatusCode() == UNPROCESSABLE_ENTITY.statusCode) {
+                    return false;
                 }
+                throw e;
             }
-            return false;
         }
 
     }
