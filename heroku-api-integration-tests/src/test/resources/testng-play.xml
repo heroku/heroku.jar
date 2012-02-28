@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="integration" verbose="1" thread-count="10" parallel="methods" data-provider-thread-count="10">
+    <test name="play">
+        <packages>
+            <package name="com.heroku.api.request"/>
+            <package name="com.heroku.api.parser"/>
+            <package name="com.heroku.api.connection"/>
+            <package name="com.heroku.api.play"/>
+        </packages>
+    </test>
+</suite>

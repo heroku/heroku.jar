@@ -76,6 +76,7 @@
         <module>heroku-http-finagle</module>
         <module>heroku-http-ning-async</module>
         <module>heroku-api-integration-tests</module>
+        <module>heroku-http-play</module>
     </modules>
 
     <properties>
@@ -84,7 +85,7 @@
         <apache.commons-httpclient.version>4.1.2</apache.commons-httpclient.version>
         <finagle.version>1.11.1</finagle.version>
         <twitter.util.version>1.12.13</twitter.util.version>
-        <ning.async.version>1.6.5</ning.async.version>
+        <ning.async.version>1.7.0</ning.async.version>
         <netty.version>3.3.1.Final</netty.version>
         <jackson.version>1.9.2</jackson.version>
         <gson.version>1.7.1</gson.version>

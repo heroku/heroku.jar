@@ -61,6 +61,12 @@
             <artifactId>heroku-http-ning-async</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.heroku.api</groupId>
+            <artifactId>heroku-http-play</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
 
         <!-- Test Deps -->
         <dependency>
