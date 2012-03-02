@@ -28,6 +28,7 @@ import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
+import com.heroku.api.request.user.UserInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,10 @@ public class HerokuAPI {
 
     public String getApiKey() {
         return connection.getApiKey();
+    }
+    
+    public User getUserInfo() {
+        return connection.execute(new UserInfo());
     }
 
     public void addKey(String sshKey) {

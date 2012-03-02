@@ -1,6 +1,9 @@
 package com.heroku.api.request;
 
+import com.google.inject.Inject;
 import com.heroku.api.*;
+import com.heroku.api.connection.Connection;
+import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
@@ -13,6 +16,7 @@ import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
@@ -21,6 +25,7 @@ import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
+import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
+import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static org.testng.Assert.*;
 
 
@@ -237,5 +243,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(output.contains("helloworld"));
     }
 
-
+    @Test
+    public void testUserInfo() {
+        IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
+        Connection userInfoConnection = new HttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+        UserInfo userInfo = new UserInfo();
+        User user = userInfoConnection.execute(userInfo);
+        assertEquals(user.getEmail(), testUser.getUsername());
+    }
 }
