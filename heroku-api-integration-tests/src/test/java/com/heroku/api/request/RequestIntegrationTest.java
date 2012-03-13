@@ -1,6 +1,5 @@
 package com.heroku.api.request;
 
-import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.HttpClientConnection;

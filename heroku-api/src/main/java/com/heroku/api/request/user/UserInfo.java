@@ -1,6 +1,5 @@
 package com.heroku.api.request.user;
 
-import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.User;
 import com.heroku.api.exception.RequestFailedException;
