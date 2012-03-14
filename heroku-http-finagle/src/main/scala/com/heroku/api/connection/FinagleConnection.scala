@@ -19,7 +19,7 @@ import scala.Either
 import com.heroku.api.request.login.BasicAuthLogin
 
 
-class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] {
+class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] with MultiUserAsyncConnection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
@@ -28,24 +28,26 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
   val hostHeader = getHostHeader
 
   val apiKey = config match {
-    case Left(login) => execute(login).getApiKey()
+    case Left(login) => executeAsync(login, null).get().getApiKey
     case Right(key) => key
   }
 
   def execute[T](command: Request[T]): T = executeAsync(command).get()
 
-  def executeAsync[T](command: Request[T]): Future[T] = {
+  def executeAsync[T](command: Request[T]): Future[T] = executeAsync(command, apiKey)
+
+  def executeAsync[T](command: Request[T], key: String): Future[T] = {
     if (!client.isAvailable) {
       client.release()
       client = newClient()
     }
-    client(toReq(command)).map {
+    client(toReq(command, key)).map {
       resp =>
         command.getResponse(resp.getContent.array(), resp.getStatus.getCode)
     }
   }
 
-  def toReq(cmd: Request[_]): HttpRequest = {
+  def toReq(cmd: Request[_], key: String): HttpRequest = {
     val method = cmd.getHttpMethod match {
       case Method.GET => HttpMethod.GET
       case Method.PUT => HttpMethod.PUT
@@ -57,7 +59,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
     req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, hostHeader)
 
-    if (apiKey != null) {
+    if (key != null) {
       req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + apiKey).getBytes("UTF-8")))
     }
 

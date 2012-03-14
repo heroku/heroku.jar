@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>> {
+public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>>, MultiUserAsyncConnection<ListenableFuture<?>> {
 
     private String apiKey;
     private AsyncHttpClient httpClient;
@@ -42,14 +42,14 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         return new AsyncHttpClient(builder.build());
     }
 
-    private com.ning.http.client.Request buildRequest(Request<?> req) {
+    private com.ning.http.client.Request buildRequest(Request<?> req, String key) {
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
         for (Map.Entry<String, String> entry : req.getHeaders().entrySet()) {
             builder.setHeader(entry.getKey(), entry.getValue());
         }
-        if (apiKey != null) {
+        if (key != null) {
             try {
                 builder.setHeader("Authorization", "Basic " + Base64.encode((":" + apiKey).getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
@@ -82,7 +82,7 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
     @Override
     public <T> T execute(Request<T> req) {
         try {
-            return executeAsync(req).get(30L, TimeUnit.SECONDS);
+            return executeAsync(req, apiKey).get(30L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new HerokuAPIException("request interrupted", e);
         } catch (ExecutionException e) {
@@ -93,8 +93,8 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
     }
 
     @Override
-    public <T> ListenableFuture<T> executeAsync(final Request<T> request) {
-        com.ning.http.client.Request asyncRequest = buildRequest(request);
+    public <T> ListenableFuture<T> executeAsync(final Request<T> request, String key) {
+        com.ning.http.client.Request asyncRequest = buildRequest(request, key);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
@@ -106,6 +106,11 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         } catch (IOException e) {
             throw new HerokuAPIException("IOException while executing request", e);
         }
+    }
+
+    @Override
+    public <T> ListenableFuture<?> executeAsync(Request<T> request) {
+        return executeAsync(request, apiKey);
     }
 
     @Override

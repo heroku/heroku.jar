@@ -10,15 +10,18 @@ import com.heroku.api.request.{LoginRequest, Request}
 import com.heroku.api.request.login.BasicAuthLogin
 
 
-class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Promise[_]] {
+class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Promise[_]] with MultiUserAsyncConnection[Promise[_]] {
 
-  val apiKey = config match {
-    case Left(login) => execute(login).getApiKey
+  val apiKey: String = config match {
+    case Left(login) => executeAsync(login, null).await.get.getApiKey
     case Right(key) => key
   }
 
 
-  def executeAsync[T](request: Request[T]): Promise[T] = {
+  def executeAsync[T](request: Request[T]): Promise[T] = executeAsync(request, apiKey)
+
+
+  def executeAsync[T](request: Request[T], key: String): Promise[T] = {
     val host = Heroku.Config.ENDPOINT.value;
     val path = request.getEndpoint;
     var url = WS.url(host + path)
@@ -26,7 +29,7 @@ class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncCo
       .withHeaders(request.getResponseType.getHeaderName -> request.getResponseType.getHeaderValue)
       .withHeaders(request.getHeaders.asScala.toArray: _*)
 
-    if (getApiKey != null) {
+    if (key != null) {
       url = url.withAuth("", getApiKey, Realm.AuthScheme.BASIC)
     }
 
