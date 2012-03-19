@@ -10,13 +10,18 @@ import com.heroku.api.request.login.BasicAuthLogin;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +32,8 @@ import static com.heroku.api.Heroku.Config.ENDPOINT;
 
 public class HttpClientConnection implements AsyncConnection<Future<?>> {
 
+
+    private URL endpoint = HttpUtil.toURL(ENDPOINT.value);
     private DefaultHttpClient httpClient = getHttpClient();
     private volatile ExecutorService executorService;
     private Object lock = new Object();
@@ -39,27 +46,20 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
     public HttpClientConnection(LoginRequest login) {
         LoginVerification loginVerification = execute(login);
         this.apiKey = loginVerification.getApiKey();
-        setHttpClientCredentials(apiKey);
     }
 
     public HttpClientConnection(String apiKey) {
         this.apiKey = apiKey;
-        setHttpClientCredentials(this.apiKey);
     }
 
-    private void setHttpClientCredentials(String apiKey) {
-        URL endpoint = HttpUtil.toURL(ENDPOINT.value);
-        httpClient.getCredentialsProvider().setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()),
-                // the Basic Authentication scheme only expects an API key.
-                new UsernamePasswordCredentials("", apiKey));
-    }
 
     @Override
-    public <T> Future<T> executeAsync(final Request<T> request) {
+    public <T> Future<T> executeAsync(final Request<T> request, final String apiKey) {
+
         Callable<T> callable = new Callable<T>() {
             @Override
             public T call() throws Exception {
-                return execute(request);
+                return execute(request, apiKey);
             }
         };
         return getExecutorService().submit(callable);
@@ -68,6 +68,17 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
 
     @Override
     public <T> T execute(Request<T> request) {
+        return execute(request, apiKey);
+    }
+
+    @Override
+    public <T> Future<T> executeAsync(final Request<T> request) {
+        return executeAsync(request, apiKey);
+    }
+
+
+    @Override
+    public <T> T execute(Request<T> request, String key) {
         try {
             HttpRequestBase message = getHttpRequestBase(request.getHttpMethod(), ENDPOINT.value + request.getEndpoint());
             message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
@@ -81,10 +92,20 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
                 ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody()));
             }
 
-            HttpResponse httpResponse = httpClient.execute(message);
+            HttpContext ctx = new BasicHttpContext();
+            if (key != null) {
+                CredentialsProvider p = new BasicCredentialsProvider();
+                p.setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()), new UsernamePasswordCredentials("", key));
+                ctx.setAttribute(ClientContext.CREDS_PROVIDER, p);
+            }
+            HttpResponse httpResponse = httpClient.execute(message, ctx );
 
             return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
-        } catch (IOException e) {
+        } catch (
+                IOException e
+                )
+
+        {
             throw new RuntimeException("exception while executing request", e);
         }
     }

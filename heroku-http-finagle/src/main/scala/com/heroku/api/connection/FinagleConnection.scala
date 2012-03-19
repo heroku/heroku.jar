@@ -19,7 +19,7 @@ import scala.Either
 import com.heroku.api.request.login.BasicAuthLogin
 
 
-class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] with MultiUserAsyncConnection[Future[_]] {
+class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
 
@@ -33,6 +33,9 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
   }
 
   def execute[T](command: Request[T]): T = executeAsync(command).get()
+
+
+  def execute[T](request: Request[T], key: String): T = executeAsync(request, key).get()
 
   def executeAsync[T](command: Request[T]): Future[T] = executeAsync(command, apiKey)
 

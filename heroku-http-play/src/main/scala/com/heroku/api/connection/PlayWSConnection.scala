@@ -10,7 +10,7 @@ import com.heroku.api.request.{LoginRequest, Request}
 import com.heroku.api.request.login.BasicAuthLogin
 
 
-class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Promise[_]] with MultiUserAsyncConnection[Promise[_]] {
+class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Promise[_]] {
 
   val apiKey: String = config match {
     case Left(login) => executeAsync(login, null).await.get.getApiKey
@@ -44,7 +44,9 @@ class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncCo
 
   def toResponse[T](req: Request[T], p: Promise[Response]): Promise[T] = p.map(res => req.getResponse(res.body.getBytes, res.status))
 
-  def execute[T](request: Request[T]): T = executeAsync(request).await.get
+  def execute[T](request: Request[T], key: String): T = executeAsync(request, key).await.get
+
+  def execute[T](request: Request[T]): T = execute(request, apiKey)
 
   def getApiKey: String = apiKey
 

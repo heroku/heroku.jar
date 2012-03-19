@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>>, MultiUserAsyncConnection<ListenableFuture<?>> {
+public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>> {
 
     private String apiKey;
     private AsyncHttpClient httpClient;
@@ -81,15 +81,7 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
 
     @Override
     public <T> T execute(Request<T> req) {
-        try {
-            return executeAsync(req, apiKey).get(30L, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new HerokuAPIException("request interrupted", e);
-        } catch (ExecutionException e) {
-            throw new HerokuAPIException("execution exception", e.getCause());
-        } catch (TimeoutException e) {
-            throw new HerokuAPIException("request timeout after 30 sec", e.getCause());
-        }
+        return execute(req, apiKey);
     }
 
     @Override
@@ -109,7 +101,20 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
     }
 
     @Override
-    public <T> ListenableFuture<?> executeAsync(Request<T> request) {
+    public <T> T execute(Request<T> req, String key) {
+        try {
+            return executeAsync(req, key).get(30L, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new HerokuAPIException("request interrupted", e);
+        } catch (ExecutionException e) {
+            throw new HerokuAPIException("execution exception", e.getCause());
+        } catch (TimeoutException e) {
+            throw new HerokuAPIException("request timeout after 30 sec", e.getCause());
+        }
+    }
+
+    @Override
+    public <T> ListenableFuture<T> executeAsync(Request<T> request) {
         return executeAsync(request, apiKey);
     }
 
