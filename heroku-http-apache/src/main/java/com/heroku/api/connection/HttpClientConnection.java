@@ -12,6 +12,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -155,7 +157,9 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             SchemeRegistry sr = ccm.getSchemeRegistry();
             sr.register(new Scheme("https", ssf, 443));
         }
-        return new DefaultHttpClient(ccm);
+      DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
+      defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+      return defaultHttpClient;
     }
 
 
