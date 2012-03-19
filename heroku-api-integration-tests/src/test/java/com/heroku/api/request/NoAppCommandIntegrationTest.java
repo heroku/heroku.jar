@@ -1,6 +1,7 @@
 package com.heroku.api.request;
 
 import com.google.inject.Inject;
+import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.Key;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
@@ -60,15 +61,15 @@ public class NoAppCommandIntegrationTest {
         assertNotNull(response);
     }
 
-    // doesn't need an app
-    // currently uses a key associated with another user but really should do the following:
-    // add a key to one user, then try to add the same key to another user
-    // but this depends on having two users in auth-test.properties
     @Test(expectedExceptions = HerokuAPIException.class)
     public void testKeysAddCommandWithDuplicateKey() throws IOException {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
         KeyAdd cmd = new KeyAdd(sshkey);
         connection.execute(cmd);
+
+        String duplicateKey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
+        KeyAdd duplicateKeyCommand = new KeyAdd(duplicateKey);
+        connection.execute(duplicateKeyCommand, IntegrationTestConfig.CONFIG.getOtherUser().getApiKey());
     }
 
     @Test

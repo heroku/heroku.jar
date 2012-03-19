@@ -5,6 +5,7 @@ import com.heroku.api.parser.JsonSelector;
 import com.heroku.api.parser.Parser;
 import com.heroku.api.parser.TypeReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
@@ -34,8 +35,9 @@ public enum IntegrationTestConfig {
 
     private String environmentVariable;
     private String systemProperty;
-    private static List<TestUser> testUsers;
-    private static TestUser defaultUser;
+    private List<TestUser> testUsers;
+    private TestUser defaultUser;
+    private List<TestUser> otherUsers;
 
     IntegrationTestConfig(String envvar, String sysprop) {
         this.environmentVariable = envvar;
@@ -50,9 +52,31 @@ public enum IntegrationTestConfig {
         return defaultUser;
     }
 
+    /**
+      * Gets a list of all users not marked as default:true.
+      */
+    public List<TestUser> getOtherUsers() {
+      if (otherUsers == null) {
+        loadUsers();
+      }
+
+      return otherUsers;
+    }
+
+    /**
+     * Gets a user that is not the default user.
+     */
+    public TestUser getOtherUser() {
+        if (otherUsers == null) {
+          loadUsers();
+        }
+
+        return otherUsers.get(0);
+    }
     public List<TestUser> getTestUsers() {
-        if (testUsers == null)
+        if (testUsers == null) {
             loadUsers();
+        }
 
         return testUsers;
     }
@@ -62,11 +86,13 @@ public enum IntegrationTestConfig {
         Parser jsonParser = JsonSelector.getParser();
         testUsers = jsonParser.parse(getConfig().getBytes(), new TypeReference<List<TestUser>>() {
         }.getType());
+        otherUsers = new ArrayList<TestUser>();
 
         for (TestUser tu : testUsers) {
             if (tu.isDefaultUser()) {
                 defaultUser = tu;
-                break;
+            } else {
+                otherUsers.add(tu);
             }
         }
 
