@@ -63,7 +63,7 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
     req.addHeader(HttpHeaders.Names.HOST, hostHeader)
 
     if (key != null) {
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + apiKey).getBytes("UTF-8")))
+      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8")))
     }
 
     cmd.getHeaders.foreach {

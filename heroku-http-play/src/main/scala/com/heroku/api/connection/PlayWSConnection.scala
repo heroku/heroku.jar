@@ -30,7 +30,7 @@ class PlayWSConnection(val config: Either[LoginRequest, String]) extends AsyncCo
       .withHeaders(request.getHeaders.asScala.toArray: _*)
 
     if (key != null) {
-      url = url.withAuth("", getApiKey, Realm.AuthScheme.BASIC)
+      url = url.withAuth("", key, Realm.AuthScheme.BASIC)
     }
 
     request.getHttpMethod match {
