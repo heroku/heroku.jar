@@ -28,7 +28,7 @@ public class User {
         return last_login;
     }
 
-    private void setLast_Login(String last_login) {
+    private void setLast_login(String last_login) {
         this.last_login = last_login;
     }
 
