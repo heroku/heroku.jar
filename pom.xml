@@ -80,6 +80,7 @@
     </modules>
 
     <properties>
+        <heroku.jar.version>${project.version}</heroku.jar.version>
         <testng.version>6.0</testng.version>
         <guice.version>3.0</guice.version>
         <apache.commons-httpclient.version>4.1.2</apache.commons-httpclient.version>

@@ -5,11 +5,14 @@ import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Http;
 
 import javax.net.ssl.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class Heroku {
 
@@ -34,6 +37,29 @@ public class Heroku {
             return defaultValue.equals(value);
         }
 
+    }
+
+    public static enum JarProperties {
+        ;
+
+        static final Properties properties = new Properties();
+
+        static {
+            try {
+              InputStream jarProps = JarProperties.class.getResourceAsStream("/heroku.jar.properties");
+              properties.load(jarProps);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        public static String getProperty(String propName) {
+            return properties.getProperty(propName);
+        }
+
+        public static Properties getProperties() {
+            return properties;
+        }
     }
 
     public static SSLContext herokuSSLContext() {

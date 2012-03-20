@@ -1,5 +1,7 @@
 package com.heroku.api.http;
 
+import com.heroku.api.Heroku;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +53,31 @@ public class Http {
         }
 
     }
+    
+    public static enum UserAgent implements Header {
+        LATEST("heroku.jar-%s-v%s");
 
+        static final String USER_AGENT = "User-Agent";
+        private final String userAgent;
+
+        UserAgent(String userAgent) {
+            this.userAgent = userAgent;
+        }
+
+        @Override
+        public String getHeaderName() {
+            return USER_AGENT;
+        }
+
+        @Override
+        public String getHeaderValue() {
+          return getHeaderValue("unspecified");
+        }
+
+        public String getHeaderValue(String customPart) {
+            return String.format(userAgent, customPart, Heroku.JarProperties.getProperty("heroku.jar.version"));
+        }
+    }
 
     public static interface Header {
 

@@ -19,7 +19,10 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
@@ -60,6 +63,7 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             HttpRequestBase message = getHttpRequestBase(request.getHttpMethod(), ENDPOINT.value + request.getEndpoint());
             message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
             message.setHeader(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
+            message.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("httpclient"));
 
             for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
                 message.setHeader(header.getKey(), header.getValue());
@@ -132,9 +136,9 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             SchemeRegistry sr = ccm.getSchemeRegistry();
             sr.register(new Scheme("https", ssf, 443));
         }
-        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
-        defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
-        return defaultHttpClient;
+      DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
+      defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+      return defaultHttpClient;
     }
 
 
