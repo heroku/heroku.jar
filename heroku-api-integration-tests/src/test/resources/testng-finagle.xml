@@ -5,7 +5,6 @@
         <packages>
             <package name="com.heroku.api.request"/>
             <package name="com.heroku.api.parser"/>
-            <package name="com.heroku.api.connection"/>
             <package name="com.heroku.api.finagle"/>
         </packages>
     </test>
