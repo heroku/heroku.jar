@@ -2,9 +2,7 @@ package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
-import com.heroku.api.request.login.BasicAuthLogin;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
 
@@ -18,19 +16,8 @@ import java.util.concurrent.TimeoutException;
 
 public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>> {
 
-    private String apiKey;
-    private AsyncHttpClient httpClient;
+    private AsyncHttpClient httpClient = getHttpClient();
 
-
-    public AsyncHttpClientConnection(LoginRequest login) {
-        httpClient = getHttpClient();
-        this.apiKey = execute(login).getApiKey();
-    }
-
-    public AsyncHttpClientConnection(String apiKey) {
-        httpClient = getHttpClient();
-        this.apiKey = apiKey;
-    }
 
     protected AsyncHttpClient getHttpClient() {
         AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
@@ -80,11 +67,6 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
 
 
     @Override
-    public <T> T execute(Request<T> req) {
-        return execute(req, apiKey);
-    }
-
-    @Override
     public <T> ListenableFuture<T> executeAsync(final Request<T> request, String key) {
         com.ning.http.client.Request asyncRequest = buildRequest(request, key);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
@@ -113,30 +95,17 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         }
     }
 
-    @Override
-    public <T> ListenableFuture<T> executeAsync(Request<T> request) {
-        return executeAsync(request, apiKey);
-    }
 
     @Override
     public void close() {
         httpClient.close();
     }
 
-    @Override
-    public String getApiKey() {
-        return apiKey;
-    }
 
     public static class Provider implements ConnectionProvider {
         @Override
-        public Connection get(String username, String password) {
-            return new AsyncHttpClientConnection(new BasicAuthLogin(username, password));
-        }
-
-        @Override
-        public Connection get(String apiKey) {
-            return new AsyncHttpClientConnection(apiKey);
+        public Connection getConnection() {
+            return new AsyncHttpClientConnection();
         }
     }
 }

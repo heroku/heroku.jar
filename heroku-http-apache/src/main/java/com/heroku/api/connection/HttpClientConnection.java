@@ -1,12 +1,9 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.LoginVerification;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.request.LoginRequest;
 import com.heroku.api.request.Request;
-import com.heroku.api.request.login.BasicAuthLogin;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -39,19 +36,8 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
     private DefaultHttpClient httpClient = getHttpClient();
     private volatile ExecutorService executorService;
     private Object lock = new Object();
-    private final String apiKey;
 
     public HttpClientConnection() {
-        this.apiKey = null;
-    }
-
-    public HttpClientConnection(LoginRequest login) {
-        LoginVerification loginVerification = execute(login);
-        this.apiKey = loginVerification.getApiKey();
-    }
-
-    public HttpClientConnection(String apiKey) {
-        this.apiKey = apiKey;
     }
 
 
@@ -67,17 +53,6 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
         return getExecutorService().submit(callable);
 
     }
-
-    @Override
-    public <T> T execute(Request<T> request) {
-        return execute(request, apiKey);
-    }
-
-    @Override
-    public <T> Future<T> executeAsync(final Request<T> request) {
-        return executeAsync(request, apiKey);
-    }
-
 
     @Override
     public <T> T execute(Request<T> request, String key) {
@@ -100,7 +75,7 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
                 p.setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()), new UsernamePasswordCredentials("", key));
                 ctx.setAttribute(ClientContext.CREDS_PROVIDER, p);
             }
-            HttpResponse httpResponse = httpClient.execute(message, ctx );
+            HttpResponse httpResponse = httpClient.execute(message, ctx);
 
             return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
         } catch (
@@ -157,9 +132,9 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             SchemeRegistry sr = ccm.getSchemeRegistry();
             sr.register(new Scheme("https", ssf, 443));
         }
-      DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
-      defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
-      return defaultHttpClient;
+        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
+        defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+        return defaultHttpClient;
     }
 
 
@@ -168,20 +143,12 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
         getExecutorService().shutdownNow();
     }
 
-    @Override
-    public String getApiKey() {
-        return apiKey;
-    }
 
     public static class Provider implements ConnectionProvider {
-        @Override
-        public Connection get(String username, String password) {
-            return new HttpClientConnection(new BasicAuthLogin(username, password));
-        }
 
         @Override
-        public Connection get(String apiKey) {
-            return new HttpClientConnection(apiKey);
+        public Connection getConnection() {
+            return new HttpClientConnection();
         }
     }
 

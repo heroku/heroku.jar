@@ -5,11 +5,8 @@ import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.parser.JsonSelector;
 import com.heroku.api.parser.Parser;
-import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
-
-import static com.heroku.api.IntegrationTestConfig.CONFIG;
 
 public class HttpClientModule extends ConnectionTestModule {
 
@@ -31,8 +28,7 @@ public class HttpClientModule extends ConnectionTestModule {
     @Provides()
     HttpClientConnection getConnectionImpl() throws IOException {
         try {
-            IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
-            return new HttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+            return new HttpClientConnection();
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

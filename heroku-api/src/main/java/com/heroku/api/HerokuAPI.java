@@ -36,115 +36,111 @@ import java.util.Map;
 public class HerokuAPI {
 
     final Connection connection;
+    final String apiKey;
 
-    public static String obtainApiKey(String username, String password) {
-        return ConnectionFactory.get(username, password).getApiKey();
-    }
 
     public HerokuAPI(String apiKey) {
-        this(ConnectionFactory.get(apiKey));
+        this(ConnectionFactory.get(), apiKey);
     }
 
-    public HerokuAPI(Connection connection) {
+    public HerokuAPI(Connection connection, String apiKey) {
         this.connection = connection;
+        this.apiKey = apiKey;
     }
 
     public Connection getConnection() {
         return connection;
     }
 
-    public String getApiKey() {
-        return connection.getApiKey();
-    }
-    
+
     public User getUserInfo() {
-        return connection.execute(new UserInfo());
+        return connection.execute(new UserInfo(), apiKey);
     }
 
     public void addKey(String sshKey) {
-        connection.execute(new KeyAdd(sshKey));
+        connection.execute(new KeyAdd(sshKey), apiKey);
     }
 
     public void removeKey(String sshKey) {
-        connection.execute(new KeyRemove(sshKey));
+        connection.execute(new KeyRemove(sshKey), apiKey);
     }
 
     public List<Key> listKeys() {
-        return connection.execute(new KeyList());
+        return connection.execute(new KeyList(), apiKey);
     }
 
     public List<App> listApps() {
-        return connection.execute(new AppList());
+        return connection.execute(new AppList(), apiKey);
     }
 
     public App getApp(String name) {
-        return connection.execute(new AppInfo(name));
+        return connection.execute(new AppInfo(name), apiKey);
     }
 
     public App createApp() {
-        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)));
+        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)), apiKey);
     }
 
     public App createApp(App app) {
-        return connection.execute(new AppCreate(app));
+        return connection.execute(new AppCreate(app), apiKey);
     }
 
     public String renameApp(String appName, String newName) {
-        return connection.execute(new AppRename(appName, newName)).getName();
+        return connection.execute(new AppRename(appName, newName), apiKey).getName();
     }
 
     public void destroyApp(String appName) {
-        connection.execute(new AppDestroy(appName));
+        connection.execute(new AppDestroy(appName), apiKey);
     }
 
     public AddonChange addAddon(String appName, String addonName) {
-        return connection.execute(new AddonInstall(appName, addonName));
+        return connection.execute(new AddonInstall(appName, addonName), apiKey);
     }
 
     public List<Addon> listAllAddons() {
-        return connection.execute(new AddonList());
+        return connection.execute(new AddonList(), apiKey);
     }
 
     public List<Addon> listAppAddons(String appName) {
-        return connection.execute(new AppAddonsList(appName));
+        return connection.execute(new AppAddonsList(appName), apiKey);
     }
 
     public AddonChange removeAddon(String appName, String addonName) {
-        return connection.execute(new AddonRemove(appName, addonName));
+        return connection.execute(new AddonRemove(appName, addonName), apiKey);
     }
 
     // TODO: need addon upgrade/downgrade
 
     public void scaleProcess(String appName, String processType, int quantity) {
-        connection.execute(new Scale(appName, processType, quantity));
+        connection.execute(new Scale(appName, processType, quantity), apiKey);
     }
 
     public List<Proc> listProcesses(String appName) {
-        return connection.execute(new ProcessList(appName));
+        return connection.execute(new ProcessList(appName), apiKey);
     }
 
     public List<Release> listReleases(String appName) {
-        return connection.execute(new ListReleases(appName));
+        return connection.execute(new ListReleases(appName), apiKey);
     }
 
     public String rollback(String appName, String releaseName) {
-        return connection.execute(new Rollback(appName, releaseName));
+        return connection.execute(new Rollback(appName, releaseName), apiKey);
     }
 
     public Release getReleaseInfo(String appName, String releaseName) {
-        return connection.execute(new ReleaseInfo(appName, releaseName));
+        return connection.execute(new ReleaseInfo(appName, releaseName), apiKey);
     }
 
     public List<Collaborator> listCollaborators(String appName) {
-        return connection.execute(new CollabList(appName));
+        return connection.execute(new CollabList(appName), apiKey);
     }
 
     public void addCollaborator(String appName, String collaborator) {
-        connection.execute(new SharingAdd(appName, collaborator));
+        connection.execute(new SharingAdd(appName, collaborator), apiKey);
     }
 
     public void removeCollaborator(String appName, String collaborator) {
-        connection.execute(new SharingRemove(appName, collaborator));
+        connection.execute(new SharingRemove(appName, collaborator), apiKey);
     }
 
     public void addConfig(String appName, Map<String, String> config) {
@@ -155,46 +151,46 @@ public class HerokuAPI {
             separator = ",";
         }
         jsonConfig = jsonConfig.concat("}");
-        connection.execute(new ConfigAdd(appName, jsonConfig));
+        connection.execute(new ConfigAdd(appName, jsonConfig), apiKey);
     }
 
     public Map<String, String> listConfig(String appName) {
-        return connection.execute(new ConfigList(appName));
+        return connection.execute(new ConfigList(appName), apiKey);
     }
 
     public Map<String, String> removeConfig(String appName, String configVarName) {
-        return connection.execute(new ConfigRemove(appName, configVarName));
+        return connection.execute(new ConfigRemove(appName, configVarName), apiKey);
     }
 
     public void transferApp(String appName, String to) {
-        connection.execute(new SharingTransfer(appName, to));
+        connection.execute(new SharingTransfer(appName, to), apiKey);
     }
 
     public LogStreamResponse getLogs(String appName) {
-        return connection.execute(new Log(appName));
+        return connection.execute(new Log(appName), apiKey);
     }
-    
+
     public LogStreamResponse getLogs(Log.LogRequestBuilder logRequest) {
-        return connection.execute(new Log(logRequest));
+        return connection.execute(new Log(logRequest), apiKey);
     }
 
     public void run(String appName, String command) {
-        connection.execute(new Run(appName, command));
+        connection.execute(new Run(appName, command), apiKey);
     }
 
     public RunResponse runAttached(String appName, String command) {
-        return connection.execute(new Run(appName, command, true));
+        return connection.execute(new Run(appName, command, true), apiKey);
     }
 
     public void restart(String appName) {
-        connection.execute(new Restart(appName));
+        connection.execute(new Restart(appName), apiKey);
     }
 
     public void restartProcessByType(String appName, String type) {
-        connection.execute(new Restart.ProcessTypeRestart(appName, type));
+        connection.execute(new Restart.ProcessTypeRestart(appName, type), apiKey);
     }
 
     public void restartProcessByName(String appName, String procName) {
-        connection.execute(new Restart.NamedProcessRestart(appName, procName));
+        connection.execute(new Restart.NamedProcessRestart(appName, procName), apiKey);
     }
 }

@@ -3,7 +3,6 @@ package com.heroku.api;
 import com.google.inject.Provides;
 import com.heroku.api.connection.AsyncHttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
 
@@ -11,8 +10,7 @@ public class AsyncHttpClientModule extends ConnectionTestModule {
     @Provides()
     AsyncHttpClientConnection getConnectionImpl() throws IOException {
         try {
-            IntegrationTestConfig.TestUser testUser = IntegrationTestConfig.CONFIG.getDefaultUser();
-            return new AsyncHttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+            return new AsyncHttpClientConnection();
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

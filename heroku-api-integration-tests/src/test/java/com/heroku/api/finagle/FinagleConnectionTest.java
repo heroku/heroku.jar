@@ -2,6 +2,7 @@ package com.heroku.api.finagle;
 
 import com.google.inject.Inject;
 import com.heroku.api.FinagleModule;
+import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.Key;
 import com.heroku.api.connection.FinagleConnection;
 import com.heroku.api.request.key.KeyList;
@@ -22,12 +23,13 @@ public class FinagleConnectionTest {
     @Inject
     FinagleConnection connection;
 
+    String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
     @Test
     @SuppressWarnings("unchecked")
     public void asyncTests() {
-        Future<List<Key>> jsonArrayResponseFuture = connection.executeAsync(new KeyList());
-        List<Key> keys = (List<Key>)jsonArrayResponseFuture.get(Duration.fromTimeUnit(10L, TimeUnit.SECONDS)).get();
+        Future<List<Key>> jsonArrayResponseFuture = connection.executeAsync(new KeyList(), apiKey);
+        List<Key> keys = (List<Key>) jsonArrayResponseFuture.get(Duration.fromTimeUnit(10L, TimeUnit.SECONDS)).get();
         assertNotNull(keys);
     }
 

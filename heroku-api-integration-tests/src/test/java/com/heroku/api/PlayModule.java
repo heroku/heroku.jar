@@ -3,7 +3,6 @@ package com.heroku.api;
 import com.google.inject.Provides;
 import com.heroku.api.connection.PlayWSConnection;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
 
@@ -16,7 +15,7 @@ public class PlayModule extends ConnectionTestModule {
 
         try {
             IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
-            return PlayWSConnection.apply(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+            return PlayWSConnection.apply();
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

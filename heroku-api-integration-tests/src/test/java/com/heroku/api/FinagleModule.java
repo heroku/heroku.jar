@@ -3,11 +3,8 @@ package com.heroku.api;
 import com.google.inject.Provides;
 import com.heroku.api.connection.FinagleConnection;
 import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.request.login.BasicAuthLogin;
 
 import java.io.IOException;
-
-import static com.heroku.api.IntegrationTestConfig.CONFIG;
 
 public class FinagleModule extends ConnectionTestModule {
 
@@ -15,8 +12,7 @@ public class FinagleModule extends ConnectionTestModule {
     FinagleConnection getConnectionImpl() throws IOException {
 
         try {
-            IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
-            return FinagleConnection.apply(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+            return FinagleConnection.apply();
         } catch (RequestFailedException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStatusCode());

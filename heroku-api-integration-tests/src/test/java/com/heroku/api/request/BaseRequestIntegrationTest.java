@@ -41,26 +41,29 @@ public abstract class BaseRequestIntegrationTest {
     private List<App> apps = new ArrayList<App>();
     protected IntegrationTestConfig.TestUser sharingUser;
 
+    static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
+
+
     @DataProvider(parallel = true)
     public Object[][] app() {
         return new Object[][]{{getApp()}};
     }
-    
+
     @DataProvider(parallel = true)
     public Object[][] newApp() {
-        return new Object[][] {{createApp()}};
+        return new Object[][]{{createApp()}};
     }
-    
+
     public App getApp() {
         if (apps.size() > 0)
             return apps.get(0);
 
         return createApp();
     }
-    
+
     public App createApp() {
         System.out.println("Creating app...");
-        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)));
+        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)), apiKey);
         apps.add(app);
         System.out.format("%s created\n", app.getName());
         return app;
@@ -101,9 +104,9 @@ public abstract class BaseRequestIntegrationTest {
         executorService.awaitTermination(30L, TimeUnit.SECONDS);
         System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
     }
-    
+
     public void deleteApp(String appName) {
-        connection.execute(new AppDestroy(appName));
+        connection.execute(new AppDestroy(appName), apiKey);
     }
 
     protected void addConfig(App app, String... nameValuePairs) {
@@ -125,7 +128,7 @@ public abstract class BaseRequestIntegrationTest {
         jsonConfig = jsonConfig.append("}");
 
         Request<Unit> req = new ConfigAdd(app.getName(), new String(jsonConfig));
-        connection.execute(req);
+        connection.execute(req, apiKey);
     }
 
     void assertLogIsReadable(LogStreamResponse logsResponse) throws IOException {
@@ -139,7 +142,7 @@ public abstract class BaseRequestIntegrationTest {
     }
 
     void assertCollaboratorNotPresent(String collabEmail, CollabList collabList) {
-        List<Collaborator> collaborators = connection.execute(collabList);
+        List<Collaborator> collaborators = connection.execute(collabList, apiKey);
         for (Collaborator collaborator : collaborators) {
             if (collaborator.getEmail().equals(collabEmail)) {
                 fail("Collaborator was not removed");
@@ -165,17 +168,17 @@ public abstract class BaseRequestIntegrationTest {
         public LogProvisionCheck(Connection conn) {
             this.conn = conn;
         }
-        
+
         LogProvisionCheck provisionLogging(String appName) {
-            conn.execute(new AddonInstall(appName, "logging:basic"));
+            conn.execute(new AddonInstall(appName, "logging:basic"), apiKey);
             return this;
         }
-        
+
         @Override
         public Boolean apply(@Nullable String appName) {
             // if a log request doesn't throw an error, then it's been provisioned
             try {
-                conn.execute(new Log(appName));
+                conn.execute(new Log(appName), apiKey);
                 return true;
             } catch (RequestFailedException e) {
                 if (e.getStatusCode() == UNPROCESSABLE_ENTITY.statusCode) {

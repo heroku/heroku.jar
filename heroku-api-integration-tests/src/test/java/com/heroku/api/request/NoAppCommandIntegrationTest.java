@@ -37,6 +37,9 @@ public class NoAppCommandIntegrationTest {
     @Inject
     Connection connection;
 
+    static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
+
+
     // doesn't need an app
     @Test
     public void testKeysAddCommand() throws JSchException, IOException {
@@ -49,7 +52,7 @@ public class NoAppCommandIntegrationTest {
         String sshPublicKey = new String(publicKeyOutputStream.toByteArray());
 
         KeyAdd cmd = new KeyAdd(sshPublicKey);
-        Unit response = connection.execute(cmd);
+        Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
@@ -57,7 +60,7 @@ public class NoAppCommandIntegrationTest {
     @Test(dependsOnMethods = {"testKeysAddCommand"})
     public void testKeysRemoveCommand() {
         KeyRemove cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
-        Unit response = connection.execute(cmd);
+        Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
@@ -65,7 +68,7 @@ public class NoAppCommandIntegrationTest {
     public void testKeysAddCommandWithDuplicateKey() throws IOException {
         String sshkey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
         KeyAdd cmd = new KeyAdd(sshkey);
-        connection.execute(cmd);
+        connection.execute(cmd, apiKey);
 
         String duplicateKey = FileUtils.readFileToString(new File(getClass().getResource("/id_rsa.pub").getFile()));
         KeyAdd duplicateKeyCommand = new KeyAdd(duplicateKey);
@@ -75,7 +78,7 @@ public class NoAppCommandIntegrationTest {
     @Test
     public void testKeyListCommand() {
         KeyList keyListRequest = new KeyList();
-        List<Key> keyListResponse = connection.execute(keyListRequest);
+        List<Key> keyListResponse = connection.execute(keyListRequest, apiKey);
         assertNotNull(keyListResponse);
     }
 

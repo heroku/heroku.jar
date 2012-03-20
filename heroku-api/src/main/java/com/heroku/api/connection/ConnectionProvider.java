@@ -6,9 +6,7 @@ package com.heroku.api.connection;
  * @author Naaman Newbold
  */
 public interface ConnectionProvider {
-    
-    Connection get(String username, String password);
 
-    Connection get(String apiKey);
+    Connection getConnection();
 
 }

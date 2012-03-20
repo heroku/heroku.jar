@@ -9,14 +9,6 @@ import com.heroku.api.request.Request;
  */
 public interface AsyncConnection<F> extends Connection {
 
-    /**
-     * Asynchronously execute the given request
-     *
-     * @param request The request to execute
-     * @param <T>     The Type of the Response when parsed by the request, returned by the Future
-     * @return A future Response of type F<T>
-     */
-    <T> F executeAsync(Request<T> request);
 
     /**
      * Asynchronously execute the given request with, using a different apiKey than the one associated with this connection

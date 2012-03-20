@@ -15,7 +15,6 @@ import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
@@ -46,10 +45,13 @@ import static org.testng.Assert.*;
  */
 public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
+    static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
+
+
     @Test
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate(new App().on(Cedar));
-        App response = connection.execute(cmd);
+        App response = connection.execute(cmd, apiKey);
 
         assertNotNull(response.getId());
         assertEquals(Heroku.Stack.fromString(response.getStack()), Cedar);
@@ -70,21 +72,21 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "logParameters")
     public void testLogCommand(String appName, Log log) throws Exception {
         waitFor(appName, new LogProvisionCheck(connection));
-        LogStreamResponse logsResponse = connection.execute(log);
+        LogStreamResponse logsResponse = connection.execute(log, apiKey);
         assertLogIsReadable(logsResponse);
     }
 
     @Test(dataProvider = "app")
     public void testAppCommand(App app) throws IOException {
         AppInfo cmd = new AppInfo(app.getName());
-        App response = connection.execute(cmd);
+        App response = connection.execute(cmd, apiKey);
         assertEquals(response.getName(), app.getName());
     }
 
     @Test(dataProvider = "app")
     public void testListAppsCommand(App app) throws IOException {
         AppList cmd = new AppList();
-        List<App> response = connection.execute(cmd);
+        List<App> response = connection.execute(cmd, apiKey);
         assertNotNull(response);
         assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
     }
@@ -92,15 +94,15 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // don't use the app dataprovider because it'll try to delete an already deleted app
     @Test
     public void testDestroyAppCommand() throws IOException {
-        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection).createApp(new App().on(Cedar)).getName());
-        Unit response = connection.execute(cmd);
+        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Cedar)).getName());
+        Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
     public void testSharingAddCommand(App app) throws IOException {
         SharingAdd cmd = new SharingAdd(app.getName(), sharingUser.getUsername());
-        Unit response = connection.execute(cmd);
+        Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
@@ -124,11 +126,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "newApp")
     public void testSharingRemoveCommand(App app) throws IOException {
         SharingAdd sharingAddCommand = new SharingAdd(app.getName(), sharingUser.getUsername());
-        Unit sharingAddResp = connection.execute(sharingAddCommand);
+        Unit sharingAddResp = connection.execute(sharingAddCommand, apiKey);
         assertNotNull(sharingAddResp);
 
         SharingRemove cmd = new SharingRemove(app.getName(), sharingUser.getUsername());
-        Unit response = connection.execute(cmd);
+        Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
 
         CollabList collabList = new CollabList(app.getName());
@@ -152,7 +154,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testConfigCommand(App app) {
         addConfig(app, "FOO", "BAR");
         Request<Map<String, String>> req = new ConfigList(app.getName());
-        Map<String, String> response = connection.execute(req);
+        Map<String, String> response = connection.execute(req, apiKey);
         assertNotNull(response.get("FOO"));
         assertEquals(response.get("FOO"), "BAR");
     }
@@ -161,11 +163,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
         Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
-        Map<String, String> resp = connection.execute(removeRequest);
+        Map<String, String> resp = connection.execute(removeRequest, apiKey);
         assertNotNull(resp);
 
         Request<Map<String, String>> listRequest = new ConfigList(app.getName());
-        Map<String, String> response = connection.execute(listRequest);
+        Map<String, String> response = connection.execute(listRequest, apiKey);
 
         assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
         assertNull(response.get("FOO"));
@@ -174,7 +176,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testProcessCommand(App app) {
         Request<List<Proc>> req = new ProcessList(app.getName());
-        List<Proc> response = connection.execute(req);
+        List<Proc> response = connection.execute(req, apiKey);
         assertNotNull(response, "Expected a non-null response for a new app, but the data was null.");
         assertEquals(response.size(), 1);
     }
@@ -182,29 +184,29 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testScaleCommand(App app) {
         Request<Unit> req = new Scale(app.getName(), "web", 1);
-        Unit response = connection.execute(req);
+        Unit response = connection.execute(req, apiKey);
         assertNotNull(response);
     }
 
     @Test(dataProvider = "app")
     public void testRestartCommand(App app) {
         Request<Unit> req = new Restart(app.getName());
-        Unit response = connection.execute(req);
+        Unit response = connection.execute(req, apiKey);
         assertNotNull(response);
     }
 
     @Test
     public void testListAddons() {
         AddonList req = new AddonList();
-        List<Addon> response = connection.execute(req);
+        List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
 
     @Test(dataProvider = "newApp")
     public void testListAppAddons(App app) {
-        connection.execute(new AddonInstall(app.getName(), "shared-database:5mb"));
+        connection.execute(new AddonInstall(app.getName(), "shared-database:5mb"), apiKey);
         Request<List<Addon>> req = new AppAddonsList(app.getName());
-        List<Addon> response = connection.execute(req);
+        List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response);
         assertTrue(response.size() > 0, "Expected at least one addon to be present.");
         assertNotNull(response.get(0).getName());
@@ -213,14 +215,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app")
     public void testAddAddonToApp(App app) {
         AddonInstall req = new AddonInstall(app.getName(), "shared-database:5mb");
-        AddonChange response = connection.execute(req);
+        AddonChange response = connection.execute(req, apiKey);
         assertEquals(response.getStatus(), "Installed");
     }
 
     @Test(dataProvider = "newApp")
     public void testCollaboratorList(App app) {
         Request<List<Collaborator>> req = new CollabList(app.getName());
-        List<Collaborator> xmlArrayResponse = connection.execute(req);
+        List<Collaborator> xmlArrayResponse = connection.execute(req, apiKey);
         assertEquals(xmlArrayResponse.size(), 1);
         assertNotNull(xmlArrayResponse.get(0).getEmail());
     }
@@ -229,14 +231,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testRunCommand(App app) throws IOException {
         Run run = new Run(app.getName(), "echo helloworld");
         Run runAttached = new Run(app.getName(), "echo helloworld", true);
-        RunResponse response = connection.execute(run);
+        RunResponse response = connection.execute(run, apiKey);
         try {
             response.attach();
             fail("Should throw an illegal state exception");
         } catch (IllegalStateException ex) {
             //ok
         }
-        RunResponse responseAttach = connection.execute(runAttached);
+        RunResponse responseAttach = connection.execute(runAttached, apiKey);
         String output = HttpUtil.getUTF8String(HttpUtil.getBytes(responseAttach.attach()));
         System.out.println("RUN OUTPUT:" + output);
         assertTrue(output.contains("helloworld"));
@@ -245,9 +247,9 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test
     public void testUserInfo() {
         IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
-        Connection userInfoConnection = new HttpClientConnection(new BasicAuthLogin(testUser.getUsername(), testUser.getPassword()));
+        Connection userInfoConnection = new HttpClientConnection();
         UserInfo userInfo = new UserInfo();
-        User user = userInfoConnection.execute(userInfo);
+        User user = userInfoConnection.execute(userInfo, testUser.getApiKey());
         assertEquals(user.getEmail(), testUser.getUsername());
     }
 }

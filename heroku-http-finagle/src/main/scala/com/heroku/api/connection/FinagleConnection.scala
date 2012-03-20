@@ -4,40 +4,31 @@ import java.lang.String
 import com.heroku.api.http._
 import com.twitter.finagle.Service
 import org.jboss.netty.handler.codec.http._
-import com.heroku.api.request.{LoginRequest, Request}
+import com.heroku.api.request.Request
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 import com.twitter.finagle.http.Http
 import org.jboss.netty.buffer.ChannelBuffers
-import com.twitter.util.{Base64StringEncoder, Future}
 import java.nio.charset.Charset
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
 import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
-import scala.Either
-import com.heroku.api.request.login.BasicAuthLogin
+import com.twitter.util.{Base64StringEncoder, Future}
+import com.twitter.conversions.time._
 
 
-class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncConnection[Future[_]] {
+class FinagleConnection extends AsyncConnection[Future[_]] {
 
   type HttpService = Service[HttpRequest, HttpResponse]
+  val timeout = 60.seconds
 
   @volatile var client = newClient()
 
   val hostHeader = getHostHeader
 
-  val apiKey = config match {
-    case Left(login) => executeAsync(login, null).get().getApiKey
-    case Right(key) => key
-  }
 
-  def execute[T](command: Request[T]): T = executeAsync(command).get()
-
-
-  def execute[T](request: Request[T], key: String): T = executeAsync(request, key).get()
-
-  def executeAsync[T](command: Request[T]): Future[T] = executeAsync(command, apiKey)
+  def execute[T](request: Request[T], key: String): T = executeAsync(request, key).get(timeout).get()
 
   def executeAsync[T](command: Request[T], key: String): Future[T] = {
     if (!client.isAvailable) {
@@ -113,28 +104,20 @@ class FinagleConnection(val config: Either[LoginRequest, String]) extends AsyncC
     client.release()
   }
 
-  def getApiKey: String = apiKey
-
 
 }
 
 
 object FinagleConnection {
-  def apply(cmd: LoginRequest): FinagleConnection = {
-    new FinagleConnection(Left(cmd))
-  }
 
-  def apply(apiKey: String): FinagleConnection = {
-    new FinagleConnection(Right(apiKey))
+
+  def apply(): FinagleConnection = {
+    new FinagleConnection
   }
 
   class Provider extends ConnectionProvider {
-    def get(username: String, password: String) = {
-      FinagleConnection(new BasicAuthLogin(username, password))
-    }
-
-    def get(apiKey: String) = {
-      FinagleConnection(apiKey)
+    def getConnection() = {
+      FinagleConnection()
     }
   }
 
