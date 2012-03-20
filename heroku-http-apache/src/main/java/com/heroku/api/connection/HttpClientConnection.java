@@ -136,9 +136,9 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             SchemeRegistry sr = ccm.getSchemeRegistry();
             sr.register(new Scheme("https", ssf, 443));
         }
-      DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
-      defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
-      return defaultHttpClient;
+        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
+        defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+        return defaultHttpClient;
     }
 
 

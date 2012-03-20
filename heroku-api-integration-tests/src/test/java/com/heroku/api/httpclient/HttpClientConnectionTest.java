@@ -68,4 +68,20 @@ public class HttpClientConnectionTest {
         connection.execute(new AddonList(), apiKey);
     }
 
+    @Test
+    public void cookiesShouldBeIgnored() {
+        new MockUp<AbstractHttpClient>() {
+            @Mock
+            public final HttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException, ClientProtocolException {
+                Assert.assertEquals(request.getHeaders("Cookie").length, 0, "Cookies should be ignored, but there are cookies present.");
+                BasicHttpResponse basicHttpResponse = new BasicHttpResponse(HttpVersion.HTTP_1_1, HttpStatus.SC_OK, "OK");
+                basicHttpResponse.setHeader("Set-Cookie", "foo=bar; path=/;");
+                basicHttpResponse.setEntity(new StringEntity("[]"));
+                return basicHttpResponse;
+            }
+        };
+        connection.execute(new AddonList(), apiKey);
+        // run this twice to ensure the set-cookie was sent from the first request
+        connection.execute(new AddonList(), apiKey);
+    }
 }
