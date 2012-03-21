@@ -53,4 +53,11 @@ public class AppListParseTest {
         Assert.assertEquals(app.getDomain(), null);
         Assert.assertEquals(app.getDynos(), 1);
     }
+
+    @Test(dataProvider = "getParsers")
+    public void unknownPropertiesShouldNotThrowExceptionsDuringParsing(Parser parser) throws UnsupportedEncodingException {
+        String unknownProperty = "{\"unknown_property\":\"this property doesn't exist\"}";
+        final App appList = parser.parse(unknownProperty.getBytes("UTF-8"), App.class);
+        Assert.assertNull(appList.getName());
+    }
 }

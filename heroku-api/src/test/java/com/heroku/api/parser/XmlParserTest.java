@@ -5,6 +5,8 @@ import org.testng.annotations.Test;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
+import static org.testng.Assert.assertEquals;
+
 /**
  * TODO: Javadoc
  *
@@ -29,7 +31,6 @@ public class XmlParserTest {
 
     @XmlRootElement
     public static class Collaborators {
-//        @XmlElement(name = "collaborator")
         List<Collaborator> collaborators;
 
         public List<Collaborator> getCollaborator() {
@@ -39,8 +40,6 @@ public class XmlParserTest {
         public void setCollaborator(List<Collaborator> collablist) {
             this.collaborators = collablist;
         }
-
-
     }
 
     @XmlRootElement
@@ -70,5 +69,15 @@ public class XmlParserTest {
         XmlParser parser = new XmlParser();
         Collaborators c = parser.parse(xmlList.getBytes(), Collaborators.class);
         c.getCollaborator();
+    }
+
+    @Test
+    public void xmlParserShouldTrimBytesToAvoidBarfingOnNullBytes() {
+        XmlParser parser = new XmlParser();
+        Collaborator c = parser.parse(
+            "\000<collaborator><email>email</email><access>edit</access></collaborator>\000".getBytes(),
+            Collaborator.class
+        );
+        assertEquals(c.getEmail(), "email");
     }
 }

@@ -169,43 +169,4 @@ public abstract class BaseRequestIntegrationTest {
         }
     }
 
-    protected void waitFor(String in, Function<String, Boolean> fn) throws Exception {
-        for (int i = 0; i < 10; i++) {
-            if (fn.apply(in)) {
-                return;
-            } else {
-                Thread.sleep(1000);
-            }
-        }
-        fail(fn.toString() + " took too long.");
-    }
-
-    protected static class LogProvisionCheck implements Function<String, Boolean> {
-
-        Connection conn;
-
-        public LogProvisionCheck(Connection conn) {
-            this.conn = conn;
-        }
-
-        LogProvisionCheck provisionLogging(String appName) {
-            conn.execute(new AddonInstall(appName, "logging:basic"), apiKey);
-            return this;
-        }
-
-        @Override
-        public Boolean apply(@Nullable String appName) {
-            // if a log request doesn't throw an error, then it's been provisioned
-            try {
-                conn.execute(new Log(appName), apiKey);
-                return true;
-            } catch (RequestFailedException e) {
-                if (e.getStatusCode() == UNPROCESSABLE_ENTITY.statusCode) {
-                    return false;
-                }
-                throw e;
-            }
-        }
-
-    }
 }
