@@ -8,10 +8,7 @@ import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.app.AppList;
-import mockit.Expectations;
-import mockit.Mock;
-import mockit.MockClass;
-import mockit.MockUp;
+import mockit.*;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -25,8 +22,7 @@ import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 import org.testng.Assert;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,11 +36,9 @@ import java.util.concurrent.TimeoutException;
 @Guice(modules = HttpClientModule.class)
 public class HttpClientConnectionTest {
 
-    @Inject
-    HttpClientConnection connection;
+    HttpClientConnection connection = new HttpClientConnection();
 
     String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
-
 
     @Test
     public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {
@@ -66,6 +60,7 @@ public class HttpClientConnectionTest {
             }
         };
         connection.execute(new AddonList(), apiKey);
+        Mockit.tearDownMocks(AbstractHttpClient.class);
     }
 
     @Test
@@ -83,5 +78,6 @@ public class HttpClientConnectionTest {
         connection.execute(new AddonList(), apiKey);
         // run this twice to ensure the set-cookie was sent from the first request
         connection.execute(new AddonList(), apiKey);
+        Mockit.tearDownMocks(AbstractHttpClient.class);
     }
 }
