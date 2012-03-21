@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-@Guice(modules = HttpClientModule.class)
 public class HttpClientConnectionTest {
 
     HttpClientConnection connection = new HttpClientConnection();

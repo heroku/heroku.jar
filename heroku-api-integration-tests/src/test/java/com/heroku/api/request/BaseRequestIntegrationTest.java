@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.http.Http;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
@@ -68,7 +69,15 @@ public abstract class BaseRequestIntegrationTest {
         System.out.format("%s created\n", app.getName());
         return app;
     }
-
+    
+    @BeforeSuite
+    public void deleteExistingApps() throws InterruptedException {
+        for (IntegrationTestConfig.TestUser tu : IntegrationTestConfig.CONFIG.getTestUsers()) {
+            HerokuAPI api = new HerokuAPI(tu.getApiKey());
+            deleteApps(api.listApps());
+        }
+    }
+    
     @AfterSuite
     public void closeConnection() {
         connection.close();
@@ -87,9 +96,13 @@ public abstract class BaseRequestIntegrationTest {
 
     @AfterClass(alwaysRun = true)
     public void deleteTestApps() throws IOException, InterruptedException {
+        deleteApps(apps);
+    }
+
+    void deleteApps(List<App> appsToDelete) throws InterruptedException {
         long start = System.currentTimeMillis();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (final App res : apps) {
+        for (final App res : appsToDelete) {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -101,12 +114,18 @@ public abstract class BaseRequestIntegrationTest {
         }
         // await termination of all the threads to complete app deletion.
         executorService.shutdown();
-        executorService.awaitTermination(30L, TimeUnit.SECONDS);
+        executorService.awaitTermination(300L, TimeUnit.SECONDS);
         System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
     }
 
     public void deleteApp(String appName) {
-        connection.execute(new AppDestroy(appName), apiKey);
+        try {
+            connection.execute(new AppDestroy(appName), apiKey);
+        } catch (RequestFailedException e) {
+            if (e.getStatusCode() != Http.Status.FORBIDDEN.statusCode) {
+                throw e;
+            }
+        }
     }
 
     protected void addConfig(App app, String... nameValuePairs) {
