@@ -56,7 +56,7 @@ public class Rollback implements Request<String> {
     @Override
     public String getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            return parse(bytes, getClass());
+            return new String(bytes);
         }
         throw new RequestFailedException("Unable to rollback.", status, bytes);
     }
