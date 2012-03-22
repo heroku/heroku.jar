@@ -283,7 +283,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
         @Override
         public boolean retryMethod(ITestResult result) {
-            System.out.println("Retry? " + Boolean.valueOf(result.getThrowable() instanceof RequestFailedException && ((RequestFailedException)result.getThrowable()).getStatusCode() == Http.Status.UNPROCESSABLE_ENTITY.statusCode));
             result.setStatus(ITestResult.SKIP);
             return result.getThrowable() instanceof RequestFailedException && ((RequestFailedException)result.getThrowable()).getStatusCode() == Http.Status.UNPROCESSABLE_ENTITY.statusCode;
         }
