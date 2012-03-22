@@ -20,6 +20,8 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
+import com.heroku.api.request.releases.ListReleases;
+import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.run.Run;
 import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
@@ -247,6 +249,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         UserInfo userInfo = new UserInfo();
         User user = userInfoConnection.execute(userInfo, testUser.getApiKey());
         assertEquals(user.getEmail(), testUser.getUsername());
+    }
+
+    @Test(dataProvider = "app")
+    public void testListReleases(App app) {
+        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        addConfig(app, "releaseTest", "releaseTest");
+        List<Release> newReleases = connection.execute(new ListReleases(app.getName()), apiKey);
+        assertEquals(newReleases.size(), releases.size() + 1);
     }
 
     public static class LogRetryAnalyzer extends RetryAnalyzerCount {
