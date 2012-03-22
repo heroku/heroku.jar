@@ -268,7 +268,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(releaseInfo.getName(), releases.get(0).getName());
     }
     
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testRollback(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         addConfig(app, "releaseTest", "releaseTest");
