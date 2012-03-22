@@ -4,11 +4,12 @@ import com.heroku.api.Heroku;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.*;
+import org.apache.http.auth.*;
+import org.apache.http.auth.params.AuthPNames;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.*;
+import org.apache.http.client.params.AuthPolicy;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
@@ -16,17 +17,20 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -73,21 +77,20 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
                 ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody()));
             }
 
-            HttpContext ctx = new BasicHttpContext();
-            if (key != null) {
-                CredentialsProvider p = new BasicCredentialsProvider();
-                p.setCredentials(new AuthScope(endpoint.getHost(), endpoint.getPort()), new UsernamePasswordCredentials("", key));
-                ctx.setAttribute(ClientContext.CREDS_PROVIDER, p);
-            }
+            httpClient.getCredentialsProvider().setCredentials(
+                new AuthScope(endpoint.getHost(), endpoint.getPort()),
+                new UsernamePasswordCredentials("", key)
+            );
+
+            BasicHttpContext ctx = new BasicHttpContext();
+            ctx.setAttribute("preemptive-auth", new BasicScheme());
+
+            httpClient.addRequestInterceptor(new PreemptiveAuth(), 0);
             HttpResponse httpResponse = httpClient.execute(message, ctx);
 
             return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
-        } catch (
-                IOException e
-                )
-
-        {
-            throw new RuntimeException("exception while executing request", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Exception while executing request", e);
         }
     }
 
@@ -138,6 +141,7 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
         }
         DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
         defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+        defaultHttpClient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, Arrays.asList(AuthPolicy.BASIC));
         return defaultHttpClient;
     }
 
@@ -156,4 +160,28 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
         }
     }
 
+    static class PreemptiveAuth implements HttpRequestInterceptor {
+        @Override
+        public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+            AuthState authState = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+
+            // If no auth scheme available yet, try to initialize it preemptively
+            if (authState.getAuthScheme() == null) {
+                AuthScheme authScheme = (AuthScheme) context.getAttribute("preemptive-auth");
+                CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
+                    ClientContext.CREDS_PROVIDER);
+                HttpHost targetHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+                if (authScheme != null) {
+                    Credentials creds = credsProvider.getCredentials(
+                        new AuthScope(targetHost.getHostName(), targetHost.getPort()));
+                    if (creds == null) {
+                        throw new HttpException("No credentials for preemptive authentication");
+                    }
+                    authState.setAuthScheme(authScheme);
+                    authState.setCredentials(creds);
+                }
+
+            }
+        }
+    }
 }
