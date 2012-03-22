@@ -22,6 +22,7 @@ import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
+import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.run.Run;
 import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
@@ -266,7 +267,15 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         Release releaseInfo = connection.execute(new ReleaseInfo(app.getName(), releases.get(0).getName()), apiKey);
         assertEquals(releaseInfo.getName(), releases.get(0).getName());
     }
-
+    
+    @Test(dataProvider = "app")
+    public void testRollback(App app) {
+        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        addConfig(app, "releaseTest", "releaseTest");
+        String rollback = connection.execute(new Rollback(app.getName(), releases.get(0).getName()), apiKey);
+        assertEquals(rollback, releases.get(0).getName());
+    }
+    
     public static class LogRetryAnalyzer extends RetryAnalyzerCount {
         public LogRetryAnalyzer() {
             setCount(10);
