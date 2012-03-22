@@ -259,6 +259,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(newReleases.size(), releases.size() + 1);
     }
 
+    @Test(dataProvider = "app")
+    public void testReleaseInfo(App app) {
+        addConfig(app, "releaseTest", "releaseTest"); //ensure a release exists
+        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        Release releaseInfo = connection.execute(new ReleaseInfo(app.getName(), releases.get(0).getName()), apiKey);
+        assertEquals(releaseInfo.getName(), releases.get(0).getName());
+    }
+
     public static class LogRetryAnalyzer extends RetryAnalyzerCount {
         public LogRetryAnalyzer() {
             setCount(10);
