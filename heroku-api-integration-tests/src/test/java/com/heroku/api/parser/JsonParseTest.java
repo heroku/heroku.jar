@@ -1,6 +1,10 @@
 package com.heroku.api.parser;
 
 import com.heroku.api.App;
+import com.heroku.api.exception.ParseException;
+import com.heroku.api.http.Http;
+import com.heroku.api.request.Request;
+import com.heroku.api.request.app.AppInfo;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -8,12 +12,16 @@ import org.testng.annotations.Test;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author mh
  * @since 04.01.12
  */
-public class AppListParseTest {
+public class JsonParseTest {
 
     private static final Type APP_LIST_TYPE = new TypeReference<List<App>>() {
     }.getType();
@@ -59,5 +67,39 @@ public class AppListParseTest {
         String unknownProperty = "{\"unknown_property\":\"this property doesn't exist\"}";
         final App appList = parser.parse(unknownProperty.getBytes("UTF-8"), App.class);
         Assert.assertNull(appList.getName());
+    }
+    
+    @Test(expectedExceptions = ParseException.class)
+    public void nullRequestTypeShouldThrowParseException() {
+        parse(new byte[]{}, null);
+    }
+    
+    @Test
+    public void genericTypeFromRequestInheritanceShouldParse() {
+        App app = parse("{\"name\":\"test\"}".getBytes(), SubAppInfo.class);
+        assertEquals(app.getName(), "test");
+    }
+
+    @Test
+    public void genericTypeFromMultipleLevelsOfRequestInheritanceShouldParse() {
+        App app = parse("{\"name\":\"test\"}".getBytes(), SubSubAppInfo.class);
+        assertEquals(app.getName(), "test");
+    }
+
+    @Test(expectedExceptions = ParseException.class)
+    public void invalidJSONShouldThrowParseException() {
+        parse("{{".getBytes(), AppInfo.class);
+    }
+
+    public static class SubAppInfo extends AppInfo {
+        public SubAppInfo(String appName) {
+            super(appName);
+        }
+    }
+
+    public static class SubSubAppInfo extends SubAppInfo {
+        public SubSubAppInfo(String appName) {
+            super(appName);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.heroku.api.parser;
 
+import com.heroku.api.exception.ParseException;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
@@ -19,7 +21,7 @@ public class XmlParser implements Parser {
             JAXBContext jaxbContext = JAXBContext.newInstance((Class) type);
             return (T) jaxbContext.createUnmarshaller().unmarshal(new StringReader(new String(data).trim()));
         } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new ParseException(e);
         }
     }
 

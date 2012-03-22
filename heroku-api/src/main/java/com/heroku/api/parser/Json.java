@@ -51,15 +51,16 @@ public class Json {
      * @return T
      */
     public static <T> T parse(byte[] data, Class<? extends Request<T>> classType) {
-        Type type = doResolveTypeArguments(classType, classType, Request.class)[0];
-        if (type == null) {
-            throw new ParseException("Request<T> was not found for " + classType.toString());
+        Type[] types = doResolveTypeArguments(classType, classType, Request.class);
+        if (types == null || types.length == 0) {
+            throw new ParseException("Request<T> was not found for " + classType);
         }
+        Type type = types[0];
         try {
             return Holder.parser.parse(data, type);
         } catch (RuntimeException e) {
             String json = HttpUtil.getUTF8String(data);
-            throw new RuntimeException("Failed to parse JSON:" + json, e);
+            throw new ParseException("Failed to parse JSON:" + json, e);
         }
     }
 

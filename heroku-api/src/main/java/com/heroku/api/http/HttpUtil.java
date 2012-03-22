@@ -65,14 +65,6 @@ public class HttpUtil {
         }
     }
 
-    public static HerokuAPIException invalidLogin() {
-        return new HerokuAPIException("Unable to login");
-    }
-
-    public static HerokuAPIException invalidKeys() {
-        return new HerokuAPIException("Unable to add keys.");
-    }
-
     public static RequestFailedException insufficientPrivileges(int code, byte[] bytes) {
         return new RequestFailedException("Insufficient privileges.", code, bytes);
     }

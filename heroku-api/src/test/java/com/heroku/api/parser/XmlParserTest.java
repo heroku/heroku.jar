@@ -1,5 +1,6 @@
 package com.heroku.api.parser;
 
+import com.heroku.api.exception.ParseException;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -79,5 +80,11 @@ public class XmlParserTest {
             Collaborator.class
         );
         assertEquals(c.getEmail(), "email");
+    }
+
+    @Test(expectedExceptions = ParseException.class)
+    public void invalidXmlShouldThrowAParseException() {
+        XmlParser parser = new XmlParser();
+        parser.parse("<>".getBytes(), Collaborator.class);
     }
 }
