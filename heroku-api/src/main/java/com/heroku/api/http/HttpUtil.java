@@ -18,7 +18,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 /**
- * TODO: Javadoc
+ * HTTP related utilities.
  *
  * @author Naaman Newbold
  */
@@ -26,6 +26,12 @@ public class HttpUtil {
 
     private static String ENCODE_FAIL = "Unsupported encoding exception while encoding parameters";
 
+    /**
+     * URL encode request paramaters from a {@link RequestConfig}.
+     * @param config Name/value pairs for a HTTP request.
+     * @param keys List of keys in the config to encode.
+     * @return A string representation of encoded name/value parameters.
+     */
     public static String encodeParameters(RequestConfig config, Heroku.RequestKey... keys) {
 
         StringBuilder encodedParameters = new StringBuilder();
@@ -69,7 +75,11 @@ public class HttpUtil {
         return new RequestFailedException("Insufficient privileges.", code, bytes);
     }
 
-
+    /**
+     * Converts an {@link InputStream} to a byte array
+     * @param in
+     * @return
+     */
     public static byte[] getBytes(InputStream in) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WritableByteChannel wbc = Channels.newChannel(os);

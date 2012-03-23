@@ -5,8 +5,13 @@ import com.heroku.api.Heroku;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Simple abstraction for HTTP request/response values.
+ */
 public class Http {
+    /**
+     * HTTP Accept header model.
+     */
     public static enum Accept implements Header {
         JSON("application/json"),
         XML("text/xml"),
@@ -31,6 +36,9 @@ public class Http {
 
     }
 
+    /**
+     * HTTP Content-Type header model.
+     */
     public static enum ContentType implements Header {
         FORM_URLENCODED("application/x-www-form-urlencoded"),
         SSH_AUTHKEY("text/ssh-authkey");
@@ -53,7 +61,10 @@ public class Http {
         }
 
     }
-    
+
+    /**
+     * HTTP User-Agent header model.
+     */
     public static enum UserAgent implements Header {
         LATEST("heroku.jar-%s-v%s");
 
@@ -79,6 +90,9 @@ public class Http {
         }
     }
 
+    /**
+     * Represent a name/value pair for a HTTP header. Not all are implemented. Only those used by the Heroku API.
+     */
     public static interface Header {
 
         public static class Util {
@@ -97,9 +111,14 @@ public class Http {
 
     }
 
+    /**
+     * HTTP Methods. Not all are implemented. Only those used by the Heroku API.
+     */
     public static enum Method {GET, PUT, POST, DELETE}
 
-
+    /**
+     * HTTP Status codes. Not all are implemented. Only those used by the Heroku API.
+     */
     public static enum Status {
         OK(200), CREATED(201), ACCEPTED(202), PAYMENT_REQUIRED(402), FORBIDDEN(403), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422);
 
