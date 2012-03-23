@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * TODO: Javadoc
+ * Data model for a Heroku App. Also serves as a builder class when making requests to create an app.
  *
  * @author Naaman Newbold
  */
@@ -27,12 +27,22 @@ public class App {
     @XmlElement int dynos;
 	@XmlElement int workers;
 
+    /**
+     * Builder method for specifying the name of an app.
+     * @param name The name to give an app.
+     * @return A copy of the {@link App}
+     */
     public App named(String name) {
         App newApp = copy();
         newApp.name = name;
         return newApp;
     }
 
+    /**
+     * Builder method for specifying the stack an app should be created on.
+     * @param stack Stack to create the app on.
+     * @return A copy of the {@link App}
+     */
     public App on(Heroku.Stack stack) {
         App newApp = copy();
         newApp.stack = stack.toString();
