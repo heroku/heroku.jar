@@ -37,14 +37,25 @@ public class Log implements Request<LogStreamResponse> {
 	public static LogRequestBuilder logFor(String app) {
         return new LogRequestBuilder().app(app);
     }
-    
+
+    /**
+     * Builder class for specifying log request parameters. Logs can be retrieved by specifying a process,
+     * the number of lines, etc... Once the params are specified, build the {@link Log} request with {@link #getRequest()}.
+     *
+     * Use this builder to specify which params a {@link Log} should use. e.g.
+     * <pre>{@code new Log.LogRequestBuilder().app("myApp").ps("web.1").num(50).getRequest()}</pre>
+     */
     public static class LogRequestBuilder {
         RequestConfig config = new RequestConfig().with(Logplex, "true");
-        
+
+        /**
+         * Finalize the params and get a Log request.
+         * @return
+         */
         public Log getRequest() {
             return new Log(config);
         }
-        
+
         RequestConfig getConfig() {
             return config;
         }
@@ -53,23 +64,50 @@ public class Log implements Request<LogStreamResponse> {
             config = config.with(key, val);
             return this;
         }
-        
+
+        /**
+         * Name of the app to get logs for.
+         * @param app App name.
+         * @return
+         */
         public LogRequestBuilder app(String app) {
             return add(AppName, app);
         }
 
+        /**
+         * Number of log lines to retrieve.
+         * @param num
+         * @return
+         */
         public LogRequestBuilder num(int num) {
             return add(LogNum, String.valueOf(num));
         }
 
+        /**
+         * Name of the process to get logs for. Process names can be seen by running {@link com.heroku.api.HerokuAPI#listProcesses}, or by
+         * retrieving all logs and inspecting the value inside the brackets (e.g. web.1 from app[web.1]).
+         * @param processName Name of the process. e.g. "web.1"
+         * @return
+         */
         public LogRequestBuilder ps(String processName) {
             return add(ProcessName, processName);
         }
 
+        /**
+         * The source of the logs. This can be found by reviewing the logs and looking at the value just after the timestamp. e.g. the source of
+         * <code>2012-03-23T18:46:01+00:00 heroku[router]</code> is "heroku".
+         * @param source
+         * @return
+         */
         public LogRequestBuilder source(String source) {
             return add(LogSource, source);
         }
 
+        /**
+         * Whether or not to tail the logs. If true, a stream will be created that will remain open for an extended period of time.
+         * @param tail
+         * @return
+         */
         public LogRequestBuilder tail(boolean tail) {
             return (tail) ? add(LogTail, "1") : this;
         }

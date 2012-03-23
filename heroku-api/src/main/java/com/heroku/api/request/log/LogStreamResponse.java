@@ -10,6 +10,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * Handles {@link Log} responses. When a log is requested, a URL is returned to <a href="https://github.com/heroku/logplex">Logplex</a>.
+ *
+ * To begin reading logs, use {@link #openStream()}. {@link #getLogStreamURL()} can also be used directly to create a custom connection to Logplex.
+ */
 public class LogStreamResponse {
 
     URL logStreamURL;
@@ -18,10 +23,20 @@ public class LogStreamResponse {
         logStreamURL = streamUrl;
     }
 
+    /**
+     * A logplex session URL. Using Logplex directly will generally require you to add logplex's certificate to java's keystore. {@see #openStream} for a
+     * convenience method that bypasses SSL verification.
+     * @return
+     */
     public URL getLogStreamURL() {
         return logStreamURL;
     }
 
+    /**
+     * Creates a {@link URLConnection} to logplex. SSL verification is not used because Logplex's certificate is not signed by an authority that exists
+     * in the standard java keystore.
+     * @return
+     */
     public InputStream openStream() {
         try {
             URLConnection urlConnection = logStreamURL.openConnection();
