@@ -3,7 +3,7 @@ package com.heroku.api.connection;
 import com.heroku.api.request.Request;
 
 /**
- * Connection manager for connecting to the Heroku API.
+ * Connection interface for connecting to the Heroku API.
  *
  * @author Naaman Newbold
  */
