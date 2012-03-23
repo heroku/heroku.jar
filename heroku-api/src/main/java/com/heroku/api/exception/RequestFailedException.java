@@ -3,6 +3,10 @@ package com.heroku.api.exception;
 
 import com.heroku.api.http.HttpUtil;
 
+/**
+ * Exception for {@link com.heroku.api.request.Request} failures. These include, but are not limited to
+ * {@link java.io.IOException} and errors from the API.
+ */
 public class RequestFailedException extends HerokuAPIException {
 
     String responseBody;
