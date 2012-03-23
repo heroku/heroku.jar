@@ -1,7 +1,7 @@
 package com.heroku.api.exception;
 
 /**
- * TODO: Enter JavaDoc
+ * Generic {@link RuntimeException} thrown when using heroku.jar.
  *
  * @author Naaman Newbold
  */

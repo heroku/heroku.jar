@@ -1,7 +1,7 @@
 package com.heroku.api.exception;
 
 /**
- * TODO: Javadoc
+ * {@link RuntimeException} that's thrown when response parsing fails to parse data returned by the API.
  *
  * @author Naaman Newbold
  */
