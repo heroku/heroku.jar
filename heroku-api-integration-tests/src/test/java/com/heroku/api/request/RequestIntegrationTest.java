@@ -62,8 +62,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         App response = connection.execute(cmd, apiKey);
 
         assertNotNull(response.getId());
-        assertEquals(Heroku.Stack.fromString(response.getStack()), Cedar);
-        assertTrue(response.getCreateStatus().equals("complete")); //todo: move "complete" to a static final?
+        assertEquals(response.getStack(), Cedar);
+        assertTrue(response.getCreateStatus().equals("complete"));
         deleteApp(response.getName());
     }
 

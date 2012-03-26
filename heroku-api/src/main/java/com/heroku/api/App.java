@@ -144,8 +144,8 @@ public class App {
         return created_at;
     }
 
-    public String getStack() {
-        return stack;
+    public Heroku.Stack getStack() {
+        return Heroku.Stack.fromString(stack);
     }
 
     public String getRequestedStack() {
