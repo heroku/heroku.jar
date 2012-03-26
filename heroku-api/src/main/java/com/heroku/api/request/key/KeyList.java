@@ -7,6 +7,8 @@ import com.heroku.api.http.Http;
 import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
@@ -44,7 +47,7 @@ public class KeyList implements Request<List<Key>> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -58,23 +61,10 @@ public class KeyList implements Request<List<Key>> {
             if (new String(bytes).contains("nil-classes")) {
                 return new ArrayList<Key>();
             }
-            Keys keys = new XmlParser().parse(bytes, Keys.class);
-            return keys.getKey();
+            return parse(bytes, getClass());
         } else {
             throw new RequestFailedException("Unable to list keys.", status, bytes);
         }
     }
 
-    @XmlRootElement
-    static class Keys {
-        List<Key> keys;
-
-        public List<Key> getKey() {
-            return keys;
-        }
-
-        public void setKey(List<Key> keylist) {
-            this.keys = keylist;
-        }
-    }
 }

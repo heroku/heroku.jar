@@ -9,11 +9,14 @@ import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
+import com.heroku.api.request.key.KeysRemoveAll;
 import com.heroku.api.response.Unit;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
 import org.apache.commons.io.FileUtils;
+import org.testng.Assert;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
@@ -40,6 +43,11 @@ public class NoAppCommandIntegrationTest {
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
 
+    @BeforeSuite
+    public void deleteAllKeys() {
+        connection.execute(new KeysRemoveAll(), apiKey);
+    }
+
     // doesn't need an app
     @Test
     public void testKeysAddCommand() throws JSchException, IOException {
@@ -53,12 +61,15 @@ public class NoAppCommandIntegrationTest {
 
         KeyAdd cmd = new KeyAdd(sshPublicKey);
         Unit response = connection.execute(cmd, apiKey);
-        assertNotNull(response);
+        List<Key> keys = connection.execute(new KeyList(), apiKey);
+        Assert.assertEquals(keys.size(), 1, "Precondition: keys should have been cleaned up.");
+        Assert.assertTrue(keys.get(0).getContents().contains(PUBLIC_KEY_COMMENT));
     }
 
     // doesn't need an app
-    @Test(dependsOnMethods = {"testKeysAddCommand"})
+    @Test(dependsOnMethods = "testKeyListCommand")
     public void testKeysRemoveCommand() {
+        Assert.assertTrue(keyIsPresent(PUBLIC_KEY_COMMENT), PUBLIC_KEY_COMMENT + " should have been present.");
         KeyRemove cmd = new KeyRemove(PUBLIC_KEY_COMMENT);
         Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
@@ -75,11 +86,23 @@ public class NoAppCommandIntegrationTest {
         connection.execute(duplicateKeyCommand, IntegrationTestConfig.CONFIG.getOtherUser().getApiKey());
     }
 
-    @Test
+    @Test(dependsOnMethods = "testKeysAddCommand")
     public void testKeyListCommand() {
         KeyList keyListRequest = new KeyList();
         List<Key> keyListResponse = connection.execute(keyListRequest, apiKey);
-        assertNotNull(keyListResponse);
+        Assert.assertTrue(keyIsPresent(PUBLIC_KEY_COMMENT, keyListResponse), PUBLIC_KEY_COMMENT + " should have been present.");
     }
 
+    public boolean keyIsPresent(String comment) {
+        return keyIsPresent(comment, connection.execute(new KeyList(), apiKey));
+    }
+
+    public boolean keyIsPresent(String comment, List<Key> keyList) {
+        for (Key k : keyList) {
+            if (k.getContents().contains(comment)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

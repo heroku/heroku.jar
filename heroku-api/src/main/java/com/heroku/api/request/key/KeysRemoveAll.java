@@ -3,28 +3,21 @@ package com.heroku.api.request.key;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
 import com.heroku.api.response.Unit;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
+
 /**
- * TODO: Javadoc
+ * Deletes all SSH keys.
  *
- * @author James Ward
+ * @author Naaman Newbold
  */
-public class KeyRemove implements Request<Unit> {
-
-    // delete("/user/keys/#{escape(key)}").to_s
-
-    private final RequestConfig config;
-
-    public KeyRemove(String keyName) {
-        this.config = new RequestConfig().with(Heroku.RequestKey.SSHKey, keyName);
-    }
+public class KeysRemoveAll implements Request<Unit> {
 
     @Override
     public Http.Method getHttpMethod() {
@@ -33,7 +26,7 @@ public class KeyRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Key.format(config.get(Heroku.RequestKey.SSHKey));
+        return Heroku.Resource.Keys.format();
     }
 
     @Override
@@ -43,7 +36,7 @@ public class KeyRemove implements Request<Unit> {
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        throw noBody();
     }
 
     @Override
@@ -57,10 +50,11 @@ public class KeyRemove implements Request<Unit> {
     }
 
     @Override
-    public Unit getResponse(byte[] in, int code) {
-        if (code == Http.Status.OK.statusCode)
+    public Unit getResponse(byte[] bytes, int status) {
+        if (Http.Status.OK.equals(status)) {
             return Unit.unit;
-        else
-            throw new RequestFailedException("KeysRemove failed", code, in);
+        } else {
+            throw new RequestFailedException("Unable to delete all keys.", status, bytes);
+        }
     }
 }

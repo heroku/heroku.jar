@@ -127,5 +127,9 @@ public class Http {
         Status(int statusCode) {
             this.statusCode = statusCode;
         }
+
+        public boolean equals(int code) {
+            return statusCode == code;
+        }
     }
 }
