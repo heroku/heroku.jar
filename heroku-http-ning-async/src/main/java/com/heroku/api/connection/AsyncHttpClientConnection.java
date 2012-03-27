@@ -2,6 +2,7 @@ package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.request.Request;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
@@ -89,6 +90,9 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         } catch (InterruptedException e) {
             throw new HerokuAPIException("request interrupted", e);
         } catch (ExecutionException e) {
+            if (e.getCause() != null && e.getCause().getCause() instanceof RequestFailedException) {
+                throw (RequestFailedException) e.getCause().getCause();
+            }
             throw new HerokuAPIException("execution exception", e.getCause());
         } catch (TimeoutException e) {
             throw new HerokuAPIException("request timeout after 30 sec", e.getCause());

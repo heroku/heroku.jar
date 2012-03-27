@@ -6,6 +6,7 @@ import com.heroku.api.Key;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.http.Http;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
@@ -15,10 +16,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
 import org.testng.Assert;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,9 +42,20 @@ public class KeysRequestIntegrationTest {
     @Inject
     Connection connection;
 
-    @BeforeSuite(alwaysRun = true)
+    @AfterClass(alwaysRun = true)
     public void deleteAllKeys() {
-        connection.execute(new KeysRemoveAll(), API_KEY);
+//        connection.execute(new KeysRemoveAll(), API_KEY);
+        // delete keys individually to avoid race conditions.
+        // if a key is not found, ignore the failure because it's already been deleted.
+        for (String k : pubKeyComments) {
+            try {
+                connection.execute(new KeyRemove(k), API_KEY);
+            } catch (RequestFailedException e) {
+                if (!Http.Status.NOT_FOUND.equals(e.getStatusCode())) {
+                    throw e;
+                }
+            }
+        }
     }
     
     @DataProvider
@@ -72,7 +81,7 @@ public class KeysRequestIntegrationTest {
         assertFalse(keyIsPresent(comment));
     }
 
-    @Test(dataProvider = "publicKey", expectedExceptions = RequestFailedException.class)
+    @Test(dataProvider = "publicKey", expectedExceptions = RequestFailedException.class, singleThreaded = true)
     public void testKeysAddCommandWithDuplicateKey(String pubKey, String comment) throws IOException {
         KeyAdd keyAdd = new KeyAdd(pubKey);
         connection.execute(keyAdd, API_KEY);
