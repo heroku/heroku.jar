@@ -28,6 +28,8 @@ import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
+import com.heroku.api.request.stack.StackList;
+import com.heroku.api.request.stack.StackMigrate;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import org.testng.IRetryAnalyzer;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.heroku.api.Heroku.Stack.Bamboo192;
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static org.testng.Assert.*;
@@ -274,6 +277,25 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         addConfig(app, "releaseTest", "releaseTest");
         String rollback = connection.execute(new Rollback(app.getName(), releases.get(0).getName()), apiKey);
         assertEquals(rollback, releases.get(0).getName());
+    }
+    
+    @Test(dataProvider = "app")
+    public void testStackList(App app) {
+        List<StackInfo> stacks = connection.execute(new StackList(app.getName()), apiKey);
+        for (StackInfo s : stacks) {
+            if (app.getStack().equals(s.getStack())) {
+                assertTrue(true);
+                return;
+            }
+        }
+        fail("Stack list did not contain the app's stack.");
+    }
+    
+    @Test
+    public void testStackMigrate() {
+        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Bamboo187)), apiKey);
+        String migrateStatus = connection.execute(new StackMigrate(app.getName(), Heroku.Stack.Bamboo192), apiKey);
+        assertTrue(migrateStatus.contains("Migration prepared"));
     }
     
     public static class LogRetryAnalyzer extends RetryAnalyzerCount {

@@ -183,8 +183,9 @@ Likewise, the secure random parameter may be null in which case the default impl
 
 
     public static enum Stack {
-        Aspen("aspen"),
-        Bamboo("bamboo"),
+        Aspen("aspen-mri-1.8.6"),
+        Bamboo192("bamboo-mri-1.9.2"),
+        Bamboo187("bamboo-ree-1.8.7"),
         Cedar("cedar");
 
         public final String value;
@@ -232,7 +233,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Scale(Process.value + "/scale"),
         Releases(App.value + "/releases"),
         Release(Releases.value + "/%s"),
-        Status(App.value + "/status");
+        Status(App.value + "/status"),
+        AppStack(App.value + "/stack");
 
         public final String value;
 

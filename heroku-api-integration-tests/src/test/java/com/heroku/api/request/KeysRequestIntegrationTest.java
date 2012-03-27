@@ -111,6 +111,6 @@ public class KeysRequestIntegrationTest {
     }
 
     public String getComment() {
-        return "foo@bar" + Math.round(Math.random() * 10);
+        return "foo@bar" + Math.round(Math.random() * 100);
     }
 }
