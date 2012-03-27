@@ -1,22 +1,18 @@
 package com.heroku.api.request;
 
-import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
-import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
 import org.testng.annotations.*;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
 import static org.testng.Assert.fail;
 
 /**

@@ -32,7 +32,6 @@ import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.stack.StackMigrate;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
-import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -43,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.heroku.api.Heroku.Stack.Bamboo192;
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static org.testng.Assert.*;
@@ -255,7 +253,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(user.getEmail(), testUser.getUsername());
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "newApp")
     public void testListReleases(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         addConfig(app, "releaseTest", "releaseTest");

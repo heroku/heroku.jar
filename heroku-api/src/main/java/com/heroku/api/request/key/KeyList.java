@@ -4,12 +4,8 @@ import com.heroku.api.Heroku;
 import com.heroku.api.Key;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

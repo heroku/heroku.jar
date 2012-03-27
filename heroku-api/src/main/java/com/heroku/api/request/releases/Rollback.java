@@ -9,8 +9,6 @@ import com.heroku.api.request.RequestConfig;
 
 import java.util.Map;
 
-import static com.heroku.api.parser.Json.parse;
-
 /**
  * TODO: Javadoc
  *

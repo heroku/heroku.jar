@@ -5,7 +5,7 @@ import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.Key;
 import com.heroku.api.TestModuleFactory;
 import com.heroku.api.connection.Connection;
-import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
@@ -14,7 +14,6 @@ import com.heroku.api.response.Unit;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
-import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
@@ -22,12 +21,12 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -40,10 +39,12 @@ public class KeysRequestIntegrationTest {
 
     private final String API_KEY = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
+    private final List<String> pubKeyComments = new ArrayList<String>();
+
     @Inject
     Connection connection;
 
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public void deleteAllKeys() {
         connection.execute(new KeysRemoveAll(), API_KEY);
     }
@@ -51,6 +52,7 @@ public class KeysRequestIntegrationTest {
     @DataProvider
     public Object[][] publicKey() throws JSchException, IOException {
         String comment = getComment();
+        pubKeyComments.add(comment);
         String pubKey = getPublicKey(comment);
         return new Object[][]{{pubKey, comment}};
     }
@@ -70,13 +72,11 @@ public class KeysRequestIntegrationTest {
         assertFalse(keyIsPresent(comment));
     }
 
-    @Test(dataProvider = "publicKey", expectedExceptions = HerokuAPIException.class)
+    @Test(dataProvider = "publicKey", expectedExceptions = RequestFailedException.class)
     public void testKeysAddCommandWithDuplicateKey(String pubKey, String comment) throws IOException {
-        KeyAdd cmd = new KeyAdd(pubKey);
-        connection.execute(cmd, API_KEY);
-
-        KeyAdd duplicateKeyCommand = new KeyAdd(pubKey);
-        connection.execute(duplicateKeyCommand, IntegrationTestConfig.CONFIG.getOtherUser().getApiKey());
+        KeyAdd keyAdd = new KeyAdd(pubKey);
+        connection.execute(keyAdd, API_KEY);
+        connection.execute(keyAdd, IntegrationTestConfig.CONFIG.getOtherUser().getApiKey());
     }
 
     @Test(dataProvider = "publicKey")
@@ -111,6 +111,6 @@ public class KeysRequestIntegrationTest {
     }
 
     public String getComment() {
-        return "foo@bar" + Math.round(Math.random() * 100);
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

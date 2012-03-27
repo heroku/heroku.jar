@@ -1,14 +1,12 @@
 package com.heroku.api.request.stack;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.StackInfo;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
-import java.util.List;
 import java.util.Map;
 
 /**

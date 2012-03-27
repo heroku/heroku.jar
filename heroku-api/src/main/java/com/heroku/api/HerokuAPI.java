@@ -28,6 +28,8 @@ import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
+import com.heroku.api.request.stack.StackList;
+import com.heroku.api.request.stack.StackMigrate;
 import com.heroku.api.request.user.UserInfo;
 
 import java.util.List;
@@ -383,5 +385,25 @@ public class HerokuAPI {
      */
     public void restartProcessByName(String appName, String procName) {
         connection.execute(new Restart.NamedProcessRestart(appName, procName), apiKey);
+    }
+
+    /**
+     * Migrates an app from its current stack to the specified stack. Stacks must be compatible with one another. e.g. an app can be migrated from
+     * {@link com.heroku.api.Heroku.Stack.Bamboo187} to {@link com.heroku.api.Heroku.Stack.Bamboo192}, but not to {@link com.heroku.api.Heroku.Stack.Cedar}.
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param migrateTo Stack to migrate the app to.
+     * @return A message about the migration.
+     */
+    public String migrateStack(String appName, Heroku.Stack migrateTo) {
+        return connection.execute(new StackMigrate(appName, migrateTo), apiKey);
+    }
+
+    /**
+     * Gets a list of stacks available.
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @return List of stacks available.
+     */
+    public List<StackInfo> listAppStacks(String appName) {
+        return connection.execute(new StackList(appName), apiKey);
     }
 }

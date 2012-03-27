@@ -2,8 +2,6 @@ package com.heroku.api.parser;
 
 import com.heroku.api.App;
 import com.heroku.api.exception.ParseException;
-import com.heroku.api.http.Http;
-import com.heroku.api.request.Request;
 import com.heroku.api.request.app.AppInfo;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -12,7 +10,6 @@ import org.testng.annotations.Test;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
 import static com.heroku.api.parser.Json.parse;
 import static org.testng.Assert.assertEquals;

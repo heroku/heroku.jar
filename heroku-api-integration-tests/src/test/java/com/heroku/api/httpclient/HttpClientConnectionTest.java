@@ -1,14 +1,18 @@
 package com.heroku.api.httpclient;
 
 import com.heroku.api.App;
-import com.heroku.api.HttpClientModule;
 import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.app.AppList;
-import mockit.*;
-import org.apache.http.*;
+import mockit.Instantiation;
+import mockit.Mock;
+import mockit.MockClass;
+import mockit.Mockit;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
@@ -16,7 +20,7 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.List;

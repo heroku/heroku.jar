@@ -6,7 +6,6 @@ import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.heroku.api.response.Unit;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 

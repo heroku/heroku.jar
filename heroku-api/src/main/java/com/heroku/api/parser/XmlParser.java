@@ -4,7 +4,6 @@ import com.heroku.api.exception.ParseException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.lang.reflect.Type;
 
