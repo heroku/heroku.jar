@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
+import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
 import static org.testng.Assert.*;
 
 
@@ -57,7 +58,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
 
-    @Test(successPercentage = 80)
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate(new App().on(Cedar));
         App response = connection.execute(cmd, apiKey);
@@ -84,14 +85,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertLogIsReadable(logsResponse);
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAppCommand(App app) throws IOException {
         AppInfo cmd = new AppInfo(app.getName());
         App response = connection.execute(cmd, apiKey);
         assertEquals(response.getName(), app.getName());
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListAppsCommand(App app) throws IOException {
         AppList cmd = new AppList();
         List<App> response = connection.execute(cmd, apiKey);
@@ -100,21 +101,21 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     }
 
     // don't use the app dataprovider because it'll try to delete an already deleted app
-    @Test
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testDestroyAppCommand() throws IOException {
         AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Cedar)).getName());
         Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testSharingAddCommand(App app) throws IOException {
         SharingAdd cmd = new SharingAdd(app.getName(), sharingUser.getUsername());
         Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
 
-    @Test(timeOut = 30000L)
+    @Test(timeOut = 30000L, retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testSharingTransferCommand() throws IOException {
         assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
         HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
@@ -128,7 +129,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         sharedUserAPI.destroyApp(transferredApp.getName());
     }
 
-    @Test(dataProvider = "newApp", invocationCount = 5, successPercentage = 20)
+    @Test(dataProvider = "newApp", invocationCount = 5, successPercentage = 20, retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testSharingRemoveCommand(App app) throws IOException {
         SharingAdd sharingAddCommand = new SharingAdd(app.getName(), sharingUser.getUsername());
         Unit sharingAddResp = connection.execute(sharingAddCommand, apiKey);
@@ -142,7 +143,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertCollaboratorNotPresent(sharingUser.getUsername(), collabList);
     }
 
-    @Test
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testConfigAddCommand() throws IOException {
         HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
         App app = api.createApp();
@@ -155,7 +156,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(retrievedConfig.get("BAR"), "foo");
     }
 
-    @Test(dataProvider = "app", invocationCount = 4, successPercentage = 25)
+    @Test(dataProvider = "app", invocationCount = 4, successPercentage = 25, retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testConfigCommand(App app) {
         addConfig(app, "FOO", "BAR");
         Request<Map<String, String>> req = new ConfigList(app.getName());
@@ -164,7 +165,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.get("FOO"), "BAR");
     }
 
-    @Test(dataProvider = "newApp")
+    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testConfigRemoveCommand(App app) {
         addConfig(app, "FOO", "BAR", "JOHN", "DOE");
         Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
@@ -173,7 +174,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNull(response.get("FOO"));
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testProcessCommand(App app) {
         Request<List<Proc>> req = new ProcessList(app.getName());
         List<Proc> response = connection.execute(req, apiKey);
@@ -181,28 +182,28 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.size(), 1);
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testScaleCommand(App app) {
         Request<Unit> req = new Scale(app.getName(), "web", 1);
         Unit response = connection.execute(req, apiKey);
         assertNotNull(response);
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRestartCommand(App app) {
         Request<Unit> req = new Restart(app.getName());
         Unit response = connection.execute(req, apiKey);
         assertNotNull(response);
     }
 
-    @Test
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListAddons() {
         AddonList req = new AddonList();
         List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
 
-    @Test(dataProvider = "newApp")
+    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListAppAddons(App app) {
         connection.execute(new AddonInstall(app.getName(), "shared-database:5mb"), apiKey);
         Request<List<Addon>> req = new AppAddonsList(app.getName());
@@ -212,14 +213,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response.get(0).getName());
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAddAddonToApp(App app) {
         AddonInstall req = new AddonInstall(app.getName(), "shared-database:5mb");
         AddonChange response = connection.execute(req, apiKey);
         assertEquals(response.getStatus(), "Installed");
     }
 
-    @Test(dataProvider = "newApp")
+    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCollaboratorList(App app) {
         Request<List<Collaborator>> req = new CollabList(app.getName());
         List<Collaborator> xmlArrayResponse = connection.execute(req, apiKey);
@@ -227,7 +228,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(xmlArrayResponse.get(0).getEmail());
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRunCommand(App app) throws IOException {
         Run run = new Run(app.getName(), "echo helloworld");
         Run runAttached = new Run(app.getName(), "echo helloworld", true);
@@ -244,7 +245,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(output.contains("helloworld"));
     }
 
-    @Test
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testUserInfo() {
         IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
         Connection userInfoConnection = new HttpClientConnection();
@@ -253,7 +254,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(user.getEmail(), testUser.getUsername());
     }
 
-    @Test(dataProvider = "newApp")
+    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListReleases(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         addConfig(app, "releaseTest", "releaseTest");
@@ -261,7 +262,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(newReleases.size(), releases.size() + 1);
     }
 
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testReleaseInfo(App app) {
         addConfig(app, "releaseTest", "releaseTest"); //ensure a release exists
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
@@ -269,7 +270,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(releaseInfo.getName(), releases.get(0).getName());
     }
     
-    @Test(dataProvider = "newApp")
+    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         addConfig(app, "releaseTest", "releaseTest");
@@ -277,7 +278,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(rollback, releases.get(0).getName());
     }
     
-    @Test(dataProvider = "app")
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testStackList(App app) {
         List<StackInfo> stacks = connection.execute(new StackList(app.getName()), apiKey);
         for (StackInfo s : stacks) {
@@ -289,7 +290,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         fail("Stack list did not contain the app's stack.");
     }
     
-    @Test
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testStackMigrate() {
         App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Bamboo187)), apiKey);
         String migrateStatus = connection.execute(new StackMigrate(app.getName(), Heroku.Stack.Bamboo192), apiKey);
@@ -305,6 +306,25 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         public boolean retryMethod(ITestResult result) {
             result.setStatus(ITestResult.SKIP);
             return result.getThrowable() instanceof RequestFailedException && ((RequestFailedException)result.getThrowable()).getStatusCode() == Http.Status.UNPROCESSABLE_ENTITY.statusCode;
+        }
+    }
+
+    public static class InternalServerErrorAnalyzer extends RetryAnalyzerCount {
+
+        public InternalServerErrorAnalyzer() {
+            setCount(2);
+        }
+
+        @Override
+        public boolean retryMethod(ITestResult result) {
+            Throwable testException = result.getThrowable();
+            if (!result.isSuccess() &&
+                testException instanceof RequestFailedException &&
+                INTERNAL_SERVER_ERROR.equals(((RequestFailedException) testException).getStatusCode())) {
+                result.setStatus(ITestResult.SKIP);
+                return true;
+            }
+            return false;
         }
     }
 }

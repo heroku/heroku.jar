@@ -120,7 +120,7 @@ public class Http {
      * HTTP Status codes. Not all are implemented. Only those used by the Heroku API.
      */
     public static enum Status {
-        OK(200), CREATED(201), ACCEPTED(202), PAYMENT_REQUIRED(402), FORBIDDEN(403), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422);
+        OK(200), CREATED(201), ACCEPTED(202), PAYMENT_REQUIRED(402), FORBIDDEN(403), NOT_FOUND(404), UNPROCESSABLE_ENTITY(422), INTERNAL_SERVER_ERROR(500);
 
         public final int statusCode;
 

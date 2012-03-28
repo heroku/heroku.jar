@@ -57,7 +57,7 @@ public class KeysRequestIntegrationTest {
             }
         }
     }
-    
+
     @DataProvider
     public Object[][] publicKey() throws JSchException, IOException {
         String comment = getComment();
