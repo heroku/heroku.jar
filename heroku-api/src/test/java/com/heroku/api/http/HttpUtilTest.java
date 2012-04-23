@@ -16,4 +16,9 @@ public class HttpUtilTest {
     public void encodeParametersIncludingSpecialCharactersShouldEncodePeriodDashAsteriskAndUnderscore() {
         assertEquals("%2e%2d%2a%5f", encodeIncludingSpecialCharacters(".-*_"));
     }
+
+    @Test
+    public void encodeSpecialCharsInEmailAddressShouldNotLeaveAPeriodOrAtsign() {
+        assertEquals("j%40heroku%2djar%2ecom", encodeIncludingSpecialCharacters("j@heroku-jar.com"));
+    }
 }

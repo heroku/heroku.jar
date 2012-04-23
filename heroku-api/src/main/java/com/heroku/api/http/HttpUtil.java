@@ -17,6 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * HTTP related utilities.
@@ -50,6 +53,15 @@ public class HttpUtil {
 
     }
 
+    // Characters to encode that URLEncoder doesn't encode.
+    // See: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html
+    static final Map<String, String> specialChars = Collections.unmodifiableMap(new HashMap<String, String>(){{
+        put(".", "%2e");
+        put("-", "%2d");
+        put("*", "%2a");
+        put("_", "%5f");
+    }});
+
     /**
      * Some calls in the Heroku API decode strings in a different way from URLEncoder. This is a method for handling those
      * special cases. First, urlencode() is called. Then, .-*_ are replaced with their hexadecimal equivalent.
@@ -58,16 +70,9 @@ public class HttpUtil {
      * @return A string representation of encoded parameters.
      */
     public static String encodeIncludingSpecialCharacters(String toEncode) {
-        // Characters to encode that URLEncoder doesn't encode.
-        // See: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html
-        final String[] specialChars = {".", "-", "*", "_"};
         String encoded = urlencode(toEncode, "Unable to urlencode " + toEncode);
-        for (String s : specialChars) {
-            try {
-                encoded = encoded.replace(s, "%" + String.format("%x", new BigInteger(s.getBytes("UTF-8"))));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+        for (Map.Entry<String, String> s : specialChars.entrySet()) {
+            encoded = encoded.replace(s.getKey(), s.getValue());
         }
         return encoded;
     }
