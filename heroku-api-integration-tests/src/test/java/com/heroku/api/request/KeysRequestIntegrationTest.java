@@ -120,6 +120,6 @@ public class KeysRequestIntegrationTest {
     }
 
     public String getComment() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return "j@" + UUID.randomUUID().toString() + ".com";
     }
 }

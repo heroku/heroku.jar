@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -49,6 +50,27 @@ public class HttpUtil {
 
     }
 
+    /**
+     * Some calls in the Heroku API decode strings in a different way from URLEncoder. This is a method for handling those
+     * special cases. First, urlencode() is called. Then, .-*_ are replaced with their hexadecimal equivalent.
+     * @param config Name/value pairs for a HTTP request.
+     * @param keys List of keys in the config to encode.
+     * @return A string representation of encoded parameters.
+     */
+    public static String encodeIncludingSpecialCharacters(String toEncode) {
+        // Characters to encode that URLEncoder doesn't encode.
+        // See: http://docs.oracle.com/javase/6/docs/api/java/net/URLEncoder.html
+        final String[] specialChars = {".", "-", "*", "_"};
+        String encoded = urlencode(toEncode, "Unable to urlencode " + toEncode);
+        for (String s : specialChars) {
+            try {
+                encoded = encoded.replace(s, "%" + String.format("%x", new BigInteger(s.getBytes("UTF-8"))));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return encoded;
+    }
 
     public static String urlencode(String toEncode, String messageIfFails) {
         try {

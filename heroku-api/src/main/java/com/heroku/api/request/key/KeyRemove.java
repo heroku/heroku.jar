@@ -11,6 +11,8 @@ import com.heroku.api.response.Unit;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.encodeIncludingSpecialCharacters;
+
 /**
  * TODO: Javadoc
  *
@@ -33,7 +35,7 @@ public class KeyRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Key.format(config.get(Heroku.RequestKey.SSHKey));
+        return Heroku.Resource.Key.format(encodeIncludingSpecialCharacters(config.get(Heroku.RequestKey.SSHKey)));
     }
 
     @Override
