@@ -16,6 +16,7 @@ import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
+import com.heroku.api.request.login.BasicAuthLogin;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
@@ -55,6 +56,18 @@ public class HerokuAPI {
 
     protected final Connection connection;
     protected final String apiKey;
+
+    /**
+     * Logs into the Heroku API and retrieves an API key for a given username and password using HTTP Basic Authentication.
+     * @param username Heroku username.
+     * @param password Heroku password.
+     * @return An API key that can be used for subsequent API calls.
+     */
+    public static String obtainApiKey(String username, String password) {
+        Connection tmpConn = ConnectionFactory.get();
+        LoginVerification verification = tmpConn.execute(new BasicAuthLogin(username, password), null);
+        return verification.getApiKey();
+    }
 
     /**
      * Constructs a HerokuAPI with a {@link Connection} based on the first {@link com.heroku.api.connection.ConnectionProvider}

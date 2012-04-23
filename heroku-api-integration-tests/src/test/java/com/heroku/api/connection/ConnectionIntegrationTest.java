@@ -1,6 +1,7 @@
 package com.heroku.api.connection;
 
 import com.google.inject.Inject;
+import com.heroku.api.HerokuAPI;
 import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.LoginVerification;
 import com.heroku.api.TestModuleFactory;
@@ -25,6 +26,13 @@ public class ConnectionIntegrationTest {
 
     @Inject
     Connection connection;
+
+    @Test(groups = "integration")
+    public void testObtainingAnApiKey() {
+        IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();
+        String apiKey = HerokuAPI.obtainApiKey(testUser.getUsername(), testUser.getPassword());
+        assertEquals(apiKey, testUser.getApiKey());
+    }
 
     @Test(groups = "integration")
     public void testValidUsernameAndPassword() throws IOException {
