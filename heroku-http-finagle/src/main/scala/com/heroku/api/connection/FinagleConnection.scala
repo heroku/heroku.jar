@@ -12,6 +12,7 @@ import org.jboss.netty.buffer.ChannelBuffers
 import java.nio.charset.Charset
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
+import com.heroku.api.http.Http.UserAgent
 import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 import com.twitter.util.{Base64StringEncoder, Future}
@@ -52,6 +53,7 @@ class FinagleConnection extends AsyncConnection[Future[_]] {
     req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
     req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
     req.addHeader(HttpHeaders.Names.HOST, hostHeader)
+    req.addHeader(UserAgent.LATEST.getHeaderName, UserAgent.LATEST.getHeaderValue("finagle"))
 
     if (key != null) {
       req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8")))

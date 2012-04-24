@@ -3,6 +3,7 @@ package com.heroku.api.connection;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.ning.http.client.*;
 import com.ning.http.util.Base64;
@@ -34,6 +35,7 @@ public class AsyncHttpClientConnection implements AsyncConnection<ListenableFutu
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
+        builder.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("asynchttpclient"));
         for (Map.Entry<String, String> entry : req.getHeaders().entrySet()) {
             builder.setHeader(entry.getKey(), entry.getValue());
         }

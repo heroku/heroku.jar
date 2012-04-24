@@ -17,6 +17,7 @@ class PlayWSConnection extends AsyncConnection[Promise[_]] {
     val path = request.getEndpoint;
     var url = WS.url(host + path)
       .withHeaders(Heroku.ApiVersion.HEADER -> Heroku.ApiVersion.v2.getHeaderValue)
+      .withHeaders(Http.UserAgent.LATEST.getHeaderName -> Http.UserAgent.LATEST.getHeaderValue("playws"))
       .withHeaders(request.getResponseType.getHeaderName -> request.getResponseType.getHeaderValue)
       .withHeaders(request.getHeaders.asScala.toArray: _*)
 
