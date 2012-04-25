@@ -17,11 +17,6 @@
             <name>twitter.com</name>
             <url>http://maven.twttr.com/</url>
         </repository>
-        <repository>
-            <id>ScalaToolsMaven2Repository</id>
-            <name>Scala-Tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases/</url>
-        </repository>
     </repositories>
 
     <dependencies>
