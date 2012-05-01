@@ -3,6 +3,7 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
+import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -160,6 +161,18 @@ public class HerokuAPI {
         return connection.execute(new AppCreate(app), apiKey);
     }
 
+    /**
+     * Clone an existing app that has previously been designated as a template
+     * into the authenticated user's account with a randomly generated name.
+     * App cloning is only supported on the {@link Heroku.Stack.Cedar} stack.
+     *
+     * @param templateAppName Name of the template app to clone.
+     * @return details about the cloned app
+     */
+    public App cloneApp(String templateAppName) {
+        return connection.execute(new AppClone(templateAppName), apiKey);
+    }
+    
     /**
      * Rename an existing app.
      * @param appName Existing app name. See {@link #listApps()} for names that can be used.
