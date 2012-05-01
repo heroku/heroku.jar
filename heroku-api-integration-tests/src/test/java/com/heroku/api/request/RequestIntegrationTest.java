@@ -9,10 +9,7 @@ import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.AppCreate;
-import com.heroku.api.request.app.AppDestroy;
-import com.heroku.api.request.app.AppInfo;
-import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.app.*;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.log.Log;
@@ -45,6 +42,7 @@ import java.util.Map;
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
+import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
 import static org.testng.Assert.*;
 
 
@@ -67,6 +65,32 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.getStack(), Cedar);
         assertTrue(response.getCreateStatus().equals("complete"));
         deleteApp(response.getName());
+    }
+
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testCloneAppCommand() throws IOException {
+        final String templateName = "template-java-spring-hibernate";
+        AppClone cmd = new AppClone(templateName);
+        App response = connection.execute(cmd, apiKey);
+
+        assertNotNull(response.getId());
+        assertNotSame(templateName, response.getName());
+        assertEquals(response.getStack(), Cedar);
+        assertTrue(response.getCreateStatus().equals("complete"));
+        deleteApp(response.getName());
+    }
+
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testCloneAppCommand_WithNonTemplateApp() throws IOException {
+        final String nonTemplateApp = "java";
+        AppClone cmd = new AppClone(nonTemplateApp);
+        try {
+            connection.execute(cmd, apiKey);
+            fail();
+        } catch (RequestFailedException e) {
+            assertTrue(e.getMessage().contains("Failed to clone app"));
+            assertEquals(e.getStatusCode(), UNPROCESSABLE_ENTITY.statusCode);
+        }
     }
 
     @DataProvider

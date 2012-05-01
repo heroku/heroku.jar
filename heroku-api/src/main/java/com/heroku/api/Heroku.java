@@ -216,6 +216,7 @@ Likewise, the secure random parameter may be null in which case the default impl
         Login("/login"),
         Apps("/apps"),
         App("/apps/%s"),
+        AppClone(App.value + "/clone"),
         Addons("/addons"),
         AppAddons(App.value + "/addons"),
         AppAddon(AppAddons.value + "/%s"),
