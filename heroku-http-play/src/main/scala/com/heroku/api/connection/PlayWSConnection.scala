@@ -25,10 +25,12 @@ class PlayWSConnection extends AsyncConnection[Promise[_]] {
       url = url.withAuth("", key, Realm.AuthScheme.BASIC)
     }
 
+    val body = if (request.hasBody) request.getBody else ""
+
     request.getHttpMethod match {
       case Http.Method.GET => toResponse(request, url.get())
-      case Http.Method.PUT => toResponse(request, url.put(request.getBody))
-      case Http.Method.POST => toResponse(request, url.post(request.getBody))
+      case Http.Method.PUT => toResponse(request, url.put(body))
+      case Http.Method.POST => toResponse(request, url.post(body))
       case Http.Method.DELETE => toResponse(request, url.delete())
     }
 
