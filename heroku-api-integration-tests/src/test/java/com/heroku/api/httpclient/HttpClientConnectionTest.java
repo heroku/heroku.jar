@@ -1,6 +1,7 @@
 package com.heroku.api.httpclient;
 
 import com.heroku.api.App;
+import com.heroku.api.Heroku;
 import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.http.Http;
@@ -48,7 +49,11 @@ public class HttpClientConnectionTest {
         Mockit.setUpMock(AbstractHttpClient.class, new MockAbstractHttpClient(new MockHooks() {
             @Override
             public void beforeAssertions(HttpUriRequest request, HttpContext context) {
-                Assert.assertEquals(request.getHeaders(Http.UserAgent.LATEST.getHeaderName())[0].getValue(), Http.UserAgent.LATEST.getHeaderValue("httpclient"));
+                final String expectedUserAgent = "heroku.jar/" + Heroku.JarProperties.getProperty("heroku.jar.version") + " httpclient";
+                final String userAgentSent = Http.UserAgent.LATEST.getHeaderValue("httpclient");
+                final String userAgentReceived = request.getHeaders(Http.UserAgent.LATEST.getHeaderName())[0].getValue();
+                Assert.assertEquals(expectedUserAgent, userAgentSent);
+                Assert.assertEquals(expectedUserAgent, userAgentReceived);
             }
         }));
         connection.execute(new AddonList(), apiKey);

@@ -1,9 +1,9 @@
 package com.heroku.api.http;
 
-import com.heroku.api.Heroku;
-
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
  * Simple abstraction for HTTP request/response values.
@@ -64,15 +64,17 @@ public class Http {
 
     /**
      * HTTP User-Agent header model.
+     *
+     * @see UserAgentValueProvider
      */
     public static enum UserAgent implements Header {
-        LATEST("heroku.jar-%s-v%s");
+        LATEST(loadValueProvider());
 
         static final String USER_AGENT = "User-Agent";
-        private final String userAgent;
+        private final UserAgentValueProvider userAgentValueProvider;
 
-        UserAgent(String userAgent) {
-            this.userAgent = userAgent;
+        UserAgent(UserAgentValueProvider userAgentValueProvider) {
+            this.userAgentValueProvider = userAgentValueProvider;
         }
 
         @Override
@@ -82,11 +84,22 @@ public class Http {
 
         @Override
         public String getHeaderValue() {
-          return getHeaderValue("unspecified");
+          return userAgentValueProvider.getHeaderValue();
         }
 
         public String getHeaderValue(String customPart) {
-            return String.format(userAgent, customPart, Heroku.JarProperties.getProperty("heroku.jar.version"));
+            return userAgentValueProvider.getHeaderValue(customPart);
+        }
+
+        private static UserAgentValueProvider loadValueProvider() {
+            final Iterator<UserAgentValueProvider> customProviders =
+                    ServiceLoader.load(UserAgentValueProvider.class, UserAgent.class.getClassLoader()).iterator();
+
+            if (customProviders.hasNext()) {
+                return customProviders.next();
+            } else {
+                return new UserAgentValueProvider.DEFAULT();
+            }
         }
     }
 
