@@ -2,14 +2,16 @@ package com.heroku.api;
 
 import com.google.inject.Provides;
 import com.heroku.api.connection.FinagleConnection;
+import com.heroku.api.connection.TwitterFutureConnection;
 import com.heroku.api.exception.RequestFailedException;
+import javassist.convert.TransformWriteField;
 
 import java.io.IOException;
 
 public class FinagleModule extends ConnectionTestModule {
 
     @Provides
-    FinagleConnection getConnectionImpl() throws IOException {
+    TwitterFutureConnection getConnectionImpl() throws IOException {
 
         try {
             return FinagleConnection.apply();
