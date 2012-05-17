@@ -16,7 +16,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class AsyncHttpClientConnection implements AsyncConnection<ListenableFuture<?>> {
+
+
+public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
     private AsyncHttpClient httpClient = getHttpClient();
 

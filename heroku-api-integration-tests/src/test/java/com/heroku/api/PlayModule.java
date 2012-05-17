@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
+import com.heroku.api.connection.PlayConnection;
 import com.heroku.api.connection.PlayWSConnection;
 import com.heroku.api.exception.RequestFailedException;
 
@@ -11,7 +12,7 @@ import static com.heroku.api.IntegrationTestConfig.CONFIG;
 public class PlayModule extends ConnectionTestModule {
 
     @Provides
-    PlayWSConnection getConnectionImpl() throws IOException {
+    PlayConnection getConnectionImpl() throws IOException {
 
         try {
             IntegrationTestConfig.TestUser testUser = CONFIG.getDefaultUser();

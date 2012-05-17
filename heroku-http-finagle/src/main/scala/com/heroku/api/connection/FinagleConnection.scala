@@ -18,8 +18,14 @@ import com.heroku.api.Heroku
 import com.twitter.util.{Base64StringEncoder, Future}
 import com.twitter.conversions.time._
 
+trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
+  def executeAsync[T](request: Request[T], apiKey: String): Future[T]
 
-class FinagleConnection extends AsyncConnection[Future[_]] {
+  def execute[T](request: Request[T], apiKey: String): T
+}
+
+
+class FinagleConnection extends TwitterFutureConnection {
 
   type HttpService = Service[HttpRequest, HttpResponse]
   val timeout = 60.seconds
