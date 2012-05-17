@@ -5,6 +5,7 @@ import com.heroku.api.Collaborator;
 import com.heroku.api.Domain;
 import com.heroku.api.User;
 import com.heroku.api.exception.ParseException;
+import com.heroku.api.request.sharing.CollabList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,7 +23,7 @@ public class XmlParser implements Parser {
 
     static {
         try {
-            jaxbContext = JAXBContext.newInstance(App.class, Collaborator.class, Domain.class, User.class);
+            jaxbContext = JAXBContext.newInstance(App.class, Collaborator.class, Domain.class, User.class, CollabList.Collaborators.class);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
