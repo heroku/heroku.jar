@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 import com.google.inject.Provides;
+import com.heroku.api.connection.FutureConnection;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.parser.JsonSelector;
@@ -26,7 +27,7 @@ public class HttpClientModule extends ConnectionTestModule {
     }
 
     @Provides()
-    HttpClientConnection getConnectionImpl() throws IOException {
+    FutureConnection getConnectionImpl() throws IOException {
         try {
             return new HttpClientConnection();
         } catch (RequestFailedException e) {

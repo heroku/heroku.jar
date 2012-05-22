@@ -32,7 +32,7 @@ import java.util.concurrent.*;
 
 import static com.heroku.api.Heroku.Config.ENDPOINT;
 
-public class HttpClientConnection implements AsyncConnection<Future<?>> {
+public class HttpClientConnection implements FutureConnection {
 
 
     private URL endpoint = HttpUtil.toURL(ENDPOINT.value);
@@ -74,8 +74,8 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             }
 
             httpClient.getCredentialsProvider().setCredentials(
-                new AuthScope(endpoint.getHost(), endpoint.getPort()),
-                new UsernamePasswordCredentials("", key)
+                    new AuthScope(endpoint.getHost(), endpoint.getPort()),
+                    new UsernamePasswordCredentials("", key)
             );
 
             BasicHttpContext ctx = new BasicHttpContext();
@@ -165,11 +165,11 @@ public class HttpClientConnection implements AsyncConnection<Future<?>> {
             if (authState.getAuthScheme() == null) {
                 AuthScheme authScheme = (AuthScheme) context.getAttribute("preemptive-auth");
                 CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
-                    ClientContext.CREDS_PROVIDER);
+                        ClientContext.CREDS_PROVIDER);
                 HttpHost targetHost = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
                 if (authScheme != null) {
                     Credentials creds = credsProvider.getCredentials(
-                        new AuthScope(targetHost.getHostName(), targetHost.getPort()));
+                            new AuthScope(targetHost.getHostName(), targetHost.getPort()));
                     if (creds == null) {
                         throw new HttpException("No credentials for preemptive authentication");
                     }

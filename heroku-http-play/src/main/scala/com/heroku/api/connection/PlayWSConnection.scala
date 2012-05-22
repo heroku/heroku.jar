@@ -9,8 +9,13 @@ import com.ning.http.client.Realm
 import com.heroku.api.request.Request
 import java.util.concurrent.TimeUnit
 
+trait PlayConnection extends AsyncConnection[Promise[_]] {
+  def executeAsync[T](request: Request[T], apiKey: String): Promise[T]
 
-class PlayWSConnection extends AsyncConnection[Promise[_]] {
+  def execute[T](request: Request[T], apiKey: String): T
+}
+
+class PlayWSConnection extends PlayConnection {
 
   def executeAsync[T](request: Request[T], key: String): Promise[T] = {
     val host = Heroku.Config.ENDPOINT.value;
