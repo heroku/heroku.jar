@@ -1,8 +1,13 @@
 package com.heroku.api.parser;
 
+import com.heroku.api.App;
+import com.heroku.api.Domain;
+import com.heroku.api.User;
 import com.heroku.api.exception.ParseException;
 import org.testng.annotations.Test;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -29,6 +34,14 @@ public class XmlParserTest {
             "    <access>edit</access>" +
             "  </collaborator>" +
             "</collaborators>";
+
+    static {
+        try {
+            XmlParser.jaxbContext = JAXBContext.newInstance(Collaborator.class, Collaborators.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @XmlRootElement
     public static class Collaborators {
@@ -72,12 +85,13 @@ public class XmlParserTest {
         c.getCollaborator();
     }
 
+
     @Test
     public void xmlParserShouldTrimBytesToAvoidBarfingOnNullBytes() {
         XmlParser parser = new XmlParser();
         Collaborator c = parser.parse(
-            "\000<collaborator><email>email</email><access>edit</access></collaborator>\000".getBytes(),
-            Collaborator.class
+                "\000<collaborator><email>email</email><access>edit</access></collaborator>\000".getBytes(),
+                Collaborator.class
         );
         assertEquals(c.getEmail(), "email");
     }

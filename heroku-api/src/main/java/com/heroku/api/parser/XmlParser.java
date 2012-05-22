@@ -1,6 +1,11 @@
 package com.heroku.api.parser;
 
+import com.heroku.api.App;
+import com.heroku.api.Collaborator;
+import com.heroku.api.Domain;
+import com.heroku.api.User;
 import com.heroku.api.exception.ParseException;
+import com.heroku.api.request.sharing.CollabList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,11 +18,21 @@ import java.lang.reflect.Type;
  * @author Naaman Newbold
  */
 public class XmlParser implements Parser {
+
+    static JAXBContext jaxbContext;
+
+    static {
+        try {
+            jaxbContext = JAXBContext.newInstance(App.class, Collaborator.class, Domain.class, User.class, CollabList.Collaborators.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> T parse(byte[] data, Type type) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance((Class) type);
             return (T) jaxbContext.createUnmarshaller().unmarshal(new StringReader(new String(data).trim()));
         } catch (JAXBException e) {
             throw new ParseException(e);

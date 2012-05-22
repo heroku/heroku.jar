@@ -68,7 +68,7 @@ public class CollabList implements Request<List<Collaborator>> {
     }
 
     @XmlRootElement
-    static class Collaborators {
+    public static class Collaborators {
         List<Collaborator> collaborators;
 
         public List<Collaborator> getCollaborator() {
