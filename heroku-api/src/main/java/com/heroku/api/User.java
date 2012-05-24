@@ -1,20 +1,16 @@
 package com.heroku.api;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-@XmlRootElement
 public class User {
 
-    @XmlElement String created_at;
-    @XmlElement String last_login;
-    @XmlElement String id;
-    @XmlElement String email;
+    String created_at;
+    String last_login;
+    String id;
+    String email;
 
     public String getCreatedAt() {
         return created_at;

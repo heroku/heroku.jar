@@ -1,8 +1,5 @@
 package com.heroku.api;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * TODO: Javadoc
  *
@@ -11,15 +8,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 /*
 "domain_name":{"created_at":"2010/06/03 19:25:08 -0700","updated_at":"2010/06/03 19:25:08 -0700","default":null,"domain":"dropphotos.com","id":27324,"app_id":200391,"base_domain":"dropphotos.com"}
 */
-@XmlRootElement(name = "domain_name")
 public class Domain {
-    @XmlElement String created_at;
-    @XmlElement String updated_at;
-    @XmlElement(name = "default") String default_name;
-    @XmlElement String domain;
-    @XmlElement String id;
-    @XmlElement String app_id;
-    @XmlElement String base_domain;
+    String created_at;
+    String updated_at;
+    String default_name;
+    String domain;
+    String id;
+    String app_id;
+    String base_domain;
 
     public String getCreatedAt() {
         return created_at;
