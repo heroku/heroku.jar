@@ -8,17 +8,17 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-api</artifactId>
-        <version>0.7</version>
+        <version>0.9</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-json-jackson</artifactId>
-        <version>0.7</version>
+        <version>0.9</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-http-apache</artifactId>
-        <version>0.7</version>
+        <version>0.9</version>
     </dependency>
 
 The artifacts are in Maven Central so you won't need to build them locally first if you don't want to.
@@ -105,17 +105,17 @@ Use the snapshot version:
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-api</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.10-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-json-jackson</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.10-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>com.heroku.api</groupId>
         <artifactId>heroku-http-apache</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.10-SNAPSHOT</version>
     </dependency>
 
 Add the snapshot repository to your pom.xml
