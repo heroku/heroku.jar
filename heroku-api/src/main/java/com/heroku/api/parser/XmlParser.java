@@ -23,7 +23,7 @@ public class XmlParser implements Parser {
 
     static {
         try {
-            jaxbContext = JAXBContext.newInstance(App.class, Collaborator.class, Domain.class, User.class, CollabList.Collaborators.class);
+            jaxbContext = JAXBContext.newInstance(App.class, Collaborator.class, Domain.class, User.class);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }

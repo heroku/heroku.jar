@@ -47,7 +47,7 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.TEXT;
     }
 
     @Override

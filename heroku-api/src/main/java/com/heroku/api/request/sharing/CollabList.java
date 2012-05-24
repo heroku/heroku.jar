@@ -5,14 +5,14 @@ import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
-import com.heroku.api.parser.XmlParser;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
@@ -49,7 +49,7 @@ public class CollabList implements Request<List<Collaborator>> {
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.XML;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -60,23 +60,9 @@ public class CollabList implements Request<List<Collaborator>> {
     @Override
     public List<Collaborator> getResponse(byte[] bytes, int status) {
         if (status == Http.Status.OK.statusCode) {
-            Collaborators collaborators = new XmlParser().parse(bytes, Collaborators.class);
-            return collaborators.getCollaborator();
+            return parse(bytes, getClass());
         } else {
             throw new RequestFailedException("List collaborators failed.", status, bytes);
-        }
-    }
-
-    @XmlRootElement
-    public static class Collaborators {
-        List<Collaborator> collaborators;
-
-        public List<Collaborator> getCollaborator() {
-            return collaborators;
-        }
-
-        public void setCollaborator(List<Collaborator> collablist) {
-            this.collaborators = collablist;
         }
     }
 

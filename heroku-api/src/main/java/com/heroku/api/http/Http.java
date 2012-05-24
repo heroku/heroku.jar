@@ -14,7 +14,6 @@ public class Http {
      */
     public static enum Accept implements Header {
         JSON("application/json"),
-        XML("text/xml"),
         TEXT("text/plain");
 
         private String value;
