@@ -12,6 +12,9 @@ import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.*;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
+import com.heroku.api.request.domain.DomainAdd;
+import com.heroku.api.request.domain.DomainList;
+import com.heroku.api.request.domain.DomainRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
@@ -320,7 +323,54 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         String migrateStatus = connection.execute(new StackMigrate(app.getName(), Heroku.Stack.Bamboo192), apiKey);
         assertTrue(migrateStatus.contains("Migration prepared"));
     }
-    
+
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testAddDomain(App app) {
+        String domainName = randomDomain();
+        Domain addedDomain = connection.execute(new DomainAdd(app.getName(), domainName), apiKey);
+        assertEquals(addedDomain.getDomain(), domainName);
+    }
+
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testDomainList(App app) {
+        String domainName = randomDomain();
+        connection.execute(new DomainAdd(app.getName(), domainName), apiKey);
+        assertDomainIsPresent(app, domainName);
+    }
+
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testRemoveDomain(App app) {
+        String domainName = randomDomain();
+        connection.execute(new DomainAdd(app.getName(), domainName), apiKey);
+        connection.execute(new DomainRemove(app.getName(), domainName), apiKey);
+        assertDomainNotPresent(app, domainName);
+    }
+
+    private void assertDomainIsPresent(App app, String domainName) {
+        for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
+            if (d.getDomain().equalsIgnoreCase(domainName)) {
+                return;
+            }
+        }
+        throw new AssertionError(
+            "Domain " + domainName + " should be present, but it was not found for app " + app.getName()
+        );
+    }
+
+    private void assertDomainNotPresent(App app, String domainName) {
+        for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
+            if (d.getDomain().equalsIgnoreCase(domainName)) {
+                throw new AssertionError(
+                    "Domain " + domainName + " should not be present, but it was found for app " + app.getName()
+                );
+            }
+        }
+    }
+
+    private String randomDomain() {
+        return Integer.valueOf((int) Math.ceil(Math.random() * 100000000)) + "-simonwoodstock.com";
+    }
+
     public static class LogRetryAnalyzer extends RetryAnalyzerCount {
         public LogRetryAnalyzer() {
             setCount(10);
