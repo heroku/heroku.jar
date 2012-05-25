@@ -2,6 +2,7 @@ package com.heroku.api.request.run;
 
 
 import com.heroku.api.Heroku;
+import com.heroku.api.Proc;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
@@ -70,7 +71,8 @@ public class Run implements Request<RunResponse> {
     @Override
     public RunResponse getResponse(byte[] bytes, int status) {
         if (status == 200) {
-            return Json.parse(bytes, this.getClass());
+            Proc parsedProc = Json.parse(bytes, Proc.class);
+            return new RunResponse(parsedProc);
         } else {
             throw new RequestFailedException("Run Request Failed,", status, bytes);
         }

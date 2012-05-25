@@ -1,6 +1,6 @@
 package com.heroku.api;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * TODO: Javadoc
@@ -20,7 +20,7 @@ public class Proc {
     String transitioned_at;
     int elapsed;
     boolean attached;
-    URL rendezvous_url;
+    URI rendezvous_url;
 
     public String getUpid() {
         return upid;
@@ -118,11 +118,11 @@ public class Proc {
         this.attached = attached;
     }
 
-    public URL getRendezvousUrl() {
+    public URI getRendezvousUrl() {
         return rendezvous_url;
     }
 
-    private void setRendezvous_url(URL rendezvous_url) {
+    private void setRendezvous_url(URI rendezvous_url) {
         this.rendezvous_url = rendezvous_url;
     }
 }

@@ -27,6 +27,16 @@ public class Json {
         }
     }
 
+    /**
+     * Proxy method for getting the Parser and calling parse().
+     * @param data JSON byte array to be parsed.
+     * @param type Deserialized type for the JSON data
+     * @param <T> Deserialzed object type
+     * @return The JSON data deserialized to T
+     */
+    public static <T> T parse(byte[] data, Type type) {
+        return Holder.parser.parse(data, type);
+    }
 
     /**
      * Calls Parser.parse() using the generic type T for Request<T> given Request<T> is the interface for the
