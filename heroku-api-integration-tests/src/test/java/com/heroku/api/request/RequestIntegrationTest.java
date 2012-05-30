@@ -66,7 +66,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
         assertNotNull(response.getId());
         assertEquals(response.getStack(), Cedar);
-        assertTrue(response.getCreateStatus().equals("complete"));
+        assertEquals(response.getCreateStatus(), "complete");
+        assertNull(response.getBuildpackProvidedDescription());
         deleteApp(response.getName());
     }
 
@@ -79,7 +80,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response.getId());
         assertNotSame(templateName, response.getName());
         assertEquals(response.getStack(), Cedar);
-        assertTrue(response.getCreateStatus().equals("complete"));
+        assertEquals(response.getCreateStatus(), "complete");
+        assertEquals(response.getBuildpackProvidedDescription(), "Java");
         deleteApp(response.getName());
     }
 
