@@ -18,6 +18,7 @@ public class App {
     String requested_stack;
     String repo_migrate_status;
     String git_url;
+    String buildpack_provided_description;
     int slug_size;
 	int repo_size;
     int dynos;
@@ -89,6 +90,10 @@ public class App {
         this.git_url = git_url;
     }
 
+    private void setBuildpack_provided_description(String buildpack_provided_description) {
+        this.buildpack_provided_description = buildpack_provided_description;
+    }
+
     private void setSlug_size(int slug_size) {
         this.slug_size = slug_size;
     }
@@ -132,6 +137,10 @@ public class App {
         return git_url;
     }
 
+    public String getBuildpackProvidedDescription() {
+        return buildpack_provided_description;
+    }
+
     public String getCreateStatus() {
         return create_status;
     }
@@ -171,7 +180,7 @@ public class App {
     public String getOwnerEmail() {
         return owner_email;
     }
-    
+
     private App copy() {
         App copy = new App();
         copy.name = this.name;
