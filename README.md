@@ -99,6 +99,20 @@ HerokuAPI api = new HerokuAPI(apiKey);
 Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemove");
 ```
 
+####Overriding the User-Agent Header
+The default User-Agent header is recommended for most use cases.
+
+If this library is being used as part of another library or 
+application that wishes to set its own User-Agent header value, 
+implement the [`com.heroku.api.http.UserAgentValueProvider`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java) 
+interface and create a provider-configuration file at `META-INF/services/com.heroku.api.http.UserAgentValueProvider` 
+containing the fully-qualified name of your provider class. 
+See [`java.util.ServiceLoader`](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) for details.
+
+To conform to [RFC 2616 Section 14.43](http://tools.ietf.org/html/rfc2616#section-14.43), consider prepending the value
+from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java) 
+provider with your own user agent.
+
 ###For the latest snapshots...
 Use the snapshot version:
 
