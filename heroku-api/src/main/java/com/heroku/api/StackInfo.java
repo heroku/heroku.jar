@@ -1,9 +1,14 @@
 package com.heroku.api;
 
+import java.io.Serializable;
+
 /**
  * @author Naaman Newbold
  */
-public class StackInfo {
+public class StackInfo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String requested;
     boolean beta;
     boolean current;

@@ -1,5 +1,7 @@
 package com.heroku.api;
 
+import java.io.Serializable;
+
 /**
  * TODO: Javadoc
  *
@@ -8,7 +10,10 @@ package com.heroku.api;
 /*
 "domain_name":{"created_at":"2010/06/03 19:25:08 -0700","updated_at":"2010/06/03 19:25:08 -0700","default":null,"domain":"dropphotos.com","id":27324,"app_id":200391,"base_domain":"dropphotos.com"}
 */
-public class Domain {
+public class Domain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String created_at;
     String updated_at;
     String default_name;
