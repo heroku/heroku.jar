@@ -58,7 +58,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
-
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate(new App().on(Cedar));
