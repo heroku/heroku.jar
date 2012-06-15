@@ -1,11 +1,15 @@
 package com.heroku.api;
 
+import java.io.Serializable;
+
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     String created_at;
     String last_login;

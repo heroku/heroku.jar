@@ -1,5 +1,6 @@
 package com.heroku.api;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,10 @@ import java.util.Map;
  *
  * @author Naaman Newbold
  */
-public class Release {
+public class Release implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String name, descr,user, commit;
     String created_at;
     Map<String, String> env;

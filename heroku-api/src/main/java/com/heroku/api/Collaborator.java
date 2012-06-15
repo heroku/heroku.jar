@@ -1,11 +1,16 @@
 package com.heroku.api;
 
+import java.io.Serializable;
+
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class Collaborator {
+public class Collaborator implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String access;
     String email;
 
