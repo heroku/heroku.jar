@@ -59,16 +59,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
-         public void testGetUserInfoCommand() throws IOException {
-        final User user = connection.execute(new UserInfo(), apiKey);
-        assertNotNull(user);
-        assertNotNull(user.getEmail());
-        assertNotNull(user.getId());
-        assertNotNull(user.getLastLogin());
-        assertTrue(user.isVerified());
-    }
-    
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCreateAppCommand() throws IOException {
         AppCreate cmd = new AppCreate(new App().on(Cedar));
         App response = connection.execute(cmd, apiKey);
