@@ -1,5 +1,6 @@
 package com.heroku.api;
 
+import java.io.Serializable;
 import java.net.URI;
 
 /**
@@ -7,7 +8,10 @@ import java.net.URI;
  *
  * @author Naaman Newbold
  */
-public class Proc {
+public class Proc implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String upid;
     String process;
     String type;

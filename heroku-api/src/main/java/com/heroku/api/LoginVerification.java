@@ -1,6 +1,10 @@
 package com.heroku.api;
 
-public class LoginVerification {
+import java.io.Serializable;
+
+public class LoginVerification implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     String api_key;
     String verified_at;

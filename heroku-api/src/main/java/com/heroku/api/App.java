@@ -1,11 +1,15 @@
 package com.heroku.api;
 
+import java.io.Serializable;
+
 /**
  * Data model for a Heroku App. Also serves as a builder class when making requests to create an app.
  *
  * @author Naaman Newbold
  */
-public class App {
+public class App implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     String id;
     String name;
