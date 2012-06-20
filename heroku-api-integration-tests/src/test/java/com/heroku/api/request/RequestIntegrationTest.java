@@ -9,7 +9,10 @@ import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.*;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.app.AppInfo;
+import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.domain.DomainAdd;
@@ -72,9 +75,10 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCloneAppCommand() throws IOException {
+        final HerokuAPI api = new HerokuAPI(apiKey);
         final String templateName = "template-java-spring-hibernate";
-        AppClone cmd = new AppClone(templateName);
-        App response = connection.execute(cmd, apiKey);
+        
+        App response = api.cloneApp(templateName);
 
         assertNotNull(response.getId());
         assertNotSame(templateName, response.getName());
@@ -85,11 +89,29 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     }
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testCloneAppCommand_WithRequestedName() throws IOException {
+        final HerokuAPI api = new HerokuAPI(apiKey);
+        final String templateName = "template-java-spring-hibernate";
+        final String requestedAppName = "test" + System.currentTimeMillis();
+
+        App response = api.cloneApp(templateName, new App().named(requestedAppName));
+
+        assertNotNull(response.getId());
+        assertNotSame(templateName, response.getName());
+        assertEquals(response.getName(), requestedAppName);
+        assertEquals(response.getStack(), Cedar);
+        assertEquals(response.getCreateStatus(), "complete");
+        assertEquals(response.getBuildpackProvidedDescription(), "Java");
+        deleteApp(response.getName());
+    }
+    
+    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCloneAppCommand_WithNonTemplateApp() throws IOException {
+        final HerokuAPI api = new HerokuAPI(apiKey);
         final String nonTemplateApp = "java";
-        AppClone cmd = new AppClone(nonTemplateApp);
+        
         try {
-            connection.execute(cmd, apiKey);
+            api.cloneApp(nonTemplateApp);
             fail();
         } catch (RequestFailedException e) {
             assertTrue(e.getMessage().contains("Failed to clone app"));
