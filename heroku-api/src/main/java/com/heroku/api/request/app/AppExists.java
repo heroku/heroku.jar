@@ -1,6 +1,5 @@
 package com.heroku.api.request.app;
 
-import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
@@ -11,18 +10,14 @@ import com.heroku.api.request.RequestConfig;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.heroku.api.parser.Json.parse;
-
 /**
- * TODO: Javadoc
- *
- * @author Naaman Newbold
+ * @author Ryan Brainard
  */
-public class AppInfo implements Request<App> {
+public class AppExists implements Request<Boolean> {
 
     private final RequestConfig config;
 
-    public AppInfo(String appName) {
+    public AppExists(String appName) {
         this.config = new RequestConfig().app(appName);
     }
 
@@ -57,11 +52,13 @@ public class AppInfo implements Request<App> {
     }
 
     @Override
-    public App getResponse(byte[] data, int code) {
-        if (Http.Status.OK.equals(code)) {
-            return parse(data, getClass());
+    public Boolean getResponse(byte[] data, int code) {
+        if (Http.Status.OK.equals(code) || Http.Status.FORBIDDEN.equals(code)) {
+            return true;
+        } else if (Http.Status.NOT_FOUND.equals(code)) {
+            return false;
         } else {
+            throw new RequestFailedException("Unexpected app exist status", code, data);
         }
-        throw new RequestFailedException("Unable to get app appInfo", code, data);
     }
 }
