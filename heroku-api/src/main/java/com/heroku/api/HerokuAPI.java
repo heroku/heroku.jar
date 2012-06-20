@@ -3,7 +3,6 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
-import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -170,7 +169,21 @@ public class HerokuAPI {
      * @return details about the cloned app
      */
     public App cloneApp(String templateAppName) {
-        return connection.execute(new AppClone(templateAppName), apiKey);
+        return connection.execute(new AppClone(templateAppName, new App()), apiKey);
+    }
+
+    /**
+     * Clone an existing app that has previously been designated as a template
+     * into the authenticated user's account with details specified in the target app.
+     * Currently, only specifying the name of the target app is supported.
+     * App cloning is only supported on the {@link Heroku.Stack.Cedar} stack.
+     *
+     * @param templateAppName Name of the template app to clone.
+     * @param targetApp Details about the target app.
+     * @return details about the cloned targetApp
+     */
+    public App cloneApp(String templateAppName, App targetApp) {
+        return connection.execute(new AppClone(templateAppName, targetApp), apiKey);
     }
     
     /**
