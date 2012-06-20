@@ -5,6 +5,11 @@ import com.heroku.api.http.Http;
 import java.util.Map;
 
 /**
+ * Transforms a {@link Request}<code>&lt;A&gt;</code> into a {@link Request}<code>&lt;B&gt;</code>
+ * to allow parsing of the raw response to create a <code>B</code>.
+ *
+ * This is useful for extending standard request classes with a different response type.
+ *
  * @author Ryan Brainard
  */
 public abstract class RequestTransformation<A,B> implements Request<B> {

@@ -1,54 +1,20 @@
 package com.heroku.api.request.app;
 
-import com.heroku.api.Heroku;
+import com.heroku.api.App;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
-import com.heroku.api.request.Request;
-import com.heroku.api.request.RequestConfig;
-
-import java.util.Collections;
-import java.util.Map;
+import com.heroku.api.request.RequestTransformation;
 
 /**
+ * Determines if an app with a given name exists on Heroku.
+ * A true response does not necessarily indicate the user has access to the app.
+ *
  * @author Ryan Brainard
  */
-public class AppExists implements Request<Boolean> {
+public class AppExists extends RequestTransformation<App,Boolean> {
 
-    private final RequestConfig config;
-
-    public AppExists(String appName) {
-        this.config = new RequestConfig().app(appName);
-    }
-
-    @Override
-    public Http.Method getHttpMethod() {
-        return Http.Method.GET;
-    }
-
-    @Override
-    public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
-    }
-
-    @Override
-    public boolean hasBody() {
-        return false;
-    }
-
-    @Override
-    public String getBody() {
-        throw HttpUtil.noBody();
-    }
-
-    @Override
-    public Http.Accept getResponseType() {
-        return Http.Accept.JSON;
-    }
-
-    @Override
-    public Map<String, String> getHeaders() {
-        return Collections.emptyMap();
+    public AppExists(String name) {
+        super(new AppInfo(name));
     }
 
     @Override

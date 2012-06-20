@@ -59,7 +59,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testAppExists() throws IOException {
+    public void testAppExistsCommand() throws IOException {
         HerokuAPI api = new HerokuAPI(apiKey);
 
         final String nonExistentApp = "NO-APP-" + System.currentTimeMillis();

@@ -154,7 +154,7 @@ public class HerokuAPI {
      * @return true if an app exists with the specified name
      */
     public boolean appExists(String name) {
-        return connection.execute(new AppExists(name), null);
+        return connection.execute(new AppExists(name), apiKey);
     }
 
     /**
