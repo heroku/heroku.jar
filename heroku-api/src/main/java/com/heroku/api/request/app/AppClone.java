@@ -4,6 +4,7 @@ import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -19,8 +20,11 @@ public class AppClone implements Request<App> {
 
     private final RequestConfig config;
     
-    public AppClone(String appName) {
-        config = new RequestConfig().with(Heroku.RequestKey.AppName, appName);
+    public AppClone(String templateAppName, App targetApp) {
+        RequestConfig builder = new RequestConfig();
+        builder = builder.with(Heroku.RequestKey.AppName, templateAppName);
+        builder = (targetApp.getName() != null) ? builder.with(Heroku.RequestKey.CreateAppName, targetApp.getName()) : builder;
+        config = builder;
     }
 
     @Override
@@ -35,12 +39,12 @@ public class AppClone implements Request<App> {
 
     @Override
     public boolean hasBody() {
-        return false;
+        return true;
     }
 
     @Override
     public String getBody() {
-        throw new UnsupportedOperationException();
+        return HttpUtil.encodeParameters(config, Heroku.RequestKey.CreateAppName);
     }
 
     @Override

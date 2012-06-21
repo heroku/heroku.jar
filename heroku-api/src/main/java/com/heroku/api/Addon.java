@@ -1,5 +1,6 @@
 package com.heroku.api;
 
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -7,7 +8,10 @@ import java.net.URL;
  *
  * @author Naaman Newbold
  */
-public class Addon {
+public class Addon implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     String name;
     String description;
     URL url;
