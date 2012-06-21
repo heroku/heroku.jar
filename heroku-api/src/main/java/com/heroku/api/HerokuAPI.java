@@ -455,7 +455,7 @@ public class HerokuAPI {
      * @return true if maintenance mode is enabled
      */
     public boolean isMaintenanceModeEnabled(String appName) {
-        return connection.execute(new MaintenanceInfo(appName), apiKey).isMaintenance();
+        return connection.execute(new MaintenanceInfo(appName), apiKey);
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.heroku.api.request.maintenance;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.Maintenance;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
+import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Ryan Brainard
  */
-public class MaintenanceInfo implements Request<Maintenance> {
+public class MaintenanceInfo implements Request<Boolean> {
 
     private final RequestConfig config;
 
@@ -54,9 +54,11 @@ public class MaintenanceInfo implements Request<Maintenance> {
     }
 
     @Override
-    public Maintenance getResponse(byte[] in, int code) {
-        if (Http.Status.OK.equals(code))
-            return Json.parse(in, getClass());
+    public Boolean getResponse(byte[] in, int code) {
+        if (Http.Status.OK.equals(code)) {
+            final Map<String, String> parsed = Json.parse(in, new TypeReference<Map<String, String>>() {}.getType());
+            return Boolean.valueOf(parsed.get("maintenance"));
+        }
         else
             throw new RequestFailedException("MaintenanceInfo failed", code, in);
     }
