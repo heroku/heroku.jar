@@ -58,13 +58,13 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testAppExistsCommand() throws IOException {
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testAppExistsCommand(App app) throws IOException {
         HerokuAPI api = new HerokuAPI(apiKey);
 
         final String nonExistentApp = "NO-APP-" + System.currentTimeMillis();
         final String existentAppNoAccess = "java";
-        final String existentAppWithAccess = createApp().getName();
+        final String existentAppWithAccess = app.getName();
 
         assertTrue(api.isAppNameAvailable(nonExistentApp));
         assertFalse(api.isAppNameAvailable(existentAppNoAccess));
@@ -73,8 +73,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(api.appExists(existentAppNoAccess));
         assertTrue(api.appExists(existentAppWithAccess));
         assertFalse(api.appExists(nonExistentApp));
-
-        deleteApp(existentAppWithAccess);
     }
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
