@@ -174,7 +174,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Release("release"),
         Rollback("rollback"),
         CreateDomain("domain_name[domain]"),
-        DeleteDomain("domain_name");
+        DeleteDomain("domain_name"),
+        MaintenanceMode("maintenance_mode");
 
         public final String queryParameter;
 
@@ -239,7 +240,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Status(App.value + "/status"),
         AppStack(App.value + "/stack"),
         Domains(App.value + "/domains"),
-        Domain(Domains.value + "/%s");
+        Domain(Domains.value + "/%s"),
+        Maintenance(App.value + "/server/maintenance");
 
         public final String value;
 

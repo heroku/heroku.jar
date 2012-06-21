@@ -17,6 +17,8 @@ import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.login.BasicAuthLogin;
+import com.heroku.api.request.maintenance.MaintenanceInfo;
+import com.heroku.api.request.maintenance.MaintenanceUpdate;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
@@ -444,5 +446,25 @@ public class HerokuAPI {
      */
     public List<StackInfo> listAppStacks(String appName) {
         return connection.execute(new StackList(appName), apiKey);
+    }
+
+    /**
+     * Checks if maintenance mode is enabled for the given app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @return true if maintenance mode is enabled
+     */
+    public boolean isMaintenanceModeEnabled(String appName) {
+        return connection.execute(new MaintenanceInfo(appName), apiKey);
+    }
+
+    /**
+     * Sets maintenance mode for the given app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param enable true to enable; false to disable
+     */
+    public void setMaintenanceMode(String appName, boolean enable) {
+        connection.execute(new MaintenanceUpdate(appName, enable), apiKey);
     }
 }

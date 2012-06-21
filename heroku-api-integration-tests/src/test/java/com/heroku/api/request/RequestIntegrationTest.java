@@ -369,6 +369,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertDomainNotPresent(app, domainName);
     }
 
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testMaintenanceMode(App app) {
+        HerokuAPI api = new HerokuAPI(apiKey);
+        assertFalse(api.isMaintenanceModeEnabled(app.getName()));
+        api.setMaintenanceMode(getApp().getName(), true);
+        assertTrue(api.isMaintenanceModeEnabled(app.getName()));
+        api.setMaintenanceMode(getApp().getName(), false);
+        assertFalse(api.isMaintenanceModeEnabled(app.getName()));
+    }
+    
     private void assertDomainIsPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
             if (d.getDomain().equalsIgnoreCase(domainName)) {
