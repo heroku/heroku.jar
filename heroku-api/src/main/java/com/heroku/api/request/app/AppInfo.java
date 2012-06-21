@@ -58,9 +58,10 @@ public class AppInfo implements Request<App> {
 
     @Override
     public App getResponse(byte[] data, int code) {
-        if (code == 200)
+        if (Http.Status.OK.equals(code)) {
             return parse(data, getClass());
-        else
-            throw new RequestFailedException("Unable to get app appInfo", code, data);
+        } else {
+        }
+        throw new RequestFailedException("Unable to get app appInfo", code, data);
     }
 }

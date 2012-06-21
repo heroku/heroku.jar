@@ -3,6 +3,10 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
+import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.exception.RequestFailedException;
+import com.heroku.api.http.Http;
+import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -140,6 +144,29 @@ public class HerokuAPI {
      */
     public App getApp(String name) {
         return connection.execute(new AppInfo(name), apiKey);
+    }
+
+    /**
+     * Checks if an app with the given name exists on Heroku.
+     *
+     * A true response does not necessarily indicate the user has access to the app.
+     * Use {@link #getApp(String)} to check user access.
+     *
+     * @param name name of the app
+     * @return true if an app exists with the specified name
+     */
+    public boolean appExists(String name) {
+        return connection.execute(new AppExists(name), apiKey);
+    }
+
+    /**
+     * Checks if the given app name is available on Heroku.
+     *
+     * @param name name of the app
+     * @return true if the app name is available
+     */
+    public boolean isAppNameAvailable(String name) {
+        return !appExists(name);
     }
 
     /**
