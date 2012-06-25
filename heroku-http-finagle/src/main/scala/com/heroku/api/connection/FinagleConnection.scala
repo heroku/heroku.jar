@@ -25,7 +25,7 @@ trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
 }
 
 
-class FinagleConnection extends TwitterFutureConnection {
+class FinagleConnection(val host: String = Heroku.Config.ENDPOINT.value) extends TwitterFutureConnection {
 
   type HttpService = Service[HttpRequest, HttpResponse]
   val timeout = 60.seconds
@@ -85,15 +85,15 @@ class FinagleConnection extends TwitterFutureConnection {
   }
 
   def getHostHeader: String = {
-    val url = HttpUtil.toURL(Heroku.Config.ENDPOINT.value)
-    val host = url.getHost
+    val url = HttpUtil.toURL(host)
+    val hhost = url.getHost
     var port = ""
     if (url.getPort != url.getDefaultPort) port = ":" + url.getPort.toString
-    host + port
+    hhost + port
   }
 
   def newClient(): HttpService = {
-    val endpoint = HttpUtil.toURL(Heroku.Config.ENDPOINT.value)
+    val endpoint = HttpUtil.toURL(host)
     var builder = ClientBuilder()
       .codec(Http())
       .hosts(new InetSocketAddress(endpoint.getHost, getPort(endpoint)))
