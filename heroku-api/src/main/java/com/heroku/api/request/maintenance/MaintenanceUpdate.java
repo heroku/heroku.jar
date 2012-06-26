@@ -49,7 +49,7 @@ public class MaintenanceUpdate implements Request<Unit> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Collections.emptyMap();
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
