@@ -63,7 +63,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAppExistsCommand(App app) throws IOException {
-        HerokuAPI api = new HerokuAPI(apiKey);
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
 
         final String nonExistentApp = "NO-APP-" + System.currentTimeMillis();
         final String existentAppNoAccess = "java";
@@ -92,7 +92,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCloneAppCommand() throws IOException {
-        final HerokuAPI api = new HerokuAPI(apiKey);
+        final HerokuAPI api = new HerokuAPI(connection, apiKey);
         final String templateName = "template-java-spring-hibernate";
         
         App response = api.cloneApp(templateName);
@@ -107,7 +107,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCloneAppCommand_WithRequestedName() throws IOException {
-        final HerokuAPI api = new HerokuAPI(apiKey);
+        final HerokuAPI api = new HerokuAPI(connection, apiKey);
         final String templateName = "template-java-spring-hibernate";
         final String requestedAppName = "test" + System.currentTimeMillis();
 
@@ -124,7 +124,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCloneAppCommand_WithNonTemplateApp() throws IOException {
-        final HerokuAPI api = new HerokuAPI(apiKey);
+        final HerokuAPI api = new HerokuAPI(connection, apiKey);
         final String nonTemplateApp = "java";
         
         try {
@@ -388,7 +388,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testMaintenanceMode(App app) {
-        HerokuAPI api = new HerokuAPI(apiKey);
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
         assertFalse(api.isMaintenanceModeEnabled(app.getName()));
         api.setMaintenanceMode(getApp().getName(), true);
         assertTrue(api.isMaintenanceModeEnabled(app.getName()));
