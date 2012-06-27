@@ -15,7 +15,11 @@ trait PlayConnection extends AsyncConnection[Promise[_]] {
   def execute[T](request: Request[T], apiKey: String): T
 }
 
-class PlayWSConnection(val host: String = Heroku.Config.ENDPOINT.value) extends PlayConnection {
+class PlayWSConnection(val host: String) extends PlayConnection {
+
+  def this() {
+    this(Heroku.Config.ENDPOINT.value)
+  }
 
   def executeAsync[T](request: Request[T], key: String): Promise[T] = {
 

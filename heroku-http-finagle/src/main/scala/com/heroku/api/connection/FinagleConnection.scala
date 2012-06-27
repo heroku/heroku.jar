@@ -25,7 +25,11 @@ trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
 }
 
 
-class FinagleConnection(val host: String = Heroku.Config.ENDPOINT.value) extends TwitterFutureConnection {
+class FinagleConnection(val host: String) extends TwitterFutureConnection {
+
+  def this() {
+    this(Heroku.Config.ENDPOINT.value)
+  }
 
   type HttpService = Service[HttpRequest, HttpResponse]
   val timeout = 60.seconds
