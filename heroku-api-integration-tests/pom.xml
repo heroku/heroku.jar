@@ -112,6 +112,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <failIfNoTests>true</failIfNoTests>
                     <threadCount>25</threadCount>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng-finagle.xml</suiteXmlFile>
