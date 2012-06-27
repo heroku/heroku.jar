@@ -54,7 +54,7 @@ public class AppClone implements Request<App> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Collections.emptyMap();
+        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
     }
 
     @Override
