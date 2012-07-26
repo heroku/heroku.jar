@@ -1,6 +1,7 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.sun.jersey.api.client.AsyncWebResource;
@@ -73,9 +74,9 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
         try {
             return executeAsync(request, key).get();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new HerokuAPIException(e);
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new HerokuAPIException(e);
         }
     }
 
