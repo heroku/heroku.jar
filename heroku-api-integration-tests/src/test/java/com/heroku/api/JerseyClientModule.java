@@ -2,13 +2,10 @@ package com.heroku.api;
 
 import com.google.inject.Provides;
 import com.heroku.api.connection.AsyncConnection;
-import com.heroku.api.connection.AsyncHttpClientConnection;
-import com.heroku.api.connection.ListenableFutureConnection;
+import com.heroku.api.connection.JerseyClientAsyncConnection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.parser.JsonSelector;
 import com.heroku.api.parser.Parser;
-import connection.JerseyClientAsyncConnection;
-import parser.JerseyClientJsonParser;
 
 import java.io.IOException;
 import java.util.concurrent.Future;

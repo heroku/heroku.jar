@@ -1,9 +1,6 @@
-package connection;
+package com.heroku.api.connection;
 
 import com.heroku.api.Heroku;
-import com.heroku.api.connection.AsyncConnection;
-import com.heroku.api.connection.Connection;
-import com.heroku.api.connection.ConnectionProvider;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.sun.jersey.api.client.AsyncWebResource;

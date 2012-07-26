@@ -1,4 +1,4 @@
-package parser;
+package com.heroku.api.parser;
 
 import com.heroku.api.exception.ParseException;
 import com.heroku.api.parser.Parser;
