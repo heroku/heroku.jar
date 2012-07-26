@@ -22,5 +22,13 @@
             <artifactId>jersey-json</artifactId>
             <version>${com.sun.jersey.version}</version>
         </dependency>
+
+        <!-- Test Deps -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
