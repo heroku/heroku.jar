@@ -9,10 +9,7 @@ import com.heroku.api.request.Request;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.json.JSONConfiguration;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -24,14 +21,7 @@ import static com.heroku.api.Heroku.Config.ENDPOINT;
 
 public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
 
-    private final Client client;
-
-    public JerseyClientAsyncConnection() {
-        final ClientConfig config = new DefaultClientConfig();
-        config.getFeatures().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, Boolean.FALSE);
-        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-        client = Client.create(config);
-    }
+    private final Client client = Client.create();
 
     @Override
     public <T> Future<T> executeAsync(final Request<T> request, final String apiKey) {
