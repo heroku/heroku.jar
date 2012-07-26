@@ -67,12 +67,14 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
             }
 
             public T get() throws InterruptedException, ExecutionException {
-                final ClientResponse r = futureResponse.get();
-                return request.getResponse(r.getEntity(byte[].class), r.getStatus());
+                return mapResponse(futureResponse.get());
             }
 
             public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                final ClientResponse r = futureResponse.get(timeout, unit);
+                return mapResponse(futureResponse.get(timeout, unit));
+            }
+
+            private T mapResponse(ClientResponse r) {
                 return request.getResponse(r.getEntity(byte[].class), r.getStatus());
             }
         };
