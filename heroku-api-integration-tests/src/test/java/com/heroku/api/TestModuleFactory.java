@@ -5,6 +5,7 @@ import com.heroku.api.parser.GsonParser;
 import com.heroku.api.parser.JacksonParser;
 import org.testng.IModuleFactory;
 import org.testng.ITestContext;
+import parser.JerseyClientJsonParser;
 
 
 public class TestModuleFactory implements IModuleFactory {
@@ -16,6 +17,8 @@ public class TestModuleFactory implements IModuleFactory {
             return new AsyncHttpClientModule();
         } else if (iTestContext.getCurrentXmlTest().getName().contains("jackson")) {
             return new HttpClientModule(new JacksonParser());
+        } else if (iTestContext.getCurrentXmlTest().getName().contains("jersey-client")) {
+            return new JerseyClientModule(new JerseyClientJsonParser());
         } else {
             return new HttpClientModule(new GsonParser());
         }

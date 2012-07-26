@@ -28,6 +28,7 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
 
     public JerseyClientAsyncConnection() {
         final ClientConfig config = new DefaultClientConfig();
+        config.getFeatures().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, Boolean.FALSE);
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         client = Client.create(config);
     }
@@ -35,24 +36,24 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
     @Override
     public <T> Future<T> executeAsync(final Request<T> request, final String apiKey) {
         final AsyncWebResource resource = client.asyncResource(ENDPOINT.value + request.getEndpoint());
-
-        resource.header(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
-        resource.header(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
-        resource.header(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("jersey-client"));
-
-        for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
-            resource.header(header.getKey(), header.getValue());
-        }
-
         resource.addFilter(new HTTPBasicAuthFilter("", apiKey));
 
-        final Future<ClientResponse> futureResponse;
-        if (request.hasBody()) {
-            futureResponse = resource.method(request.getHttpMethod().name(), ClientResponse.class, request.getBody());
-        } else {
-            futureResponse = resource.method(request.getHttpMethod().name(), ClientResponse.class);
+        final AsyncWebResource.Builder builder = resource.getRequestBuilder();
+
+        builder.header(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
+        builder.header(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
+        builder.header(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("jersey-client"));
+        for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
+            builder.header(header.getKey(), header.getValue());
         }
 
+        if (request.hasBody()) {
+            builder.entity(request.getBody());
+        }
+
+        final Future<ClientResponse> futureResponse = builder.method(request.getHttpMethod().name(), ClientResponse.class);
+
+        // transform Future<ClientResponse> to Future<T>
         return new Future<T>() {
             public boolean cancel(boolean mayInterruptIfRunning) {
                 return futureResponse.cancel(mayInterruptIfRunning);
@@ -67,14 +68,14 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
             }
 
             public T get() throws InterruptedException, ExecutionException {
-                return mapResponse(futureResponse.get());
+                return handleResponse(futureResponse.get());
             }
 
             public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                return mapResponse(futureResponse.get(timeout, unit));
+                return handleResponse(futureResponse.get(timeout, unit));
             }
 
-            private T mapResponse(ClientResponse r) {
+            private T handleResponse(ClientResponse r) {
                 return request.getResponse(r.getEntity(byte[].class), r.getStatus());
             }
         };
