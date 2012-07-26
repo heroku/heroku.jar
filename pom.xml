@@ -77,7 +77,8 @@
         <module>heroku-http-ning-async</module>
         <module>heroku-api-integration-tests</module>
         <module>heroku-http-play</module>
-        <module>heroku-jersey-client</module>
+        <module>heroku-http-jersey-client</module>
+        <module>heroku-json-jersey-client</module>
     </modules>
 
     <properties>
