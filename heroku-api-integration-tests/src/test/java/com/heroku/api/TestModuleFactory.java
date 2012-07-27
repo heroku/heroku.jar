@@ -3,9 +3,9 @@ package com.heroku.api;
 import com.google.inject.Module;
 import com.heroku.api.parser.GsonParser;
 import com.heroku.api.parser.JacksonParser;
+import com.heroku.api.parser.JerseyClientJsonParser;
 import org.testng.IModuleFactory;
 import org.testng.ITestContext;
-import parser.JerseyClientJsonParser;
 
 
 public class TestModuleFactory implements IModuleFactory {

@@ -130,6 +130,7 @@
                         <suiteXmlFile>src/test/resources/testng-httpclient-jackson.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/testng-httpclient-gson.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/testng-play.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/testng-jersey-client.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
