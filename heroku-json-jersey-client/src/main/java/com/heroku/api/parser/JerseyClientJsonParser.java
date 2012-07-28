@@ -1,7 +1,6 @@
 package com.heroku.api.parser;
 
 import com.heroku.api.exception.ParseException;
-import com.heroku.api.parser.Parser;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;

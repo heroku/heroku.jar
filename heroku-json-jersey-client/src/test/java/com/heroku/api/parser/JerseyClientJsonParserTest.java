@@ -1,9 +1,8 @@
 package com.heroku.api.parser;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Ryan Brainard

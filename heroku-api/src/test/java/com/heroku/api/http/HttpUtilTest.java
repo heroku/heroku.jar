@@ -2,8 +2,8 @@ package com.heroku.api.http;
 
 import org.testng.annotations.Test;
 
+import static com.heroku.api.http.HttpUtil.encodeIncludingSpecialCharacters;
 import static org.testng.Assert.assertEquals;
-import static com.heroku.api.http.HttpUtil.*;
 
 /**
  * Tests for http related utility methods.

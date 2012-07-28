@@ -8,7 +8,6 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.response.Unit;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
