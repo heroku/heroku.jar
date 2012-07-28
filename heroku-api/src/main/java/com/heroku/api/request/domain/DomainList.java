@@ -1,7 +1,6 @@
 package com.heroku.api.request.domain;
 
 import com.heroku.api.Domain;
-import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;

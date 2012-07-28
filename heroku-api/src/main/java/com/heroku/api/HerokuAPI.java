@@ -3,10 +3,6 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
-import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.exception.RequestFailedException;
-import com.heroku.api.http.Http;
-import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
