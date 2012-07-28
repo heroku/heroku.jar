@@ -8,7 +8,6 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
-import java.net.URI;
 
 public class RunResponse {
 

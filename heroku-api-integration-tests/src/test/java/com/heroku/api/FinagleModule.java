@@ -4,7 +4,6 @@ import com.google.inject.Provides;
 import com.heroku.api.connection.FinagleConnection;
 import com.heroku.api.connection.TwitterFutureConnection;
 import com.heroku.api.exception.RequestFailedException;
-import javassist.convert.TransformWriteField;
 
 import java.io.IOException;
 

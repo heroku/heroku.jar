@@ -77,6 +77,8 @@
         <module>heroku-http-ning-async</module>
         <module>heroku-api-integration-tests</module>
         <module>heroku-http-play</module>
+        <module>heroku-http-jersey-client</module>
+        <module>heroku-json-jersey-client</module>
     </modules>
 
     <properties>
@@ -95,6 +97,7 @@
         <gpg.plugin.version>1.2</gpg.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
         <maven.clover.version>3.1.0</maven.clover.version>
+        <com.sun.jersey.version>1.8</com.sun.jersey.version>
     </properties>
 
 
