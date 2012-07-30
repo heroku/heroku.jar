@@ -217,10 +217,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         Map<String, String> config = new HashMap<String, String>();
         config.put("FOO", "bar");
         config.put("BAR", "foo");
+        config.put("회사", "히로쿠");
         api.addConfig(app.getName(), config);
         Map<String, String> retrievedConfig = api.listConfig(app.getName());
         assertEquals(retrievedConfig.get("FOO"), "bar");
         assertEquals(retrievedConfig.get("BAR"), "foo");
+        assertEquals(retrievedConfig.get("회사"), "히로쿠");
     }
 
     @Test(dataProvider = "app", invocationCount = 4, successPercentage = 25, retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -234,11 +236,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testConfigRemoveCommand(App app) {
-        addConfig(app, "FOO", "BAR", "JOHN", "DOE");
-        Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "FOO");
+        addConfig(app, "회사", "히로쿠", "JOHN", "DOE");
+        Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "회사");
         Map<String, String> response = connection.execute(removeRequest, apiKey);
         assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
-        assertNull(response.get("FOO"));
+        assertNull(response.get("회사"));
     }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)

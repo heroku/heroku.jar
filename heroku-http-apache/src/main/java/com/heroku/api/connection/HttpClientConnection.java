@@ -70,7 +70,7 @@ public class HttpClientConnection implements FutureConnection {
             }
 
             if (request.hasBody()) {
-                ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody()));
+                ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody(), "UTF-8"));
             }
 
             httpClient.getCredentialsProvider().setCredentials(
