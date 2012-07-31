@@ -10,6 +10,7 @@ import com.heroku.api.request.RequestConfig;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.encodeIncludingSpecialCharacters;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -32,7 +33,7 @@ public class ConfigRemove implements Request<Map<String, String>> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.ConfigVar.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.ConfigVarName));
+        return Heroku.Resource.ConfigVar.format(config.get(Heroku.RequestKey.AppName), encodeIncludingSpecialCharacters(config.get(Heroku.RequestKey.ConfigVarName)));
     }
 
     @Override
