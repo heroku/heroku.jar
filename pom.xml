@@ -12,7 +12,7 @@
     <groupId>com.heroku.api</groupId>
     <artifactId>heroku-api-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.12</version>
+    <version>0.13-SNAPSHOT</version>
 
     <name>heroku.jar</name>
     <description>Heroku API Java Client</description>
