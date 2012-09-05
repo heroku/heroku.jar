@@ -57,7 +57,7 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public Unit getResponse(byte[] in, int code) {
-        if (code == Http.Status.OK.statusCode)
+        if (Http.Status.OK.equals(code) || Http.Status.CREATED.equals(code))
             return Unit.unit;
         else
             throw new RequestFailedException("SharingAdd failed", code, in);

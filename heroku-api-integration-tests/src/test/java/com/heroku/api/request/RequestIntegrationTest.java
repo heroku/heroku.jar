@@ -182,6 +182,13 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response);
     }
 
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testSharingAddWithBrandNewUserCommand(App app) throws IOException {
+        SharingAdd cmd = new SharingAdd(app.getName(), randomEmail());
+        Unit response = connection.execute(cmd, apiKey);
+        assertNotNull(response);
+    }
+
     @Test(timeOut = 30000L, retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testSharingTransferCommand() throws IOException {
         assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
@@ -417,6 +424,10 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
                 );
             }
         }
+    }
+
+    private String randomEmail() {
+        return "herokujarinvite" + (int)Math.ceil(Math.random() * 1000000) + "@heroku.com";
     }
 
     private String randomDomain() {
