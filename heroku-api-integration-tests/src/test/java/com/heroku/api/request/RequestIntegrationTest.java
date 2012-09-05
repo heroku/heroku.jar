@@ -274,7 +274,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListAppAddons(App app) {
-        connection.execute(new AddonInstall(app.getName(), "shared-database:5mb"), apiKey);
+        connection.execute(new AddonInstall(app.getName(), "heroku-postgresql:dev"), apiKey);
         Request<List<Addon>> req = new AppAddonsList(app.getName());
         List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response);
@@ -284,7 +284,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAddAddonToApp(App app) {
-        AddonInstall req = new AddonInstall(app.getName(), "shared-database:5mb");
+        AddonInstall req = new AddonInstall(app.getName(), "heroku-postgresql:dev");
         AddonChange response = connection.execute(req, apiKey);
         assertEquals(response.getStatus(), "Installed");
     }
