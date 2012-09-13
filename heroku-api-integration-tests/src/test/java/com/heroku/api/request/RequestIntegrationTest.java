@@ -47,6 +47,7 @@ import java.util.Map;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
+import static com.heroku.api.http.Http.Status.FORBIDDEN;
 import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
 import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
 import static org.testng.Assert.*;
@@ -132,7 +133,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
             fail();
         } catch (RequestFailedException e) {
             assertTrue(e.getMessage().contains("Failed to clone app"));
-            assertEquals(e.getStatusCode(), UNPROCESSABLE_ENTITY.statusCode);
+            assertEquals(e.getStatusCode(), FORBIDDEN.statusCode);
         }
     }
 
