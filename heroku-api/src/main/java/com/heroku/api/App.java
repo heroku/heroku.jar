@@ -23,6 +23,7 @@ public class App implements Serializable {
     String repo_migrate_status;
     String git_url;
     String buildpack_provided_description;
+    String released_at;
     int slug_size;
 	int repo_size;
     int dynos;
@@ -183,6 +184,14 @@ public class App implements Serializable {
 
     public String getOwnerEmail() {
         return owner_email;
+    }
+
+    public String getReleasedAt(){
+        return released_at;
+    }
+
+    public void setReleased_at(String at){
+        released_at = at;
     }
 
     private App copy() {
