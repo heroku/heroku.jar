@@ -23,6 +23,7 @@ import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.ps.ProcessList;
 import com.heroku.api.request.ps.Restart;
 import com.heroku.api.request.ps.Scale;
+import com.heroku.api.request.ps.Stop;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
@@ -253,10 +254,20 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testProcessCommand(App app) {
-        Request<List<Proc>> req = new ProcessList(app.getName());
-        List<Proc> response = connection.execute(req, apiKey);
-        assertNotNull(response, "Expected a non-null response for a new app, but the data was null.");
-        assertEquals(response.size(), 1);
+        Proc proc = null;
+        try {
+            final RunResponse runResponse = connection.execute(new Run(app.getName(), "sleep 60", false), apiKey);
+            proc = runResponse.getProc();
+
+            List<Proc> response = connection.execute(new ProcessList(app.getName()), apiKey);
+            assertEquals(response.size(), 1);
+            assertEquals(response.get(0).getProcess(), proc.getProcess());
+            assertEquals(response.get(0).getCommand(), proc.getCommand());
+        } finally {
+            if (proc != null) {
+                connection.execute(new Stop(app.getName(), proc), apiKey);
+            }
+        }
     }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -334,9 +345,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListReleases(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
-        addConfig(app, "releaseTest", "releaseTest");
-        List<Release> newReleases = connection.execute(new ListReleases(app.getName()), apiKey);
-        assertEquals(newReleases.size(), releases.size() + 1);
+        assertEquals(releases.get(0).getName(), "v1");
+        assertEquals(releases.get(0).getDescription(), "Initial release");
     }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
