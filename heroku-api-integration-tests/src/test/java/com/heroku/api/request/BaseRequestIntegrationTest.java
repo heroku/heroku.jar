@@ -5,6 +5,7 @@ import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.config.ConfigAdd;
@@ -48,6 +49,13 @@ public abstract class BaseRequestIntegrationTest {
     @DataProvider(parallel = true)
     public Object[][] newApp() {
         return new Object[][]{{createApp()}};
+    }
+
+    @DataProvider(parallel = true)
+    public Object[][] clonedApp() {
+        return new Object[][]{{
+            connection.execute(new AppClone("template-java-spring-hibernate", new App()), apiKey)
+        }};
     }
 
     public App getApp() {

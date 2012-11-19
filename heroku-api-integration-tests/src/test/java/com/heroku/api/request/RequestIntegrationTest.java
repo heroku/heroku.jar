@@ -50,7 +50,6 @@ import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static com.heroku.api.http.Http.Status.FORBIDDEN;
 import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
-import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
 import static org.testng.Assert.*;
 
 
@@ -270,7 +269,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         }
     }
 
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "clonedApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testScaleCommand(App app) {
         Request<Unit> req = new Scale(app.getName(), "web", 1);
         Unit response = connection.execute(req, apiKey);
