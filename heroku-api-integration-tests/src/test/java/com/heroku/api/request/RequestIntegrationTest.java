@@ -48,8 +48,7 @@ import java.util.Map;
 
 import static com.heroku.api.Heroku.Stack.Cedar;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
-import static com.heroku.api.http.Http.Status.FORBIDDEN;
-import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
+import static com.heroku.api.http.Http.Status.*;
 import static org.testng.Assert.*;
 
 
@@ -91,7 +90,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         deleteApp(response.getName());
     }
 
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testCloneAppCommand() throws IOException {
         final HerokuAPI api = new HerokuAPI(connection, apiKey);
         final String templateName = "template-java-spring-hibernate";
@@ -106,7 +105,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         deleteApp(response.getName());
     }
 
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testCloneAppCommand_WithRequestedName() throws IOException {
         final HerokuAPI api = new HerokuAPI(connection, apiKey);
         final String templateName = "template-java-spring-hibernate";
@@ -147,7 +146,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         };
     }
 
-    @Test(dataProvider = "logParameters", retryAnalyzer = LogRetryAnalyzer.class, successPercentage = 10)
+    @Test(dataProvider = "logParameters", retryAnalyzer = UnprocessableEntityRetryAnalyzer.class, successPercentage = 10)
     public void testLogCommand(Log log) throws Exception {
         LogStreamResponse logsResponse = connection.execute(log, apiKey);
         assertLogIsReadable(logsResponse);
@@ -283,14 +282,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response);
     }
 
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testListAddons() {
         AddonList req = new AddonList();
         List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response, "Expected a response from listing addons, but the result is null.");
     }
 
-    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "newApp", retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testListAppAddons(App app) {
         connection.execute(new AddonInstall(app.getName(), "heroku-postgresql:dev"), apiKey);
         Request<List<Addon>> req = new AppAddonsList(app.getName());
@@ -300,7 +299,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(response.get(0).getName());
     }
 
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "app", retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testAddAddonToApp(App app) {
         AddonInstall req = new AddonInstall(app.getName(), "heroku-postgresql:dev");
         AddonChange response = connection.execute(req, apiKey);
@@ -444,33 +443,54 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         return Integer.valueOf((int) Math.ceil(Math.random() * 100000000)) + "-simonwoodstock.com";
     }
 
-    public static class LogRetryAnalyzer extends RetryAnalyzerCount {
-        public LogRetryAnalyzer() {
-            setCount(10);
-        }
-
-        @Override
-        public boolean retryMethod(ITestResult result) {
-            result.setStatus(ITestResult.SKIP);
-            return result.getThrowable() instanceof RequestFailedException && ((RequestFailedException)result.getThrowable()).getStatusCode() == Http.Status.UNPROCESSABLE_ENTITY.statusCode;
+    public static class GeneralRetryAnalyzer extends RetryAnalyzerComposition {
+        public GeneralRetryAnalyzer() {
+            super(UNPROCESSABLE_ENTITY, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE);
         }
     }
 
-    public static class InternalServerErrorAnalyzer extends RetryAnalyzerCount {
+    public static class UnprocessableEntityRetryAnalyzer extends RetryAnalyzerComposition {
+        public UnprocessableEntityRetryAnalyzer() {
+            super(UNPROCESSABLE_ENTITY);
+        }
+    }
 
+    public static class InternalServerErrorAnalyzer extends RetryAnalyzerComposition {
         public InternalServerErrorAnalyzer() {
-            setCount(2);
+            super(INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static abstract class RetryAnalyzerComposition extends RetryAnalyzerCount {
+
+        private final Http.Status[] statuses;
+
+        public RetryAnalyzerComposition(Http.Status status, Http.Status... moreStatuses) {
+            statuses = new Http.Status[1 + moreStatuses.length];
+            statuses[0] = status;
+            System.arraycopy(moreStatuses, 0, statuses, 1, moreStatuses.length);
+            setCount(5);
         }
 
         @Override
         public boolean retryMethod(ITestResult result) {
-            Throwable testException = result.getThrowable();
-            if (!result.isSuccess() &&
-                testException instanceof RequestFailedException &&
-                INTERNAL_SERVER_ERROR.equals(((RequestFailedException) testException).getStatusCode())) {
-                result.setStatus(ITestResult.SKIP);
-                return true;
+            if (result.isSuccess()) {
+                return false;
             }
+
+            final Throwable testException = result.getThrowable();
+            final RequestFailedException requestFailedException;
+
+            if (testException instanceof RequestFailedException) {
+                requestFailedException = (RequestFailedException) testException;
+                for (Http.Status status : statuses) {
+                    if (status.equals(requestFailedException.getStatusCode())) {
+                        result.setStatus(ITestResult.SKIP);
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
     }
