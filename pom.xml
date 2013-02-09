@@ -76,7 +76,8 @@
         <module>heroku-http-finagle</module>
         <module>heroku-http-ning-async</module>
         <module>heroku-api-integration-tests</module>
-        <module>heroku-http-play</module>
+        <module>heroku-http-play_2.9.1</module>
+        <module>heroku-http-play_2.10</module>
         <module>heroku-http-jersey-client</module>
         <module>heroku-json-jersey-client</module>
     </modules>
