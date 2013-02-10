@@ -436,7 +436,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     }
 
     private String randomEmail() {
-        return "herokujarinvite" + (int)Math.ceil(Math.random() * 1000000) + "@herokujar.com";
+        return "herokujartest+" + (int)Math.ceil(Math.random() * 1000000) + "@gmail.com";
     }
 
     private String randomDomain() {
