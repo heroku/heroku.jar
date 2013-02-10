@@ -357,10 +357,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
-        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         addConfig(app, "releaseTest", "releaseTest");
-        String rollback = connection.execute(new Rollback(app.getName(), releases.get(0).getName()), apiKey);
-        assertEquals(rollback, releases.get(0).getName());
+        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        Release lastRelease = releases.get(releases.size() - 1);
+        String rollback = connection.execute(new Rollback(app.getName(), lastRelease.getName()), apiKey);
+        assertEquals(rollback, lastRelease.getName());
     }
     
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
