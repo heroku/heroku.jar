@@ -13,6 +13,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.core.util.FeaturesAndProperties;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -34,7 +35,7 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
     }
 
     @Override
-    public <T> Future<T> executeAsync(final Request<T> request, final String apiKey) {
+    public <T> Future<T> executeAsync(final Request<T> request, final Map<String,String> extraHeaders, final String apiKey) {
         final AsyncWebResource resource = client.asyncResource(ENDPOINT.value + request.getEndpoint());
         resource.addFilter(new HTTPBasicAuthFilter("", apiKey));
 
@@ -82,9 +83,19 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
     }
 
     @Override
-    public <T> T execute(Request<T> request, String key) {
+    public <T> Future<T> executeAsync(Request<T> request, String apiKey) {
+        return executeAsync(request, Collections.<String, String>emptyMap(), apiKey);
+    }
+
+    @Override
+    public <T> T execute(Request<T> request, String apiKey) {
+        return execute(request, Collections.<String, String>emptyMap(), apiKey);
+    }
+
+    @Override
+    public <T> T execute(Request<T> request, Map<String,String> extraHeaders,  String key) {
         try {
-            return executeAsync(request, key).get();
+            return executeAsync(request, extraHeaders, key).get();
         } catch (InterruptedException e) {
             throw new HerokuAPIException(e);
         } catch (ExecutionException e) {
