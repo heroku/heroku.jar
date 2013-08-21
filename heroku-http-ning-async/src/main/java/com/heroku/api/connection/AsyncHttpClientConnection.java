@@ -10,6 +10,7 @@ import com.ning.http.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,11 +34,15 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
         return new AsyncHttpClient(builder.build());
     }
 
-    private com.ning.http.client.Request buildRequest(Request<?> req, String key) {
+    private com.ning.http.client.Request buildRequest(Request<?> req, Map<String,String> extraHeaders, String key) {
         AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
         builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
         builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
         builder.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("asynchttpclient"));
+        for (Map.Entry<String, String> entry : extraHeaders.entrySet()) {
+            builder.setHeader(entry.getKey(), entry.getValue());
+        }
+
         for (Map.Entry<String, String> entry : req.getHeaders().entrySet()) {
             builder.setHeader(entry.getKey(), entry.getValue());
         }
@@ -72,8 +77,8 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
 
     @Override
-    public <T> ListenableFuture<T> executeAsync(final Request<T> request, String key) {
-        com.ning.http.client.Request asyncRequest = buildRequest(request, key);
+    public <T> ListenableFuture<T> executeAsync(final Request<T> request, final Map<String,String> extraHeaders, String key) {
+        com.ning.http.client.Request asyncRequest = buildRequest(request, extraHeaders, key);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
@@ -88,9 +93,19 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
     }
 
     @Override
-    public <T> T execute(Request<T> req, String key) {
+    public <T> ListenableFuture<T> executeAsync(Request<T> request, String apiKey) {
+        return executeAsync(request, Collections.<String, String>emptyMap(), apiKey);
+    }
+
+    @Override
+    public <T> T execute(Request<T> request, String apiKey) {
+        return execute(request, Collections.<String,String>emptyMap(), apiKey);
+    }
+
+    @Override
+    public <T> T execute(Request<T> req, Map<String,String> extraHeaders, String key) {
         try {
-            return executeAsync(req, key).get(30L, TimeUnit.SECONDS);
+            return executeAsync(req, extraHeaders, key).get(30L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new HerokuAPIException("request interrupted", e);
         } catch (ExecutionException e) {

@@ -10,11 +10,16 @@ import concurrent.{Await, Future}
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.duration._
+import java.util.{Map => JMap, Collections}
 
 trait PlayConnection extends AsyncConnection[Future[_]] {
   def executeAsync[T](request: Request[T], apiKey: String): Future[T]
 
   def execute[T](request: Request[T], apiKey: String): T
+
+  def executeAsync[T](request: Request[T], extraHeaders: JMap[String, String], apiKey: String): Future[T]
+
+  def execute[T](request: Request[T], extraHeaders: JMap[String, String], apiKey: String): T
 }
 
 class PlayWSConnection(val host: String) extends PlayConnection {
@@ -23,14 +28,14 @@ class PlayWSConnection(val host: String) extends PlayConnection {
     this(Heroku.Config.ENDPOINT.value)
   }
 
-  def executeAsync[T](request: Request[T], key: String): Future[T] = {
+  def executeAsync[T](request: Request[T], extraHeaders:JMap[String,String], key: String): Future[T] = {
 
     val path = request.getEndpoint
     var url = WS.url(host + path)
       .withHeaders(Heroku.ApiVersion.HEADER -> Heroku.ApiVersion.v2.getHeaderValue)
       .withHeaders(Http.UserAgent.LATEST.getHeaderName -> Http.UserAgent.LATEST.getHeaderValue("playws"))
       .withHeaders(request.getResponseType.getHeaderName -> request.getResponseType.getHeaderValue)
-      .withHeaders(request.getHeaders.asScala.toArray: _*)
+      .withHeaders(request.getHeaders.asScala.toArray: _*).withHeaders(extraHeaders.asScala.toArray:_*)
 
     if (key != null) {
       url = url.withAuth("", key, Realm.AuthScheme.BASIC)
@@ -47,9 +52,14 @@ class PlayWSConnection(val host: String) extends PlayConnection {
 
   }
 
+
+  def executeAsync[T](request: Request[T], apiKey: String): Future[T] = executeAsync(request, Map.empty[String,String].asJava, apiKey)
+
+  def execute[T](request: Request[T], apiKey: String): T = execute(request, Map.empty[String,String].asJava, apiKey)
+
   def toResponse[T](req: Request[T], p: Future[Response]): Future[T] = p.map(res => req.getResponse(res.body.getBytes, res.status))
 
-  def execute[T](request: Request[T], key: String): T = Await.result(executeAsync(request, key), Duration(60, SECONDS))
+  def execute[T](request: Request[T], extraHeaders: JMap[String, String], key: String): T = Await.result(executeAsync(request, extraHeaders, key), Duration(60, SECONDS))
 
   def close() {}
 }
