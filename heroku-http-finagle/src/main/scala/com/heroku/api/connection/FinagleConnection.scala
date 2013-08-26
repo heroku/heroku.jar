@@ -17,9 +17,14 @@ import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 import com.twitter.util.{Base64StringEncoder, Future}
 import com.twitter.conversions.time._
+import java.util
 
 trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
   def executeAsync[T](request: Request[T], apiKey: String): Future[T]
+
+  def executeAsync[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): Future[T]
+
+  def execute[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): T
 
   def execute[T](request: Request[T], apiKey: String): T
 }
@@ -41,18 +46,22 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
 
   def execute[T](request: Request[T], key: String): T = executeAsync(request, key).get(timeout).get()
 
-  def executeAsync[T](command: Request[T], key: String): Future[T] = {
+  def executeAsync[T](request: Request[T], apiKey: String): Future[T] = executeAsync(request, mapAsJavaMap(Map.empty), apiKey)
+
+  def execute[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): T = executeAsync(request, extraHeaders, apiKey).get(timeout).get()
+
+  def executeAsync[T](command: Request[T], extraHeaders:util.Map[String,String], key: String): Future[T] = {
     if (!client.isAvailable) {
       client.release()
       client = newClient()
     }
-    client(toReq(command, key)).map {
+    client(toReq(command, extraHeaders, key)).map {
       resp =>
         command.getResponse(resp.getContent.array(), resp.getStatus.getCode)
     }
   }
 
-  def toReq(cmd: Request[_], key: String): HttpRequest = {
+  def toReq(cmd: Request[_], extraHeaders: util.Map[String, String], key: String): HttpRequest = {
     val method = cmd.getHttpMethod match {
       case Method.GET => HttpMethod.GET
       case Method.PUT => HttpMethod.PUT
@@ -69,7 +78,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
       req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8")))
     }
 
-    cmd.getHeaders.foreach {
+    (cmd.getHeaders ++ extraHeaders) foreach {
       _ match {
         case (k, v) => req.addHeader(k, v)
       }

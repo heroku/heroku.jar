@@ -27,6 +27,7 @@ import org.apache.http.protocol.HttpContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -43,14 +44,18 @@ public class HttpClientConnection implements FutureConnection {
     public HttpClientConnection() {
     }
 
+    @Override
+    public <T> Future<T> executeAsync(final Request<T> request,  final String apiKey) {
+        return executeAsync(request, Collections.<String,String>emptyMap(), apiKey);
+    }
 
     @Override
-    public <T> Future<T> executeAsync(final Request<T> request, final String apiKey) {
+    public <T> Future<T> executeAsync(final Request<T> request, final Map<String,String> exraHeaders, final String apiKey) {
 
         Callable<T> callable = new Callable<T>() {
             @Override
             public T call() throws Exception {
-                return execute(request, apiKey);
+                return execute(request, exraHeaders, apiKey);
             }
         };
         return getExecutorService().submit(callable);
@@ -59,11 +64,20 @@ public class HttpClientConnection implements FutureConnection {
 
     @Override
     public <T> T execute(Request<T> request, String key) {
+        return execute(request, Collections.<String,String>emptyMap(), key);
+    }
+
+    @Override
+    public <T> T execute(Request<T> request, Map<String,String> exraHeaders, String key) {
         try {
             HttpRequestBase message = getHttpRequestBase(request.getHttpMethod(), ENDPOINT.value + request.getEndpoint());
             message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
             message.setHeader(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
             message.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("httpclient"));
+
+            for (Map.Entry<String, String> header : exraHeaders.entrySet()) {
+                message.setHeader(header.getKey(), header.getValue());
+            }
 
             for (Map.Entry<String, String> header : request.getHeaders().entrySet()) {
                 message.setHeader(header.getKey(), header.getValue());
