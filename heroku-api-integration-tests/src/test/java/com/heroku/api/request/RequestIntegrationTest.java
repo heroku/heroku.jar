@@ -146,12 +146,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         };
     }
 
-    @Test(dataProvider = "logParameters", retryAnalyzer = UnprocessableEntityRetryAnalyzer.class, successPercentage = 10)
+   /* @Test(dataProvider = "logParameters", retryAnalyzer = UnprocessableEntityRetryAnalyzer.class, successPercentage = 10)
     public void testLogCommand(Log log) throws Exception {
         LogStreamResponse logsResponse = connection.execute(log, apiKey);
         assertLogIsReadable(logsResponse);
     }
-
+*/
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAppCommand(App app) throws IOException {
         AppInfo cmd = new AppInfo(app.getName());
