@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.heroku.api.parser.Json.parse;
@@ -65,7 +66,16 @@ public class JsonParseTest {
         final App appList = parser.parse(unknownProperty.getBytes("UTF-8"), App.class);
         Assert.assertNull(appList.getName());
     }
-    
+
+    @Test(dataProvider = "getParsers")
+    public void bigIntShouldParseLargeRepoSizes(Parser parser) throws UnsupportedEncodingException {
+      String appJson = "{\"repo_size\":2177925120,\"slug_size\":2177925120}";
+
+      final App app = parser.parse(appJson.getBytes("UTF-8"), App.class);
+      Assert.assertEquals(app.getRepoSize(), new BigInteger("2177925120"));
+      Assert.assertEquals(app.getSlugSize(), new BigInteger("2177925120"));
+    }
+
     @Test(expectedExceptions = ParseException.class)
     public void nullRequestTypeShouldThrowParseException() {
         parse(new byte[]{}, null);

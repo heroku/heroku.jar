@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.net.URL;
 
 /**
@@ -17,7 +18,7 @@ public class Addon implements Serializable {
     URL url;
     String state;
     String beta;
-    int price_cents;
+    BigInteger price_cents;
     String price_unit;
     String id;
     Boolean configured;
@@ -30,11 +31,11 @@ public class Addon implements Serializable {
         this.configured = configured;
     }
 
-    public int getPriceCents() {
+    public BigInteger getPriceCents() {
         return price_cents;
     }
 
-    private void setPrice_cents(int price_cents) {
+    private void setPrice_cents(BigInteger price_cents) {
         this.price_cents = price_cents;
     }
 

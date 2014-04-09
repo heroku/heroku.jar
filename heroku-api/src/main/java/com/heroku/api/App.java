@@ -1,6 +1,7 @@
 package com.heroku.api;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * Data model for a Heroku App. Also serves as a builder class when making requests to create an app.
@@ -24,10 +25,10 @@ public class App implements Serializable {
     String git_url;
     String buildpack_provided_description;
     String released_at;
-    int slug_size;
-	int repo_size;
+    BigInteger slug_size;
+	  BigInteger repo_size;
     int dynos;
-	int workers;
+	  int workers;
 
     /**
      * Builder method for specifying the name of an app.
@@ -99,11 +100,11 @@ public class App implements Serializable {
         this.buildpack_provided_description = buildpack_provided_description;
     }
 
-    private void setSlug_size(int slug_size) {
+    private void setSlug_size(BigInteger slug_size) {
         this.slug_size = slug_size;
     }
 
-    private void setRepo_size(int repo_size) {
+    private void setRepo_size(BigInteger repo_size) {
         this.repo_size = repo_size;
     }
 
@@ -166,11 +167,11 @@ public class App implements Serializable {
         return repo_migrate_status;
     }
 
-    public int getSlugSize() {
+    public BigInteger getSlugSize() {
         return slug_size;
     }
 
-    public int getRepoSize() {
+    public BigInteger getRepoSize() {
         return repo_size;
     }
 
