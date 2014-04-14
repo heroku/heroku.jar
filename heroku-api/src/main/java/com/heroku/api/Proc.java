@@ -1,7 +1,6 @@
 package com.heroku.api;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.net.URI;
 
 /**
@@ -23,7 +22,7 @@ public class Proc implements Serializable {
     String state;
     String pretty_state;
     String transitioned_at;
-    BigInteger elapsed;
+    long elapsed;
     boolean attached;
     URI rendezvous_url;
 
@@ -107,11 +106,11 @@ public class Proc implements Serializable {
         this.transitioned_at = transitioned_at;
     }
 
-    public BigInteger getElapsed() {
+    public long getElapsed() {
         return elapsed;
     }
 
-    private void setElapsed(BigInteger elapsed) {
+    private void setElapsed(long elapsed) {
         this.elapsed = elapsed;
     }
 
