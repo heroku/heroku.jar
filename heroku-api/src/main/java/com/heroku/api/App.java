@@ -25,9 +25,9 @@ public class App implements Serializable {
     String buildpack_provided_description;
     String released_at;
     long slug_size;
-	  long repo_size;
+    long repo_size;
     int dynos;
-	  int workers;
+    int workers;
 
     /**
      * Builder method for specifying the name of an app.
