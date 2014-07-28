@@ -190,6 +190,7 @@ Likewise, the secure random parameter may be null in which case the default impl
         Bamboo192("bamboo-mri-1.9.2"),
         Bamboo187("bamboo-ree-1.8.7"),
         Cedar("cedar");
+        Cedar14("cedar-14");
 
         public final String value;
 
