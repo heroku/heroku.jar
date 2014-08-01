@@ -1,2 +1,10 @@
 language: java
-
+jdk:
+- openjdk6
+env:
+  global:
+  - secure: eZaCVOjOdMrYxZHAn32tgk0e9nbKkzTTCszzOOTgWkmF2oLPak4uTOq1efDv2OP46sk0hP9hq0OAwCecNIAG6NIl5JOmK6ci09xFO19XeILAFX//DbFjUYVwWbfIPVvQ8pcB/rYQPphxZJXR2UZCGtw8Jez03h2NurjX+z/1g+k=
+  - secure: aFGGEwxRmw7YoNOSodv+bw7kjvO/Jx7oMVXKOS8ryz49dYFco45nu71OXK78itcG9ksFbLyqTrxPTo5tnT0edJ8XT/OhyLPD0WvSbYTq1Hp6ARnFWYCAM+4pg9e4AqDzDtuzu/MIFuxzQnaCCmGxPHwkKIcnnuuBoKp2h+9syt8=
+  - secure: truo+wYfDUNMtYq1ewa/Dp8BEXaHf04EXyGXbb1X0kF7iihIadxCnwQJsoW0Fh2S9NO74lghVJ8CGk3hdMGX/59f5HwkQ7J85G9Jb6sxifs856j4aL7acbqbB8vlZzbmYaBLR4TdbScXuoXSHp1m30Lj+dauS2/INgCIsgGwlww=
+  - secure: JBxACxUH6Yyng87j/HUm0f1B5MEZsnJ4mtC+GjbxPBJpT5qW13pMId3hd+ic3ZjecHv+FWfSMsg1ij5a26Ja341try7XN6Jwqa/8gW5oPqcowKDA3o15RlvW+jRFgU3fZC5FtbCaaJ2CSPvDxSOs+lomPSP/xxs3k9+sZyiuzwM=
+ - HEROKU_TEST_USERS=[\{\"username\":\"heroku.jar@scooter-ci.com\",\"password\":\"$HEROKU_TEST_USER_1_PASSWORD\",\"apikey\":\"HEROKU_TEST_USER_1_API_KEY\",\"defaultuser\":\"true\"\},\{\"username\":\"heroku.jar.2@scooter-ci.com\",\"password\":\"$HEROKU_TEST_USER_2_PASSWORD\",\"apikey\":\"$HEROKU_TEST_USER_2_API_KEY\"\}]
