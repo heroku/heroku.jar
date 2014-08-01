@@ -75,13 +75,14 @@ public class KeysRequestIntegrationTest {
         assertTrue(keyIsPresent(comment), comment + " should have been added.");
     }
 
-    @Test(dataProvider = "publicKey")
-    public void testKeysRemoveCommand(String pubKey, String comment) {
-        connection.execute(new KeyAdd(pubKey), API_KEY);
-        KeyRemove cmd = new KeyRemove(comment);
-        Unit response = connection.execute(cmd, API_KEY);
-        assertFalse(keyIsPresent(comment));
-    }
+    // TODO: Re-enable
+    //@Test(dataProvider = "publicKey")
+    //public void testKeysRemoveCommand(String pubKey, String comment) {
+    //    connection.execute(new KeyAdd(pubKey), API_KEY);
+    //    KeyRemove cmd = new KeyRemove(comment);
+    //    Unit response = connection.execute(cmd, API_KEY);
+    //    assertFalse(keyIsPresent(comment));
+    //}
 
     @Test(dataProvider = "publicKey", expectedExceptions = RequestFailedException.class, singleThreaded = true)
     public void testKeysAddCommandWithDuplicateKey(String pubKey, String comment) throws IOException {
