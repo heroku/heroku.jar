@@ -1,7 +1,11 @@
 language: java
 jdk:
-- openjdk6
+  - openjdk6
 env:
   global:
     secure: 4F3gN34XI1iFEkqPY2+bVNUqaw4M2DoeJncOsxQ1YxwCDqs/ploKXcuf9RJ8irjayHw/BUOJQSgGyj0JadxLfgI55rQqSSL5R9OdVChJHNb4I0hUjbDNpb0Fn5m33LYOYKL9OfoGGGojgo8QKYcWTylGRyehPjZFE/f309SQWSg=
 before_script: ". ./.profile"
+script: "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+cache:
+  directories:
+  - $HOME/.m2
