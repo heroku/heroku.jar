@@ -161,6 +161,23 @@ Add the snapshot repository to your pom.xml
             export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
             mvn install
 
+##Release
+
+Deployments are handled by Travis CI; however, the changing the version and the actual release of the artifacts is manual. To release a new version, first set the version and increment to the next snapshot:
+
+```
+echo ${RELEASE_VERSION:?Required}
+echo ${NEXT_VERSION:?Required}
+git checkout master
+mvn versions:set -DnewVersion=${RELEASE_VERSION}
+git commit -am "release v${RELEASE_VERSION}"
+git tag v${RELEASE_VERSION}
+mvn versions:set -DnewVersion=${NEXT_VERSION}
+git commit -am "starting development of v${NEXT_VERSION}"
+git push origin master --tags
+```
+
+At this point, Travis CI should build and deploy the artifact to OSS Sonatype. If that is successful, log into [OSS Sonatype](https://oss.sonatype.org) (assuming you have access), search for the new artifacts in the [Staging Repositories](https://oss.sonatype.org/#stagingRepositories), close, test, and release them.
 
 ## Some Design Considerations
 
