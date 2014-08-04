@@ -163,7 +163,7 @@ Add the snapshot repository to your pom.xml
 
 ##Release
 
-Deployments are handled by Travis CI; however, the changing the version and the actual release of the artifacts is manual. To release a new version, first set the version and increment to the next snapshot:
+Deployments and `SNAPSHOT` releases are handled automatically by Travis CI; however, the changing the version and the actual release of the artifacts is manual. To release a new version, first set the version and increment to the next snapshot:
 
 ```
 echo ${RELEASE_VERSION:?Required}
