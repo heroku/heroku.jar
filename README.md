@@ -233,3 +233,4 @@ calls to executeCommandAsync will return a `<T extends CommandResponse> java.uti
 The provided implementation of Connection that uses twitter finagle `implements AsyncConnection<com.twitter.util.Future>` and so
 calls to executeCommandAsync will return a `<T extends CommandResponse> com.twitter.util.Future<T>`, which has a much richer, composable api
 than the java.util.concurrent.Future api.
+TEST
