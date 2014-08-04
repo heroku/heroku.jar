@@ -25,8 +25,8 @@ The artifacts are in Maven Central so you won't need to build them locally first
 
 ###Use HerokuAPI
 HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
-API key in order to authenticate and make API calls. Requests to the API typically take no arguments, or simple strings. 
-Responses come in the form of read-only POJOs, Maps, or void. 
+API key in order to authenticate and make API calls. Requests to the API typically take no arguments, or simple strings.
+Responses come in the form of read-only POJOs, Maps, or void.
 
 ```java
 String apiKey = "...";
@@ -41,7 +41,7 @@ API keys can be regenerated at any time by the user. Only the current API key sh
 key only changes when a user chooses to [regenerate](https://api.heroku.com/account) -- keys do not expire automatically.
 
 [Basic Authentication](http://www.ietf.org/rfc/rfc2617.txt) over HTTPS is used for authentication. An empty username and
-an API key are used to construct the Authorization HTTP header. HerokuAPI constructed with an API key, will handle 
+an API key are used to construct the Authorization HTTP header. HerokuAPI constructed with an API key, will handle
 authentication for API requests.
 
 When using API keys:
@@ -102,15 +102,15 @@ Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemov
 ####Overriding the User-Agent Header
 The default User-Agent header is recommended for most use cases.
 
-If this library is being used as part of another library or 
-application that wishes to set its own User-Agent header value, 
-implement the [`com.heroku.api.http.UserAgentValueProvider`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java) 
-interface and create a provider-configuration file at `META-INF/services/com.heroku.api.http.UserAgentValueProvider` 
-containing the fully-qualified name of your provider class. 
+If this library is being used as part of another library or
+application that wishes to set its own User-Agent header value,
+implement the [`com.heroku.api.http.UserAgentValueProvider`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
+interface and create a provider-configuration file at `META-INF/services/com.heroku.api.http.UserAgentValueProvider`
+containing the fully-qualified name of your provider class.
 See [`java.util.ServiceLoader`](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) for details.
 
 To conform to [RFC 2616 Section 14.43](http://tools.ietf.org/html/rfc2616#section-14.43), consider prepending the value
-from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java) 
+from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
 provider with your own user agent.
 
 ###For the latest snapshots...
