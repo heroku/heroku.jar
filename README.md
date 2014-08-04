@@ -161,9 +161,13 @@ Add the snapshot repository to your pom.xml
             export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
             mvn install
 
+## Continuous Integration
+
+Tests are run automatically by Travis CI for all pushes and pull requests to `heroku/heroku.jar` with the exception of [pull requests from forks that only run unit tests](http://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests). In addition, successful test runs on `master` automatically deploy artifacts to OSS Sonatype. `SNAPSHOT` releases are available automatically as explained [above](#for-the-latest-snapshots), but release versions must be manually published as explained [below](#release).
+
 ##Release
 
-Deployments and `SNAPSHOT` releases are handled automatically by Travis CI; however, the changing the version and the actual release of the artifacts is manual. To release a new version, first set the version and increment to the next snapshot:
+Artifact deployment is handled by [continuous integration](#continuous-integration), but the actual release is manual. To release a new version, first set the version and increment to the next snapshot:
 
 ```
 echo ${RELEASE_VERSION:?Required}
