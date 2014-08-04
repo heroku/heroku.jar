@@ -21,6 +21,13 @@
   </servers>
   <mirrors/>
   <proxies/>
-  <profiles/>
-  <activeProfiles/>
+  <profiles>
+    <profile>
+      <id>prepare-for-central</id>
+      <properties>
+        <gpg.keyname>${env.CI_DEPLOY_GPG_KEYNAME}</gpg.keyname>
+        <gpg.passphrase>${env.CI_DEPLOY_GPG_PASSPHRASE}</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
 </settings>

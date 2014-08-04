@@ -6,6 +6,6 @@ env:
   - secure: 4F3gN34XI1iFEkqPY2+bVNUqaw4M2DoeJncOsxQ1YxwCDqs/ploKXcuf9RJ8irjayHw/BUOJQSgGyj0JadxLfgI55rQqSSL5R9OdVChJHNb4I0hUjbDNpb0Fn5m33LYOYKL9OfoGGGojgo8QKYcWTylGRyehPjZFE/f309SQWSg=
   - secure: 5olo/+9K6lcMe6qvSoXkOsG/h4am9mstInBJe5tzYR07Lz+D3CDGUWLhD5Rktm+XtygQN3dwTuxPAUwOFbpkWybXh0CUrhGLFWw1YlgVXirsx6cNwRjYliioCnXmcgdSf26N1pSG19cHndh9C0EheUYZxJhUGxRhigRduOcBoP4=
   - secure: K4272Jvy5bPwq7hqYVfZKOtVE7isrt0HcWWXilj8Zxeit3YdBWu4+NrmUK6tG6IOrM2F8UKXhIxGpRcw3kN2bZt8DbkfuoyijcJWblygEpZ/14OWkIQupHJTirH9k6b1rjPAdBLleNn7OCgEzdmSLV99ln88lI1Kak6ZSQZ4qFY=
-before_script: ". ./.travis.profile"
-after_success:
-    "mvn deploy --settings .travis.settings.xml -DskipTests"
+  - secure: xB5tCKqxciPvvwVLggb1vkcZR7qrnZk+kTqV6vqJYTm2A/yztnmAKTqb2KlUWg6S10W/CegAdBolZwsTK6iDZxOrfdKjPJ7yZF7eQJECkMBi1nJUaQRT3y/fenprzZ3lwspv8jx0ZUm5CbGBU9u/kWZRtSy76/5nipWW7yjb93E=
+before_script: . ./.travis.profile
+after_success: mvn deploy --settings=.travis.settings.xml -P prepare-for-central -DskipTests
