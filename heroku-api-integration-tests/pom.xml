@@ -113,7 +113,22 @@
     </dependencies>
     <properties>
         <guava.version>11.0.1</guava.version>
+        <heroku-api-integration-tests.skipTests>true</heroku-api-integration-tests.skipTests>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>heroku-test-users-set</id>
+            <activation>
+                <property>
+                    <name>env.HEROKU_TEST_USERS</name>
+                </property>
+            </activation>
+            <properties>
+                <heroku-api-integration-tests.skipTests>false</heroku-api-integration-tests.skipTests>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -122,6 +137,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <skipTests>${heroku-api-integration-tests.skipTests}</skipTests>
                     <failIfNoTests>true</failIfNoTests>
                     <threadCount>25</threadCount>
                     <suiteXmlFiles>

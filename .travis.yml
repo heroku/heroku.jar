@@ -10,4 +10,4 @@ env:
   - secure: J2tZhDo9yb/nJm01d21Gy7BmoTw06e4nXskhdBMj/P5xLkGLVHUibXko4/gNbSxqYjPl+ZPq+tyxcJF5ioU6EwWRLvPkMF+UULW6X+CBLBc8fwJVqxnFbOInBicBFzSeHooUqNv8J0PhRO6FSStHo3Lo/M55Y1u6lbU5u8VPGo4=
   - secure: 34Gg8t9TwVVeL5k2vsVcLqbTlYWCb4dkNLLSS2FAafEzJmi9s25ptXfmxIBfxzZ/r84Y36Yrt6MvIjpV7CLF7tJrkH8Fm5JkA5wF+jdQMgiMAe9/LinlvFCcF4MqORD6o/KkaO/hUi4QRJfEjcbJUTxu/wa2aS5DN/7aniylKcc=
 before_script: . ./.travis.profile
-after_success: mvn deploy --settings=.travis.settings.xml -P prepare-for-central -DskipTests
+after_success: test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mvn deploy --settings=.travis.settings.xml -P prepare-for-central -DskipTests
