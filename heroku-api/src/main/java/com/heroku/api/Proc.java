@@ -22,7 +22,7 @@ public class Proc implements Serializable {
     String state;
     String pretty_state;
     String transitioned_at;
-    int elapsed;
+    long elapsed;
     boolean attached;
     URI rendezvous_url;
 
@@ -106,11 +106,11 @@ public class Proc implements Serializable {
         this.transitioned_at = transitioned_at;
     }
 
-    public int getElapsed() {
+    public long getElapsed() {
         return elapsed;
     }
 
-    private void setElapsed(int elapsed) {
+    private void setElapsed(long elapsed) {
         this.elapsed = elapsed;
     }
 

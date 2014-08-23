@@ -65,7 +65,16 @@ public class JsonParseTest {
         final App appList = parser.parse(unknownProperty.getBytes("UTF-8"), App.class);
         Assert.assertNull(appList.getName());
     }
-    
+
+    @Test(dataProvider = "getParsers")
+    public void bigIntShouldParseLargeRepoSizes(Parser parser) throws UnsupportedEncodingException {
+      String appJson = "{\"repo_size\":2177925120,\"slug_size\":2177925120}";
+
+      final App app = parser.parse(appJson.getBytes("UTF-8"), App.class);
+      Assert.assertEquals(app.getRepoSize(), 2177925120L);
+      Assert.assertEquals(app.getSlugSize(), 2177925120L);
+    }
+
     @Test(expectedExceptions = ParseException.class)
     public void nullRequestTypeShouldThrowParseException() {
         parse(new byte[]{}, null);

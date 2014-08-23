@@ -17,7 +17,7 @@ public class Addon implements Serializable {
     URL url;
     String state;
     String beta;
-    int price_cents;
+    long price_cents;
     String price_unit;
     String id;
     Boolean configured;
@@ -30,11 +30,11 @@ public class Addon implements Serializable {
         this.configured = configured;
     }
 
-    public int getPriceCents() {
+    public long getPriceCents() {
         return price_cents;
     }
 
-    private void setPrice_cents(int price_cents) {
+    private void setPrice_cents(long price_cents) {
         this.price_cents = price_cents;
     }
 
