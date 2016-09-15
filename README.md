@@ -1,7 +1,7 @@
 #Heroku JAR
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
-:warning: **[The Legacy API will be sunset on April 15th, 2017](https://devcenter.heroku.com/changelog-items/862)** :warning:
+:warning: **This library uses [Heroku's Legacy API](https://legacy-api-docs.herokuapp.com/) which will be [sunset on April 15th, 2017](https://devcenter.heroku.com/changelog-items/862)** :warning:
 
 [![Build Status](https://travis-ci.org/heroku/heroku.jar.svg?branch=master)](https://travis-ci.org/heroku/heroku.jar)
 
