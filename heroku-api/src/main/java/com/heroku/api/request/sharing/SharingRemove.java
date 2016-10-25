@@ -11,6 +11,8 @@ import com.heroku.api.response.Unit;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
+
 /**
  * TODO: Javadoc
  *
@@ -23,7 +25,9 @@ public class SharingRemove implements Request<Unit> {
     private final RequestConfig config;
 
     public SharingRemove(String appName, String collaboratorEmail) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.Collaborator, collaboratorEmail);
+        this.config = new RequestConfig()
+            .with(Heroku.RequestKey.TransferAppName, appName)
+            .with(Heroku.RequestKey.Collaborator, collaboratorEmail);
     }
 
     @Override
@@ -33,7 +37,7 @@ public class SharingRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborator.format(config.get(Heroku.RequestKey.AppName),
+        return Heroku.Resource.Collaborator.format(config.get(Heroku.RequestKey.TransferAppName),
                 HttpUtil.urlencode(config.get(Heroku.RequestKey.Collaborator), "Unable to encode the endpoint"));
     }
 
@@ -44,12 +48,17 @@ public class SharingRemove implements Request<Unit> {
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.TEXT;
+        return Http.Accept.JSON;
     }
 
     @Override

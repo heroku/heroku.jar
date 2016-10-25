@@ -33,7 +33,7 @@ public class ReleaseInfo implements Request<Release> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Release.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.Release));
+        return Heroku.Resource.Release.format(config.getAppName(), config.get(Heroku.RequestKey.Release));
     }
 
     @Override
@@ -43,6 +43,11 @@ public class ReleaseInfo implements Request<Release> {
 
     @Override
     public String getBody() {
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
         throw noBody();
     }
 

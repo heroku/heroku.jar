@@ -3,13 +3,13 @@ package com.heroku.api.request.config;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -32,7 +32,7 @@ public class ConfigList implements Request<Map<String, String>> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.ConfigVars.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.ConfigVars.format(config.getAppName());
     }
 
     @Override
@@ -42,7 +42,12 @@ public class ConfigList implements Request<Map<String, String>> {
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

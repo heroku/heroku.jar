@@ -41,6 +41,11 @@ public abstract class RequestTransformation<A,B> implements Request<B> {
     }
 
     @Override
+    public Map<String,?> getBodyAsMap() {
+        return a.getBodyAsMap();
+    }
+
+    @Override
     public Http.Accept getResponseType() {
         return a.getResponseType();
     }

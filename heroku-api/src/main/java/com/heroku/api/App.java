@@ -15,19 +15,16 @@ public class App implements Serializable {
     String name;
     Domain domain_name;
     String created_at;
-    String create_status;
-    String owner_email;
+    App.Owner owner;
     String web_url;
-    String stack;
+    App.Stack stack;
     String requested_stack;
-    String repo_migrate_status;
     String git_url;
     String buildpack_provided_description;
     String released_at;
     int slug_size;
-	int repo_size;
-    int dynos;
-	int workers;
+	  int repo_size;
+    boolean maintenance;
 
     /**
      * Builder method for specifying the name of an app.
@@ -47,8 +44,16 @@ public class App implements Serializable {
      */
     public App on(Heroku.Stack stack) {
         App newApp = copy();
-        newApp.stack = stack.toString();
+        newApp.stack = new App.Stack(stack);
         return newApp;
+    }
+
+    public boolean isMaintenance() {
+        return maintenance;
+    }
+
+    public void setMaintenance(boolean maintenance) {
+        this.maintenance = maintenance;
     }
 
     private void setweb_url(String webUrl) {
@@ -71,24 +76,16 @@ public class App implements Serializable {
         this.created_at = created_at;
     }
 
-    private void setCreate_status(String create_status) {
-        this.create_status = create_status;
+    private void setOwner(App.Owner owner) {
+        this.owner = owner;
     }
 
-    private void setOwner_email(String owner_email) {
-        this.owner_email = owner_email;
-    }
-
-    private void setStack(String stack) {
+    private void setStack(App.Stack stack) {
         this.stack = stack;
     }
 
     private void setRequested_stack(String requested_stack) {
         this.requested_stack = requested_stack;
-    }
-
-    private void setRepo_migrate_status(String repo_migrate_status) {
-        this.repo_migrate_status = repo_migrate_status;
     }
 
     private void setGit_url(String git_url) {
@@ -105,14 +102,6 @@ public class App implements Serializable {
 
     private void setRepo_size(int repo_size) {
         this.repo_size = repo_size;
-    }
-
-    private void setDynos(int dynos) {
-        this.dynos = dynos;
-    }
-
-    private void setWorkers(int workers) {
-        this.workers = workers;
     }
 
     public String getId() {
@@ -146,24 +135,16 @@ public class App implements Serializable {
         return buildpack_provided_description;
     }
 
-    public String getCreateStatus() {
-        return create_status;
-    }
-
     public String getCreatedAt() {
         return created_at;
     }
 
     public Heroku.Stack getStack() {
-        return Heroku.Stack.fromString(stack);
+        return Heroku.Stack.fromString(stack.getName());
     }
 
     public String getRequestedStack() {
         return requested_stack;
-    }
-
-    public String getRepoMigrateStatus() {
-        return repo_migrate_status;
     }
 
     public int getSlugSize() {
@@ -174,16 +155,8 @@ public class App implements Serializable {
         return repo_size;
     }
 
-    public int getDynos() {
-        return dynos;
-    }
-
-    public int getWorkers() {
-        return workers;
-    }
-
-    public String getOwnerEmail() {
-        return owner_email;
+    public App.Owner getOwner() {
+        return owner;
     }
 
     public String getReleasedAt(){
@@ -200,5 +173,55 @@ public class App implements Serializable {
         copy.stack = this.stack;
         return copy;
     }
-    
+
+    public static class Owner implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        String email;
+
+        public Owner() {
+
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+    }
+
+    public static class Stack implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        String id;
+        String name;
+
+        public Stack() {
+
+        }
+
+        public Stack(Heroku.Stack herokuStack) {
+            this.name = herokuStack.name();
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }

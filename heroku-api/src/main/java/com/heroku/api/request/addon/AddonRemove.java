@@ -46,6 +46,11 @@ public class AddonRemove implements Request<AddonChange> {
     }
 
     @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
+    }
+
+    @Override
     public Http.Accept getResponseType() {
         return Http.Accept.JSON;
     }

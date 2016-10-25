@@ -9,33 +9,24 @@ public class StackInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    String requested;
-    boolean beta;
-    boolean current;
+    String id;
     String name;
+    String state;
 
-    public String getRequested() {
-        return requested;
+    public String getId() {
+        return id;
     }
 
-    private void setRequested(String requested) {
-        this.requested = requested;
+    private void setId(String id) {
+        this.id = id;
     }
 
-    public boolean isBeta() {
-        return beta;
+    public String getState() {
+        return state;
     }
 
-    private void setBeta(boolean beta) {
-        this.beta = beta;
-    }
-
-    public boolean isCurrent() {
-        return current;
-    }
-
-    private void setCurrent(boolean current) {
-        this.current = current;
+    private void setState(String state) {
+        this.state = state;
     }
 
     public String getName() {

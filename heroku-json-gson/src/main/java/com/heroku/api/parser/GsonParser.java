@@ -2,6 +2,7 @@ package com.heroku.api.parser;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 import java.io.ByteArrayInputStream;
@@ -11,6 +12,14 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 
 public class GsonParser implements Parser {
+
+    @Override
+    public String encode(Object object) {
+        GsonBuilder builder = new GsonBuilder();
+
+        Gson gson = builder.create();
+        return gson.toJson(object);
+    }
 
     @Override
     public <T> T parse(byte[] data, final Type type) {

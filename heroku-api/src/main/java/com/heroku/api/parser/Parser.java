@@ -6,4 +6,5 @@ public interface Parser {
 
     <T> T parse(byte[] data, Type type);
 
+    String encode(Object object);
 }

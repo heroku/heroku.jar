@@ -11,6 +11,8 @@ import com.heroku.api.response.Unit;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
+
 /**
  * TODO: Javadoc
  *
@@ -31,7 +33,7 @@ public class AppDestroy implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.App.format(config.getAppName());
     }
 
     @Override
@@ -42,6 +44,11 @@ public class AppDestroy implements Request<Unit> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

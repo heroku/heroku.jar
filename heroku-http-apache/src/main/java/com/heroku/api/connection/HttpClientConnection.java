@@ -4,29 +4,28 @@ import com.heroku.api.Heroku;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.*;
-import org.apache.http.auth.*;
-import org.apache.http.auth.params.AuthPNames;
+import org.apache.http.auth.AuthScheme;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.*;
-import org.apache.http.client.params.AuthPolicy;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -37,7 +36,7 @@ public class HttpClientConnection implements FutureConnection {
 
 
     private URL endpoint = HttpUtil.toURL(ENDPOINT.value);
-    private DefaultHttpClient httpClient = getHttpClient();
+    private CloseableHttpClient httpClient = createClient();
     private volatile ExecutorService executorService;
     private Object lock = new Object();
 
@@ -71,8 +70,8 @@ public class HttpClientConnection implements FutureConnection {
     public <T> T execute(Request<T> request, Map<String,String> exraHeaders, String key) {
         try {
             HttpRequestBase message = getHttpRequestBase(request.getHttpMethod(), ENDPOINT.value + request.getEndpoint());
-            message.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
-            message.setHeader(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
+            message.setHeader(Heroku.ApiVersion.v3.getHeaderName(), Heroku.ApiVersion.v3.getHeaderValue());
+            message.setHeader(Http.ContentType.JSON.getHeaderName(), Http.ContentType.JSON.getHeaderValue());
             message.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("httpclient"));
 
             for (Map.Entry<String, String> header : exraHeaders.entrySet()) {
@@ -87,15 +86,13 @@ public class HttpClientConnection implements FutureConnection {
                 ((HttpEntityEnclosingRequestBase) message).setEntity(new StringEntity(request.getBody(), "UTF-8"));
             }
 
-            httpClient.getCredentialsProvider().setCredentials(
-                    new AuthScope(endpoint.getHost(), endpoint.getPort()),
-                    new UsernamePasswordCredentials("", key)
-            );
+            if (key != null) {
+                message.setHeader("Authorization", "Basic " + Base64.encodeBase64String((":" + key).getBytes()));
+            }
 
             BasicHttpContext ctx = new BasicHttpContext();
             ctx.setAttribute("preemptive-auth", new BasicScheme());
 
-            httpClient.addRequestInterceptor(new PreemptiveAuth(), 0);
             HttpResponse httpResponse = httpClient.execute(message, ctx);
 
             return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
@@ -114,6 +111,8 @@ public class HttpClientConnection implements FutureConnection {
                 return new HttpPost(endpoint);
             case DELETE:
                 return new HttpDelete(endpoint);
+            case PATCH:
+                return new HttpPatch(endpoint);
             default:
                 throw new UnsupportedOperationException(httpMethod + " is not a supported request type.");
         }
@@ -141,18 +140,34 @@ public class HttpClientConnection implements FutureConnection {
         });
     }
 
-    protected DefaultHttpClient getHttpClient() {
-        SSLSocketFactory ssf = new SSLSocketFactory(Heroku.herokuSSLContext());
-        ThreadSafeClientConnManager ccm = new ThreadSafeClientConnManager();
-        if (!Heroku.Config.ENDPOINT.isDefault()) {
-            ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            SchemeRegistry sr = ccm.getSchemeRegistry();
-            sr.register(new Scheme("https", ssf, 443));
+    protected static CloseableHttpClient createClientWithProxy(String proxyStr) throws URISyntaxException {
+        URI proxyUri = new URI(proxyStr);
+        HttpHost proxy = new HttpHost(proxyUri.getHost(), proxyUri.getPort(), proxyUri.getScheme());
+        DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+        return HttpClients.custom()
+            .setRoutePlanner(routePlanner)
+            .build();
+    }
+
+    protected static CloseableHttpClient createClient() {
+        String httpProxy = System.getenv("HTTP_PROXY");
+        String httpsProxy = System.getenv("HTTPS_PROXY");
+
+        if (httpsProxy != null) {
+            try {
+                return createClientWithProxy(httpsProxy);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("HTTPS_PROXY is not valid!" , e);
+            }
+        } else if (httpProxy != null) {
+            try {
+                return createClientWithProxy(httpProxy);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException("HTTP_PROXY is not valid!" , e);
+            }
+        } else {
+            return HttpClients.createDefault();
         }
-        DefaultHttpClient defaultHttpClient = new DefaultHttpClient(ccm);
-        defaultHttpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
-        defaultHttpClient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, Arrays.asList(AuthPolicy.BASIC));
-        return defaultHttpClient;
     }
 
 

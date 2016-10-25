@@ -40,6 +40,13 @@ public interface Request<T> {
     String getBody();
 
     /**
+     * Value of the request body as a Map.
+     * @return Body
+     * @throws UnsupportedOperationException Generally thrown if {@link #hasBody()} returns false
+     */
+    Map<String, ?> getBodyAsMap();
+
+    /**
      * HTTP Accept header.
      * @return The Accept header to be used in the request. Typically "application/json" or "text/xml"
      * @see com.heroku.api.http.Http.Accept

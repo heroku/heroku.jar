@@ -5,10 +5,10 @@ import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.request.app.AppClone;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
-import com.heroku.api.request.config.ConfigAdd;
+import com.heroku.api.request.config.ConfigUpdate;
+import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.response.Unit;
@@ -17,7 +17,9 @@ import org.testng.annotations.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -51,13 +53,6 @@ public abstract class BaseRequestIntegrationTest {
         return new Object[][]{{createApp()}};
     }
 
-    @DataProvider(parallel = true)
-    public Object[][] clonedApp() {
-        return new Object[][]{{
-            connection.execute(new AppClone("template-java-spring-hibernate", new App()), apiKey)
-        }};
-    }
-
     public App getApp() {
         if (apps.size() > 0)
             return apps.get(0);
@@ -67,10 +62,18 @@ public abstract class BaseRequestIntegrationTest {
 
     public App createApp() {
         System.out.println("Creating app...");
-        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)), apiKey);
+        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
         apps.add(app);
         System.out.format("%s created\n", app.getName());
         return app;
+    }
+
+    @BeforeSuite
+    public void deleteExistingKeys() throws InterruptedException {
+        for (IntegrationTestConfig.TestUser tu : IntegrationTestConfig.CONFIG.getTestUsers()) {
+            HerokuAPI api = new HerokuAPI(tu.getApiKey());
+            deleteKeys(api.listKeys());
+        }
     }
     
     @BeforeSuite
@@ -109,16 +112,45 @@ public abstract class BaseRequestIntegrationTest {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.format("Deleting %s\n", res.getName());
+                    System.out.format("Deleting app %s\n", res.getName());
                     deleteApp(res.getName());
-                    System.out.format("Deleted %s\n", res.getName());
+                    System.out.format("Deleted app %s\n", res.getName());
                 }
             });
         }
         // await termination of all the threads to complete app deletion.
         executorService.shutdown();
         executorService.awaitTermination(300L, TimeUnit.SECONDS);
-        System.out.format("Deleted apps in %dms", (System.currentTimeMillis() - start));
+        System.out.format("Deleted apps in %dms\n", (System.currentTimeMillis() - start));
+    }
+
+    void deleteKeys(List<Key> keysToDelete) throws InterruptedException {
+        long start = System.currentTimeMillis();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (final Key res : keysToDelete) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.format("Deleting key %s\n", res.getComment());
+                    deleteKey(res.getId());
+                    System.out.format("Deleted key %s\n", res.getComment());
+                }
+            });
+        }
+        // await termination of all the threads to complete app deletion.
+        executorService.shutdown();
+        executorService.awaitTermination(300L, TimeUnit.SECONDS);
+        System.out.format("Deleted keys in %dms\n", (System.currentTimeMillis() - start));
+    }
+
+    public void deleteKey(String sshkey) {
+        try {
+            connection.execute(new KeyRemove(sshkey), apiKey);
+        } catch (RequestFailedException e) {
+            if (e.getStatusCode() != Http.Status.FORBIDDEN.statusCode) {
+                throw e;
+            }
+        }
     }
 
     public void deleteApp(String appName) {
@@ -136,20 +168,12 @@ public abstract class BaseRequestIntegrationTest {
             throw new RuntimeException("Config must have an equal number of name and value pairs.");
         }
 
-        StringBuffer jsonConfig = new StringBuffer();
-        jsonConfig = jsonConfig.append("{");
-        String separator = "";
-
+        Map<String,String> configVars = new HashMap<String,String>();
         for (int i = 0; i < nameValuePairs.length; i = i + 2) {
-            jsonConfig = jsonConfig.append(
-                    String.format("%s\"%s\":\"%s\"", separator, nameValuePairs[i], nameValuePairs[i + 1])
-            );
-            separator = ",";
+            configVars.put(nameValuePairs[i], nameValuePairs[i + 1]);
         }
 
-        jsonConfig = jsonConfig.append("}");
-
-        Request<Unit> req = new ConfigAdd(app.getName(), new String(jsonConfig));
+        Request<Unit> req = new ConfigUpdate(app.getName(), configVars);
         connection.execute(req, apiKey);
     }
 

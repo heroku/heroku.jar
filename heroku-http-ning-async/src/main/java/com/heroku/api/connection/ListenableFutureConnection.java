@@ -1,7 +1,7 @@
 package com.heroku.api.connection;
 
 import com.heroku.api.request.Request;
-import com.ning.http.client.ListenableFuture;
+import org.asynchttpclient.ListenableFuture;
 
 
 public interface ListenableFutureConnection extends AsyncConnection<ListenableFuture<?>> {

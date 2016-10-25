@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.encodeIncludingSpecialCharacters;
+import static com.heroku.api.http.HttpUtil.noBody;
 
 /**
  * TODO: Javadoc
@@ -24,8 +25,8 @@ public class KeyRemove implements Request<Unit> {
 
     private final RequestConfig config;
 
-    public KeyRemove(String keyName) {
-        this.config = new RequestConfig().with(Heroku.RequestKey.SSHKey, keyName);
+    public KeyRemove(String keyIdOrFingerprint) {
+        this.config = new RequestConfig().with(Heroku.RequestKey.SSHKey, keyIdOrFingerprint);
     }
 
     @Override
@@ -46,6 +47,11 @@ public class KeyRemove implements Request<Unit> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

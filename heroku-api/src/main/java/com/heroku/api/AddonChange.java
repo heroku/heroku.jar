@@ -11,32 +11,13 @@ public class AddonChange implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    String status;
-    String message;
-    String price;
+    String state;
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    private void setStatus(String status) {
-        this.status = status;
+    private void setState(String state) {
+        this.state = state;
     }
-
-    public String getMessage() {
-        return message;
-    }
-
-    private void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    private void setPrice(String price) {
-        this.price = price;
-    }
-
 }

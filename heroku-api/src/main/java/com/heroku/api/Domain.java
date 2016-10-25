@@ -16,11 +16,11 @@ public class Domain implements Serializable {
 
     String created_at;
     String updated_at;
-    String default_name;
-    String domain;
+    String hostname;
     String id;
-    String app_id;
-    String base_domain;
+    String kind;
+    String status;
+    String cname;
 
     public String getCreatedAt() {
         return created_at;
@@ -30,24 +30,16 @@ public class Domain implements Serializable {
         return updated_at;
     }
 
-    public String getDefault() {
-        return default_name;
-    }
-
-    public String getDomain() {
-        return domain;
+    public String getHostname() {
+        return hostname;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getAppId() {
-        return app_id;
-    }
-
-    public String getBaseDomain() {
-        return base_domain;
+    public String getStatus() {
+        return status;
     }
 
     private void setCreated_at(String created_at) {
@@ -58,23 +50,27 @@ public class Domain implements Serializable {
         this.updated_at = updated_at;
     }
 
-    private void setDefault(String default_name) {
-        this.default_name = default_name;
-    }
-
-    private void setDomain(String domain) {
-        this.domain = domain;
+    private void setHostname(String domain) {
+        this.hostname = domain;
     }
 
     private void setId(String id) {
         this.id = id;
     }
 
-    private void setApp_id(String app_id) {
-        this.app_id = app_id;
+    private void setKind(String kind) {
+        this.kind = kind;
     }
 
-    private void setBase_domain(String base_domain) {
-        this.base_domain = base_domain;
+    private void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCname() {
+        return cname;
+    }
+
+    public void setCname(String cname) {
+        this.cname = cname;
     }
 }

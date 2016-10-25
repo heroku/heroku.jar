@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -34,7 +35,7 @@ public class CollabList implements Request<List<Collaborator>> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.Collaborators.format(config.getAppName());
     }
 
     @Override
@@ -45,6 +46,11 @@ public class CollabList implements Request<List<Collaborator>> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

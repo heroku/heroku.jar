@@ -4,11 +4,11 @@ import com.heroku.api.AddonChange;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -20,8 +20,8 @@ public class AddonInstall implements Request<AddonChange> {
 
     private final RequestConfig config;
 
-    public AddonInstall(String appName, String addonName) {
-        config = new RequestConfig().app(appName).with(Heroku.RequestKey.AddonName, addonName);
+    public AddonInstall(String appName, String addonPlan) {
+        config = new RequestConfig().app(appName).with(Heroku.RequestKey.AddonPlan, addonPlan);
     }
 
     @Override
@@ -31,17 +31,22 @@ public class AddonInstall implements Request<AddonChange> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.AppAddon.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.AddonName));
+        return Heroku.Resource.AppAddons.format(config.getAppName());
     }
 
     @Override
     public boolean hasBody() {
-        return false;
+        return true;
     }
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
@@ -51,15 +56,15 @@ public class AddonInstall implements Request<AddonChange> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        return Collections.emptyMap();
     }
 
     @Override
     public AddonChange getResponse(byte[] bytes, int status) {
-        if (status == Http.Status.OK.statusCode) {
+        if (status == Http.Status.CREATED.statusCode) {
             return Json.parse(bytes, this.getClass());
         } else {
-            throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.AddonName), status, bytes);
+            throw new RequestFailedException("Unable to add addon " + config.get(Heroku.RequestKey.AddonPlan), status, bytes);
         }
     }
 }

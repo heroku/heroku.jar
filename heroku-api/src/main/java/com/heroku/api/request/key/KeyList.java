@@ -42,6 +42,11 @@ public class KeyList implements Request<List<Key>> {
     }
 
     @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
+    }
+
+    @Override
     public Http.Accept getResponseType() {
         return Http.Accept.JSON;
     }

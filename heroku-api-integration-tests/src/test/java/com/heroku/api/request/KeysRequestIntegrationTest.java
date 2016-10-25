@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -46,7 +45,6 @@ public class KeysRequestIntegrationTest {
 
     @AfterClass(alwaysRun = true)
     public void deleteAllKeys() {
-//        connection.execute(new KeysRemoveAll(), API_KEY);
         // delete keys individually to avoid race conditions.
         // if a key is not found, ignore the failure because it's already been deleted.
         for (String k : pubKeyComments) {
@@ -115,7 +113,7 @@ public class KeysRequestIntegrationTest {
 
     public boolean keyIsPresent(String comment, List<Key> keyList) {
         for (Key k : keyList) {
-            if (k.getContents().contains(comment)) {
+            if (comment.equals(k.getComment())) {
                 return true;
             }
         }

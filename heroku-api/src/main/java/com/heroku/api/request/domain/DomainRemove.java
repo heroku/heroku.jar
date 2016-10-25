@@ -9,7 +9,6 @@ import com.heroku.api.response.Unit;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.heroku.api.Heroku.RequestKey.AppName;
 import static com.heroku.api.Heroku.RequestKey.DeleteDomain;
 import static com.heroku.api.Heroku.Resource.Domain;
 import static com.heroku.api.http.HttpUtil.noBody;
@@ -36,7 +35,7 @@ public class DomainRemove implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Domain.format(config.get(AppName), config.get(DeleteDomain));
+        return Domain.format(config.getAppName(), config.get(DeleteDomain));
     }
 
     @Override
@@ -46,6 +45,11 @@ public class DomainRemove implements Request<Unit> {
 
     @Override
     public String getBody() {
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
         throw noBody();
     }
 

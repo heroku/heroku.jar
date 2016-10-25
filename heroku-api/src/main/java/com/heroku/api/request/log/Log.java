@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.Heroku.RequestKey.*;
+import static com.heroku.api.http.HttpUtil.noBody;
 
 public class Log implements Request<LogStreamResponse> {
 
@@ -134,6 +135,11 @@ public class Log implements Request<LogStreamResponse> {
 
     @Override
     public String getBody() {
+        return null;
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
         return null;
     }
 

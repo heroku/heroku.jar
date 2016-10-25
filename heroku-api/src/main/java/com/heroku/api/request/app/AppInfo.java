@@ -11,6 +11,7 @@ import com.heroku.api.request.RequestConfig;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -33,7 +34,7 @@ public class AppInfo implements Request<App> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.App.format(config.getAppName());
     }
 
     @Override
@@ -44,6 +45,11 @@ public class AppInfo implements Request<App> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

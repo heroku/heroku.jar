@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -34,7 +35,7 @@ public class AppAddonsList implements Request<List<Addon>> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.AppAddons.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.AppAddons.format(config.getAppName());
     }
     
     @Override
@@ -45,6 +46,11 @@ public class AppAddonsList implements Request<List<Addon>> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override
@@ -63,6 +69,6 @@ public class AppAddonsList implements Request<List<Addon>> {
             return parse(bytes, getClass());
         }
         throw new RequestFailedException(
-                "Unable to get addons for " + config.get(Heroku.RequestKey.AppName), status, bytes);
+                "Unable to get addons for " + config.getAppName(), status, bytes);
     }
 }

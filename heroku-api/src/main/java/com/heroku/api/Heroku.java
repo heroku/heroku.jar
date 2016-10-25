@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+
 public class Heroku {
 
 
@@ -145,21 +146,24 @@ Likewise, the secure random parameter may be null in which case the default impl
     }
 
     public static enum RequestKey {
-        Stack("app[stack]"),
-        CreateAppName("app[name]"),
+        StackName("name"),
+        Stack("stack"),
+        AppMaintenance("maintenance"),
         Remote("remote"),
         Timeout("timeout"),
         Addons("addons"),
         AddonName("addon"),
+        AddonPlan("plan"),
         Attach("attach"),
         Requested("requested"),
         Beta("beta"),
         AppName("name"),
-        SSHKey("sshkey"),
+        SSHKey("public_key"),
         Config("config"),
         Command("command"),
-        Collaborator("collaborator[email]"),
-        TransferOwner("app[transfer_owner]"),
+        Collaborator("user"),
+        TransferAppName("app"),
+        TransferOwner("recipient"),
         ConfigVars("config_vars"),
         ConfigVarName("key"),
         ProcessType("type"),
@@ -172,10 +176,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         LogSource("source"),
         LogTail("tail"),
         Release("release"),
-        Rollback("rollback"),
-        CreateDomain("domain_name[domain]"),
-        DeleteDomain("domain_name"),
-        MaintenanceMode("maintenance_mode");
+        CreateDomain("hostname"),
+        DeleteDomain("hostname");
 
         public final String queryParameter;
 
@@ -186,11 +188,8 @@ Likewise, the secure random parameter may be null in which case the default impl
 
 
     public static enum Stack {
-        Aspen("aspen-mri-1.8.6"),
-        Bamboo192("bamboo-mri-1.9.2"),
-        Bamboo187("bamboo-ree-1.8.7"),
-        Cedar("cedar"),
-        Cedar14("cedar-14");
+        Cedar14("cedar-14"),
+        Cedar16("cedar-16");
 
         public final String value;
 
@@ -217,20 +216,18 @@ Likewise, the secure random parameter may be null in which case the default impl
 
 
     public static enum Resource {
-        Login("/login"),
         Apps("/apps"),
         App("/apps/%s"),
-        AppClone(App.value + "/clone"),
+        AppTransfer("/account/app-transfers"),
         Addons("/addons"),
         AppAddons(App.value + "/addons"),
         AppAddon(AppAddons.value + "/%s"),
-        User("/user"),
+        User("/account"),
         Key(User.value + "/keys/%s"),
         Keys(User.value + "/keys"),
         Collaborators(App.value + "/collaborators"),
         Collaborator(Collaborators.value + "/%s"),
-        ConfigVars(App.value + "/config_vars"),
-        ConfigVar(ConfigVars.value + "/%s"),
+        ConfigVars(App.value + "/config-vars"),
         Logs(App.value + "/logs?%s"),
         Process(App.value + "/ps"),
         Restart(Process.value + "/restart"),
@@ -239,10 +236,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         Releases(App.value + "/releases"),
         Release(Releases.value + "/%s"),
         Status(App.value + "/status"),
-        AppStack(App.value + "/stack"),
+        Stacks("/stacks"),
         Domains(App.value + "/domains"),
-        Domain(Domains.value + "/%s"),
-        Maintenance(App.value + "/server/maintenance");
+        Domain(Domains.value + "/%s");
 
         public final String value;
 
@@ -255,11 +251,11 @@ Likewise, the secure random parameter may be null in which case the default impl
         }
     }
 
-    public static enum ApiVersion implements Http.Header {
+    public enum ApiVersion implements Http.Header {
 
         v2(2), v3(3);
 
-        public static final String HEADER = "X-Heroku-API-Version";
+        public static final String HEADER = "Accept";
 
         public final int version;
 
@@ -274,7 +270,7 @@ Likewise, the secure random parameter may be null in which case the default impl
 
         @Override
         public String getHeaderValue() {
-            return Integer.toString(version);
+            return "application/vnd.heroku+json; version=" + Integer.toString(version);
         }
     }
 

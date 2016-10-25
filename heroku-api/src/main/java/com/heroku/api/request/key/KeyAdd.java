@@ -7,6 +7,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.response.Unit;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -15,8 +16,6 @@ import java.util.Map;
  * @author James Ward
  */
 public class KeyAdd implements Request<Unit> {
-
-    // post("/user/keys", key, { 'Content-Type' => 'text/ssh-authkey' }).to_s
 
     private final RequestConfig config;
 
@@ -41,7 +40,12 @@ public class KeyAdd implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return config.get(Heroku.RequestKey.SSHKey);
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
@@ -51,11 +55,11 @@ public class KeyAdd implements Request<Unit> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.SSH_AUTHKEY);
+        return Collections.emptyMap();
     }
 
     public Unit getResponse(byte[] in, int code) {
-        if (code == Http.Status.OK.statusCode)
+        if (code == Http.Status.CREATED.statusCode)
             return Unit.unit;
         else
             throw new RequestFailedException("KeysAdd failed", code, in);

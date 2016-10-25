@@ -5,7 +5,7 @@
     <parent>
         <artifactId>heroku-api-parent</artifactId>
         <groupId>com.heroku.api</groupId>
-        <version>0.17-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,6 +26,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>${apache.commons-httpclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
         </dependency>
 
     </dependencies>

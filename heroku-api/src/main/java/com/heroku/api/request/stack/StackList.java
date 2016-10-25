@@ -31,7 +31,7 @@ public class StackList implements Request<List<StackInfo>>{
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.AppStack.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.Stacks.value;
     }
 
     @Override
@@ -41,6 +41,11 @@ public class StackList implements Request<List<StackInfo>>{
 
     @Override
     public String getBody() {
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
         throw noBody();
     }
 

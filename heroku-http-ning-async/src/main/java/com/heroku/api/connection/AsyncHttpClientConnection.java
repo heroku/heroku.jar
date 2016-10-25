@@ -5,8 +5,8 @@ import com.heroku.api.exception.HerokuAPIException;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
-import com.ning.http.client.*;
-import com.ning.http.util.Base64;
+import org.asynchttpclient.*;
+import org.asynchttpclient.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,28 +16,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
-
-
 public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
-    private AsyncHttpClient httpClient = getHttpClient();
+    private AsyncHttpClient httpClient = new DefaultAsyncHttpClient();
 
-
-    protected AsyncHttpClient getHttpClient() {
-        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
-        // TODO: fix the handling of hostname verification
-        if (!Heroku.Config.ENDPOINT.isDefault()) {
-            builder.setSSLContext(Heroku.herokuSSLContext());
-            builder.setHostnameVerifier(Heroku.herokuHostnameVerifier());
-        }
-        return new AsyncHttpClient(builder.build());
-    }
-
-    private com.ning.http.client.Request buildRequest(Request<?> req, Map<String,String> extraHeaders, String key) {
-        AsyncHttpClient.BoundRequestBuilder builder = prepareRequest(req);
-        builder.setHeader(Heroku.ApiVersion.HEADER, String.valueOf(Heroku.ApiVersion.v2.version));
-        builder.setHeader(req.getResponseType().getHeaderName(), req.getResponseType().getHeaderValue());
+    private org.asynchttpclient.Request buildRequest(Request<?> req, Map<String,String> extraHeaders, String key) {
+        BoundRequestBuilder builder = prepareRequest(req);
+        builder.setHeader(Heroku.ApiVersion.v3.getHeaderName(), String.valueOf(Heroku.ApiVersion.v3.getHeaderValue()));
+        builder.setHeader(Http.ContentType.JSON.getHeaderName(), Http.ContentType.JSON.getHeaderValue());
         builder.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("asynchttpclient"));
         for (Map.Entry<String, String> entry : extraHeaders.entrySet()) {
             builder.setHeader(entry.getKey(), entry.getValue());
@@ -59,7 +45,7 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
         return builder.build();
     }
 
-    private AsyncHttpClient.BoundRequestBuilder prepareRequest(Request<?> request) {
+    private BoundRequestBuilder prepareRequest(Request<?> request) {
         String requestEndpoint = Heroku.Config.ENDPOINT.value + request.getEndpoint();
         switch (request.getHttpMethod()) {
             case GET:
@@ -70,6 +56,8 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
                 return httpClient.preparePut(requestEndpoint);
             case DELETE:
                 return httpClient.prepareDelete(requestEndpoint);
+            case PATCH:
+                return httpClient.preparePatch(requestEndpoint);
             default:
                 throw new UnsupportedOperationException(request.getHttpMethod().name() + " is not supported");
         }
@@ -78,18 +66,14 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
     @Override
     public <T> ListenableFuture<T> executeAsync(final Request<T> request, final Map<String,String> extraHeaders, String key) {
-        com.ning.http.client.Request asyncRequest = buildRequest(request, extraHeaders, key);
+        org.asynchttpclient.Request asyncRequest = buildRequest(request, extraHeaders, key);
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
-                return request.getResponse(response.getResponseBody("UTF-8").getBytes(), response.getStatusCode());
+                return request.getResponse(response.getResponseBody().getBytes(), response.getStatusCode());
             }
         };
-        try {
-            return httpClient.executeRequest(asyncRequest, handler);
-        } catch (IOException e) {
-            throw new HerokuAPIException("IOException while executing request", e);
-        }
+        return httpClient.executeRequest(asyncRequest, handler);
     }
 
     @Override
@@ -109,8 +93,12 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
         } catch (InterruptedException e) {
             throw new HerokuAPIException("request interrupted", e);
         } catch (ExecutionException e) {
-            if (e.getCause() != null && e.getCause().getCause() instanceof RequestFailedException) {
+            if (e.getCause() instanceof RequestFailedException) {
+                throw (RequestFailedException) e.getCause();
+            } else if (e.getCause() != null && e.getCause().getCause() instanceof RequestFailedException) {
                 throw (RequestFailedException) e.getCause().getCause();
+            } else if (e.getCause().getCause() != null && e.getCause().getCause().getCause() instanceof RequestFailedException) {
+                throw (RequestFailedException) e.getCause().getCause().getCause();
             }
             throw new HerokuAPIException("execution exception", e.getCause());
         } catch (TimeoutException e) {
@@ -121,7 +109,11 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
     @Override
     public void close() {
-        httpClient.close();
+        try {
+            httpClient.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

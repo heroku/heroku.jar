@@ -5,7 +5,6 @@ import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AppAddonsList;
@@ -14,26 +13,17 @@ import com.heroku.api.request.app.AppDestroy;
 import com.heroku.api.request.app.AppInfo;
 import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.config.ConfigList;
-import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.domain.DomainAdd;
 import com.heroku.api.request.domain.DomainList;
 import com.heroku.api.request.domain.DomainRemove;
 import com.heroku.api.request.log.Log;
-import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.ps.ProcessList;
-import com.heroku.api.request.ps.Restart;
-import com.heroku.api.request.ps.Scale;
-import com.heroku.api.request.ps.Stop;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
-import com.heroku.api.request.run.Run;
-import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.stack.StackList;
-import com.heroku.api.request.stack.StackMigrate;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import org.testng.ITestResult;
@@ -46,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.heroku.api.Heroku.Stack.Cedar;
+import static com.heroku.api.Heroku.Stack.Cedar14;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static com.heroku.api.http.Http.Status.*;
 import static org.testng.Assert.*;
@@ -80,60 +70,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCreateAppCommand() throws IOException {
-        AppCreate cmd = new AppCreate(new App().on(Cedar));
+        AppCreate cmd = new AppCreate(new App().on(Cedar14));
         App response = connection.execute(cmd, apiKey);
 
         assertNotNull(response.getId());
-        assertEquals(response.getStack(), Cedar);
-        assertEquals(response.getCreateStatus(), "complete");
+        assertEquals(response.getStack(), Cedar14);
+        assertFalse(response.isMaintenance());
         assertNull(response.getBuildpackProvidedDescription());
         deleteApp(response.getName());
-    }
-
-    @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
-    public void testCloneAppCommand() throws IOException {
-        final HerokuAPI api = new HerokuAPI(connection, apiKey);
-        final String templateName = "template-java-spring-hibernate";
-        
-        App response = api.cloneApp(templateName);
-
-        assertNotNull(response.getId());
-        assertNotSame(templateName, response.getName());
-        assertEquals(response.getStack(), Cedar);
-        assertEquals(response.getCreateStatus(), "complete");
-        assertEquals(response.getBuildpackProvidedDescription(), "Java");
-        deleteApp(response.getName());
-    }
-
-    @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
-    public void testCloneAppCommand_WithRequestedName() throws IOException {
-        final HerokuAPI api = new HerokuAPI(connection, apiKey);
-        final String templateName = "template-java-spring-hibernate";
-        final String requestedAppName = "test" + System.currentTimeMillis();
-
-        App response = api.cloneApp(templateName, new App().named(requestedAppName));
-
-        assertNotNull(response.getId());
-        assertNotSame(templateName, response.getName());
-        assertEquals(response.getName(), requestedAppName);
-        assertEquals(response.getStack(), Cedar);
-        assertEquals(response.getCreateStatus(), "complete");
-        assertEquals(response.getBuildpackProvidedDescription(), "Java");
-        deleteApp(response.getName());
-    }
-    
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testCloneAppCommand_WithNonTemplateApp() throws IOException {
-        final HerokuAPI api = new HerokuAPI(connection, apiKey);
-        final String nonTemplateApp = "java";
-        
-        try {
-            api.cloneApp(nonTemplateApp);
-            fail();
-        } catch (RequestFailedException e) {
-            assertTrue(e.getMessage().contains("Failed to clone app"));
-            assertEquals(e.getStatusCode(), FORBIDDEN.statusCode);
-        }
     }
 
     @DataProvider
@@ -170,7 +114,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     // don't use the app dataprovider because it'll try to delete an already deleted app
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testDestroyAppCommand() throws IOException {
-        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Cedar)).getName());
+        AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Cedar14)).getName());
         Unit response = connection.execute(cmd, apiKey);
         assertNotNull(response);
     }
@@ -193,14 +137,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testSharingTransferCommand() throws IOException {
         assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
         HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
-        App app = api.createApp(new App().on(Cedar));
+        App app = api.createApp(new App().on(Cedar14));
         api.addCollaborator(app.getName(), sharingUser.getUsername());
         api.transferApp(app.getName(), sharingUser.getUsername());
 
         HerokuAPI sharedUserAPI = new HerokuAPI(sharingUser.getApiKey());
         App transferredApp = sharedUserAPI.getApp(app.getName());
-        assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
-        sharedUserAPI.destroyApp(transferredApp.getName());
+
+        // TODO The transfer must be accepted first
+        //assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
+        //sharedUserAPI.destroyApp(transferredApp.getName());
     }
 
     @Test(dataProvider = "newApp", invocationCount = 5, successPercentage = 20, retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -225,7 +171,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         config.put("FOO", "bar");
         config.put("BAR", "foo");
         config.put("회사", "히로쿠");
-        api.addConfig(app.getName(), config);
+        api.updateConfig(app.getName(), config);
         Map<String, String> retrievedConfig = api.listConfig(app.getName());
         assertEquals(retrievedConfig.get("FOO"), "bar");
         assertEquals(retrievedConfig.get("BAR"), "foo");
@@ -241,47 +187,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.get("FOO"), "BAR");
     }
 
-    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testConfigRemoveCommand(App app) {
-        addConfig(app, "회사", "히로쿠", "JOHN", "DOE");
-        Request<Map<String, String>> removeRequest = new ConfigRemove(app.getName(), "회사");
-        Map<String, String> response = connection.execute(removeRequest, apiKey);
-        assertNotNull(response.get("JOHN"), "Config var 'JOHN' should still exist, but it's not there.");
-        assertNull(response.get("회사"));
-    }
-
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testProcessCommand(App app) {
-        Proc proc = null;
-        try {
-            final RunResponse runResponse = connection.execute(new Run(app.getName(), "sleep 60", false), apiKey);
-            proc = runResponse.getProc();
-
-            List<Proc> response = connection.execute(new ProcessList(app.getName()), apiKey);
-            assertEquals(response.size(), 1);
-            assertEquals(response.get(0).getProcess(), proc.getProcess());
-            assertEquals(response.get(0).getCommand(), proc.getCommand());
-        } finally {
-            if (proc != null) {
-                connection.execute(new Stop(app.getName(), proc), apiKey);
-            }
-        }
-    }
-
-    @Test(dataProvider = "clonedApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testScaleCommand(App app) {
-        Request<Unit> req = new Scale(app.getName(), "web", 1);
-        Unit response = connection.execute(req, apiKey);
-        assertNotNull(response);
-    }
-
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testRestartCommand(App app) {
-        Request<Unit> req = new Restart(app.getName());
-        Unit response = connection.execute(req, apiKey);
-        assertNotNull(response);
-    }
-
     @Test(retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testListAddons() {
         AddonList req = new AddonList();
@@ -291,7 +196,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "newApp", retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testListAppAddons(App app) {
-        connection.execute(new AddonInstall(app.getName(), "heroku-postgresql:dev"), apiKey);
+        connection.execute(new AddonInstall(app.getName(), "heroku-postgresql"), apiKey);
         Request<List<Addon>> req = new AppAddonsList(app.getName());
         List<Addon> response = connection.execute(req, apiKey);
         assertNotNull(response);
@@ -301,9 +206,9 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = GeneralRetryAnalyzer.class)
     public void testAddAddonToApp(App app) {
-        AddonInstall req = new AddonInstall(app.getName(), "heroku-postgresql:dev");
+        AddonInstall req = new AddonInstall(app.getName(), "heroku-postgresql");
         AddonChange response = connection.execute(req, apiKey);
-        assertEquals(response.getStatus(), "Installed");
+        assertEquals(response.getState(), "provisioned");
     }
 
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -312,23 +217,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         List<Collaborator> xmlArrayResponse = connection.execute(req, apiKey);
         assertEquals(xmlArrayResponse.size(), 1);
         assertNotNull(xmlArrayResponse.get(0).getEmail());
-    }
-
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testRunCommand(App app) throws IOException {
-        Run run = new Run(app.getName(), "echo helloworld");
-        Run runAttached = new Run(app.getName(), "echo helloworld", true);
-        RunResponse response = connection.execute(run, apiKey);
-        try {
-            response.attach();
-            fail("Should throw an illegal state exception");
-        } catch (IllegalStateException ex) {
-            //ok
-        }
-        RunResponse responseAttach = connection.execute(runAttached, apiKey);
-        String output = HttpUtil.getUTF8String(HttpUtil.getBytes(responseAttach.attach()));
-        System.out.println("RUN OUTPUT:" + output);
-        assertTrue(output.contains("helloworld"));
     }
 
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -343,7 +231,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListReleases(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
-        assertEquals(releases.get(0).getName(), "v1");
+        assertEquals(releases.get(0).getVersion(), 1);
         assertEquals(releases.get(0).getDescription(), "Initial release");
     }
 
@@ -351,17 +239,19 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testReleaseInfo(App app) {
         addConfig(app, "releaseTest", "releaseTest"); //ensure a release exists
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
-        Release releaseInfo = connection.execute(new ReleaseInfo(app.getName(), releases.get(0).getName()), apiKey);
-        assertEquals(releaseInfo.getName(), releases.get(0).getName());
+        Release releaseInfo = connection.execute(new ReleaseInfo(app.getName(), releases.get(0).getId()), apiKey);
+        assertEquals(releaseInfo.getVersion(), releases.get(0).getVersion());
+        assertEquals(releaseInfo.getId(), releases.get(0).getId());
     }
     
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
         addConfig(app, "releaseTest", "releaseTest");
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
-        Release lastRelease = releases.get(releases.size() - 1);
-        String rollback = connection.execute(new Rollback(app.getName(), lastRelease.getName()), apiKey);
-        assertEquals(rollback, lastRelease.getName());
+        Release previousRelease = releases.get(releases.size() - 2);
+        Release rollback = connection.execute(new Rollback(app.getName(), previousRelease.getId()), apiKey);
+        assertNotSame(rollback.getId(), previousRelease.getId());
+        assertNotSame(rollback.getVersion(), previousRelease.getVersion());
     }
     
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -375,19 +265,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         }
         fail("Stack list did not contain the app's stack.");
     }
-    
-    @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testStackMigrate() {
-        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Bamboo187)), apiKey);
-        String migrateStatus = connection.execute(new StackMigrate(app.getName(), Heroku.Stack.Bamboo192), apiKey);
-        assertTrue(migrateStatus.contains("Migration prepared"));
-    }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testAddDomain(App app) {
         String domainName = randomDomain();
         Domain addedDomain = connection.execute(new DomainAdd(app.getName(), domainName), apiKey);
-        assertEquals(addedDomain.getDomain(), domainName);
+        assertEquals(addedDomain.getHostname(), domainName);
     }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -417,7 +300,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     
     private void assertDomainIsPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
-            if (d.getDomain().equalsIgnoreCase(domainName)) {
+            if (d.getHostname().equalsIgnoreCase(domainName)) {
                 return;
             }
         }
@@ -428,7 +311,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     private void assertDomainNotPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
-            if (d.getDomain().equalsIgnoreCase(domainName)) {
+            if (d.getHostname().equalsIgnoreCase(domainName)) {
                 throw new AssertionError(
                     "Domain " + domainName + " should not be present, but it was found for app " + app.getName()
                 );

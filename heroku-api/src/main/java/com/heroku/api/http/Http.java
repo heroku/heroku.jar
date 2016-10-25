@@ -39,6 +39,7 @@ public class Http {
      * HTTP Content-Type header model.
      */
     public static enum ContentType implements Header {
+        JSON("application/json"),
         FORM_URLENCODED("application/x-www-form-urlencoded"),
         SSH_AUTHKEY("text/ssh-authkey");
 
@@ -126,7 +127,7 @@ public class Http {
     /**
      * HTTP Methods. Not all are implemented. Only those used by the Heroku API.
      */
-    public static enum Method {GET, PUT, POST, DELETE}
+    public static enum Method {GET, PUT, POST, DELETE, PATCH}
 
     /**
      * HTTP Status codes. Not all are implemented. Only those used by the Heroku API.
