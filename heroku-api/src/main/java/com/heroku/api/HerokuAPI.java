@@ -29,11 +29,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <p>
  * A convenience class for making HTTP requests to the Heroku API for a given user. An underlying {@link Connection} is created
  * for each instance of HerokuAPI. To make HTTP requests to the Heroku API in multi-user or systems that have resource
  * constraints (e.g. a pool of <code>Connection</code> objects are required), <code>Connection</code> should be used
  * directly.
- * <p></p>
+ * </p>
  * Example usage:
  * <pre>{@code
  *     HerokuAPI heroku = new HerokuAPI("apiKey");

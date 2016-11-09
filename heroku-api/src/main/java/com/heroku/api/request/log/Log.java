@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.Heroku.RequestKey.*;
-import static com.heroku.api.http.HttpUtil.noBody;
 
 public class Log implements Request<LogStreamResponse> {
 
@@ -85,7 +84,7 @@ public class Log implements Request<LogStreamResponse> {
         }
 
         /**
-         * Name of the process to get logs for. Process names can be seen by running {@link com.heroku.api.HerokuAPI#listProcesses}, or by
+         * Name of the process to get logs for. Process names can be seen by running {com.heroku.api.HerokuAPI#listProcesses}, or by
          * retrieving all logs and inspecting the value inside the brackets (e.g. web.1 from app[web.1]).
          * @param processName Name of the process. e.g. "web.1"
          * @return builder object

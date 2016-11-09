@@ -48,13 +48,16 @@ public class Json {
     }
 
     /**
+     * <p>
      * Calls Parser.parse() using the generic type T for Request<T> given Request<T> is the interface for the
      * classType parameter. If it can't find an appropriate type, it errors out with a ParseException.
-     * <p></p>
+     * </p>
+     * <p>
      * The following code sample illustrates typical usage in the context of a request to Heroku's API.
      * The byte array is provided from a connection.execute(request) call, which is a JSON response from
      * the server. getClass() provides the classType, which in this case extends Request<T>. The return
      * value from the parse method will be App.
+     * </p>
      * <code>
      * public class SampleRequest implements Request<App> {
      * ...
@@ -67,7 +70,7 @@ public class Json {
      * @param data      JSON byte array to be parsed
      * @param classType The Request implementation class type. This is typically given the calling class as
      *                  an argument.
-     * @return T object representing the data
+     * @return object representing the data
      */
     public static <T> T parse(byte[] data, Class<? extends Request<T>> classType) {
         Type[] types = doResolveTypeArguments(classType, classType, Request.class);
