@@ -201,7 +201,7 @@ public class HerokuAPI {
 
     /**
      * List the addons already added to an app.
-     * @param appName
+     * @param appName new of the app
      * @return a list of add-ons
      */
     public List<Addon> listAppAddons(String appName) {

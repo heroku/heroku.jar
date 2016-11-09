@@ -77,7 +77,7 @@ public class Log implements Request<LogStreamResponse> {
 
         /**
          * Number of log lines to retrieve.
-         * @param num
+         * @param num number of lines
          * @return builder object
          */
         public LogRequestBuilder num(int num) {
@@ -97,7 +97,7 @@ public class Log implements Request<LogStreamResponse> {
         /**
          * The source of the logs. This can be found by reviewing the logs and looking at the value just after the timestamp. e.g. the source of
          * <code>2012-03-23T18:46:01+00:00 heroku[router]</code> is "heroku".
-         * @param source
+         * @param source source of the logs
          * @return builder object
          */
         public LogRequestBuilder source(String source) {
@@ -106,7 +106,7 @@ public class Log implements Request<LogStreamResponse> {
 
         /**
          * Whether or not to tail the logs. If true, a stream will be created that will remain open for an extended period of time.
-         * @param tail
+         * @param tail to tail the logs or not
          * @return builder object
          */
         public LogRequestBuilder tail(boolean tail) {
