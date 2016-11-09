@@ -68,6 +68,7 @@ public class Json {
      * </code>
      *
      * @param data      JSON byte array to be parsed
+     * @param <T> Deserialzed object type
      * @param classType The Request implementation class type. This is typically given the calling class as
      *                  an argument.
      * @return object representing the data

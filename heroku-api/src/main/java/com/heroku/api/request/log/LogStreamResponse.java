@@ -24,8 +24,7 @@ public class LogStreamResponse {
     }
 
     /**
-     * A logplex session URL. Using Logplex directly will generally require you to add logplex's certificate to java's keystore. {@see #openStream} for a
-     * convenience method that bypasses SSL verification.
+     * A logplex session URL. Using Logplex directly will generally require you to add logplex's certificate to java's keystore.
      * @return url to the log stream
      */
     public URL getLogStreamURL() {
