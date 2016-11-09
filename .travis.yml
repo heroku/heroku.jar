@@ -17,5 +17,13 @@ env:
   - secure: "Qq51xiRhc6yB/ghffCK2xhy3lpDI3NV2MgYd5MZ1haBQDdAFNvYjFr4Eix+iusDfmTrfK2sIVx4nRCzOt3N9APeh5/W2OgPEeYpPSs5Y5Qw4S+vSu03fp2SsftI/KBotNeMNXwB5nqXnFKbOXwHRa/p79lb9bX4qEq4xIJA/mfY="
   # CI_TEST_USER2_TOKEN
   - secure: "Cppme1KWX4Yty1X824bvVLRJgHcQCSxzu+NdvnnryfkgNXFTDMS9RLkF2aAZEY/+MM5ra649bZE4q/7SzNC2DahiC6fobxmvFzGo0t51BCOjxofLyTh9kHSye9irF15KTDpjV7R4cLmaTtfAAMuCJMKXrcPSsmc+H6TmC9bC7oc="
+  # CI_DEPLOY_USERNAME
+  - secure: "aPARdmcqjhazaOIAcBcMW3PwU3mySS9gWEU3RakZDt/9o6Q08Ttu6LM3JzDapTu/WTqdKrXmRF+KvhX6CbBWsr2f/x/wWSjgMnr1n1dE1YUqspsXco9sNCQHx/SCE1/8OIt27pcXYp2P/Ur5/Z/NgMPN8ivs31EiXdgyvXe/XpA="
+  # CI_DEPLOY_PASSWORD
+  - secure: "HW/2rDSCsHFeUQvt0/LsdoBTRCAR2XLYky+cV2+iuWR49JfSgxEjHtOIQ0hhlMlaG20yxV6Tcx2p/TdxpIRF9rvLup3gC35L3AJCHbai3kmvA8mGdeqPJ+2lS+nSuxQ/0Bs82/SPG6PF7iuuq82drEtxdN7aF5L9+7bPYeRkd0k="
+  # CI_DEPLOY_GPG_KEYNAME
+  - secure: "6FxTeQsCouoOipoBW1TDaqMmhYQzUySwYN0G2pHgIu8evNrkkdYw06aTxyQb3NyO/uY2AifSf/AFxDZKfduNxOEcQuGsF854DVyv++hX/JlCECqPgsUVRQqlMkpYA+svyMEA9V/QCMBNUxwfyQA0KTC9ztCT2g1uAHuyJhEZPIs="
+  # CI_DEPLOY_GPG_PASSPHRASE
+  - secure: "rePQZHmt8f5sQMNfbW+AQESkJE0LGYNj1IdPBQH3xnOxV/Z0ixA0HfjFdlzoavGo4yC5TeC5hJl1aTiAM4xusPMBtZeoMfjhnKSCZCC1WUtSer6AtTNKkD2aTv3LIcXDjJjMwuadIIPMuGm8SNfpyBxdUvsu4hx8bwAzG2M9HKQ="
 before_script: ". ./.travis.profile"
 after_success: test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mvn deploy --settings=.travis.settings.xml -P prepare-for-central -DskipTests
