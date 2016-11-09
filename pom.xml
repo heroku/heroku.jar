@@ -96,12 +96,14 @@
         <netty.version>4.1.6.Final</netty.version>
         <jackson.version>1.9.10</jackson.version>
         <gson.version>1.7.1</gson.version>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.7</jdk.version>
         <source.plugin.version>2.1.2</source.plugin.version>
         <gpg.plugin.version>1.2</gpg.plugin.version>
         <javadoc.plugin.version>2.7</javadoc.plugin.version>
         <maven.clover.version>3.1.0</maven.clover.version>
         <jersey.version>2.24</jersey.version>
+        <release.plugin.version>2.5.3</release.plugin.version>
+        <nexus-staging.plugin.version>1.6.7</nexus-staging.plugin.version>
     </properties>
 
 
@@ -151,14 +153,31 @@
                     </dependencies>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.2.2</version>
-                </plugin>
-                <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>3.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${nexus-staging.plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${release.plugin.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <goals>deploy</goals>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
