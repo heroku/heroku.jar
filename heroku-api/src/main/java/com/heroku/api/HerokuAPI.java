@@ -33,7 +33,7 @@ import java.util.Map;
  * for each instance of HerokuAPI. To make HTTP requests to the Heroku API in multi-user or systems that have resource
  * constraints (e.g. a pool of <code>Connection</code> objects are required), <code>Connection</code> should be used
  * directly.
- * <p/>
+ * <p></p>
  * Example usage:
  * <pre>{@code
  *     HerokuAPI heroku = new HerokuAPI("apiKey");
@@ -59,7 +59,7 @@ public class HerokuAPI {
     }
 
     /**
-     * @param connection
+     * @param connection the connection to Heroku API
      * @param apiKey User's API key found at https://api.heroku.com/account
      */
     public HerokuAPI(Connection connection, String apiKey) {
@@ -73,7 +73,7 @@ public class HerokuAPI {
 
     /**
      * Information for the current user.
-     * @return
+     * @return user info object
      */
     public User getUserInfo() {
         return connection.execute(new UserInfo(), apiKey);
@@ -97,7 +97,7 @@ public class HerokuAPI {
 
     /**
      * Get a list of keys associated with the current user's account.
-     * @return
+     * @return a list of keys
      */
     public List<Key> listKeys() {
         return connection.execute(new KeyList(), apiKey);
@@ -105,7 +105,7 @@ public class HerokuAPI {
 
     /**
      * List all apps for the current user's account.
-     * @return
+     * @return a list of apps
      */
     public List<App> listApps() {
         return connection.execute(new AppList(), apiKey);
@@ -114,7 +114,7 @@ public class HerokuAPI {
     /**
      * Get information about a specific app.
      * @param name The name of the app. See {@link #listApps} to get a list of apps and their names.
-     * @return
+     * @return an app object
      */
     public App getApp(String name) {
         return connection.execute(new AppInfo(name), apiKey);
@@ -146,7 +146,7 @@ public class HerokuAPI {
     /**
      * Create a new app on the {Heroku.Stack.Cedar14} stack. For more information about the Cedar stack, please see
      * the <a href="http://devcenter.heroku.com">Dev Center</a>.
-     * @return
+     * @return an app object
      */
     public App createApp() {
         return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
@@ -157,7 +157,7 @@ public class HerokuAPI {
      * parameters to send as part of the request. Typically, these will be the name of the app and the requested stack. e.g.
      * <pre>{@code heroku.createApp(new App().on(Heroku.Stack.Cedar).named("new-app")}</pre>
      * @param app See {@link App}
-     * @return
+     * @return an app object
      */
     public App createApp(App app) {
         return connection.execute(new AppCreate(app), apiKey);
@@ -167,7 +167,7 @@ public class HerokuAPI {
      * Rename an existing app.
      * @param appName Existing app name. See {@link #listApps()} for names that can be used.
      * @param newName New name to give the existing app.
-     * @return
+     * @return the new name of the object
      */
     public String renameApp(String appName, String newName) {
         return connection.execute(new AppRename(appName, newName), apiKey).getName();
@@ -175,7 +175,7 @@ public class HerokuAPI {
 
     /**
      * Delete an app.
-     * @param appName
+     * @param appName the app name
      */
     public void destroyApp(String appName) {
         connection.execute(new AppDestroy(appName), apiKey);
@@ -185,7 +185,7 @@ public class HerokuAPI {
      * Add an addon to the app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param addonName Addon name. See {@link #listAllAddons} to get a list of addons that can be used.
-     * @return
+     * @return The request object
      */
     public AddonChange addAddon(String appName, String addonName) {
         return connection.execute(new AddonInstall(appName, addonName), apiKey);
@@ -193,7 +193,7 @@ public class HerokuAPI {
 
     /**
      * Get a list of all addons available. Refer to http://addons.heroku.com for more information about addons.
-     * @return
+     * @return a list of add-ons
      */
     public List<Addon> listAllAddons() {
         return connection.execute(new AddonList(), apiKey);
@@ -202,7 +202,7 @@ public class HerokuAPI {
     /**
      * List the addons already added to an app.
      * @param appName
-     * @return
+     * @return a list of add-ons
      */
     public List<Addon> listAppAddons(String appName) {
         return connection.execute(new AppAddonsList(appName), apiKey);
@@ -212,7 +212,7 @@ public class HerokuAPI {
      * Remove an addon from an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param addonName Addon name. See {@link #listAppAddons} for a list of addons that can be used.
-     * @return
+     * @return the request object
      */
     public AddonChange removeAddon(String appName, String addonName) {
         return connection.execute(new AddonRemove(appName, addonName), apiKey);
@@ -223,7 +223,7 @@ public class HerokuAPI {
     /**
      * List of releases for an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @return
+     * @return a list of releases
      */
     public List<Release> listReleases(String appName) {
         return connection.execute(new ListReleases(appName), apiKey);
@@ -233,7 +233,7 @@ public class HerokuAPI {
      * Rollback an app to a specific release.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param releaseUuid Release UUID. See {@link #listReleases} for a list of the app's releases.
-     * @return
+     * @return the release object
      */
     public Release rollback(String appName, String releaseUuid) {
         return connection.execute(new Rollback(appName, releaseUuid), apiKey);
@@ -243,7 +243,7 @@ public class HerokuAPI {
      * Information about a specific release.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param releaseName Release name. See {@link #listReleases} for a list of the app's releases.
-     * @return
+     * @return the release object
      */
     public Release getReleaseInfo(String appName, String releaseName) {
         return connection.execute(new ReleaseInfo(appName, releaseName), apiKey);
@@ -252,7 +252,7 @@ public class HerokuAPI {
     /**
      * Get a list of collaborators that are allowed access to an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @return
+     * @return list of collaborators
      */
     public List<Collaborator> listCollaborators(String appName) {
         return connection.execute(new CollabList(appName), apiKey);
@@ -288,7 +288,7 @@ public class HerokuAPI {
     /**
      * List all the environment variables for an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @return
+     * @return map of config vars
      */
     public Map<String, String> listConfig(String appName) {
         return connection.execute(new ConfigList(appName), apiKey);
@@ -306,7 +306,7 @@ public class HerokuAPI {
     /**
      * Get logs for an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @return
+     * @return log stream response
      */
     public LogStreamResponse getLogs(String appName) {
         return connection.execute(new Log(appName), apiKey);
@@ -315,7 +315,7 @@ public class HerokuAPI {
     /**
      * Get logs for an app by specifying additional parameters.
      * @param logRequest See {LogRequestBuilder}
-     * @return
+     * @return log stream response
      */
     public LogStreamResponse getLogs(Log.LogRequestBuilder logRequest) {
         return connection.execute(new Log(logRequest), apiKey);

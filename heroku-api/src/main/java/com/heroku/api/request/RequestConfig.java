@@ -46,8 +46,8 @@ public class RequestConfig {
 
     /**
      * Sets a {@link com.heroku.api.Heroku.RequestKey} parameter.
-     * @param key
-     * @param value
+     * @param key Heroku request key
+     * @param value value of the property
      * @return A new {@link RequestConfig}
      */
     public RequestConfig with(Heroku.RequestKey key, String value) {
@@ -58,8 +58,8 @@ public class RequestConfig {
 
     /**
      * Sets a {@link com.heroku.api.Heroku.RequestKey} parameter.
-     * @param key
-     * @param value
+     * @param key Heroku request key
+     * @param value value of the property
      * @return A new {@link RequestConfig}
      */
     public RequestConfig with(Heroku.RequestKey key, Map<Heroku.RequestKey, Either> value) {

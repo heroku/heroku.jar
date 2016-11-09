@@ -64,8 +64,7 @@ public class HttpUtil {
     /**
      * Some calls in the Heroku API decode strings in a different way from URLEncoder. This is a method for handling those
      * special cases. First, urlencode() is called. Then, .-*_ are replaced with their hexadecimal equivalent.
-     * @param config Name/value pairs for a HTTP request.
-     * @param keys List of keys in the config to encode.
+     * @param toEncode string to encode
      * @return A string representation of encoded parameters.
      */
     public static String encodeIncludingSpecialCharacters(String toEncode) {
@@ -103,8 +102,8 @@ public class HttpUtil {
 
     /**
      * Converts an {@link InputStream} to a byte array
-     * @param in
-     * @return
+     * @param in input stream to convert
+     * @return byte array
      */
     public static byte[] getBytes(InputStream in) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();

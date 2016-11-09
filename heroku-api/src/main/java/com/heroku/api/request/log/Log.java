@@ -51,7 +51,7 @@ public class Log implements Request<LogStreamResponse> {
 
         /**
          * Finalize the params and get a Log request.
-         * @return
+         * @return The log
          */
         public Log getRequest() {
             return new Log(config);
@@ -69,7 +69,7 @@ public class Log implements Request<LogStreamResponse> {
         /**
          * Name of the app to get logs for.
          * @param app App name.
-         * @return
+         * @return builder object
          */
         public LogRequestBuilder app(String app) {
             return add(AppName, app);
@@ -78,7 +78,7 @@ public class Log implements Request<LogStreamResponse> {
         /**
          * Number of log lines to retrieve.
          * @param num
-         * @return
+         * @return builder object
          */
         public LogRequestBuilder num(int num) {
             return add(LogNum, String.valueOf(num));
@@ -88,7 +88,7 @@ public class Log implements Request<LogStreamResponse> {
          * Name of the process to get logs for. Process names can be seen by running {@link com.heroku.api.HerokuAPI#listProcesses}, or by
          * retrieving all logs and inspecting the value inside the brackets (e.g. web.1 from app[web.1]).
          * @param processName Name of the process. e.g. "web.1"
-         * @return
+         * @return builder object
          */
         public LogRequestBuilder ps(String processName) {
             return add(ProcessName, processName);
@@ -98,7 +98,7 @@ public class Log implements Request<LogStreamResponse> {
          * The source of the logs. This can be found by reviewing the logs and looking at the value just after the timestamp. e.g. the source of
          * <code>2012-03-23T18:46:01+00:00 heroku[router]</code> is "heroku".
          * @param source
-         * @return
+         * @return builder object
          */
         public LogRequestBuilder source(String source) {
             return add(LogSource, source);
@@ -107,7 +107,7 @@ public class Log implements Request<LogStreamResponse> {
         /**
          * Whether or not to tail the logs. If true, a stream will be created that will remain open for an extended period of time.
          * @param tail
-         * @return
+         * @return builder object
          */
         public LogRequestBuilder tail(boolean tail) {
             return (tail) ? add(LogTail, "1") : this;
