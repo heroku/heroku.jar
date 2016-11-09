@@ -13,42 +13,52 @@ public class Release implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    String name, descr,user, commit;
+    String id;
+    int version;
+    String status;
+    Map<String,String> user;
+    String description;
     String created_at;
-    Map<String, String> env;
-    List<String> addons;
-    Map<String, String> pstable;
+    List<String> addon_plan_names;
 
-    public String getName() {
-        return name;
-    }
-
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return descr;
-    }
-
-    private void setDescr(String descr) {
-        this.descr = descr;
-    }
-
-    public String getUser() {
+    public Map<String, String> getUser() {
         return user;
     }
 
-    private void setUser(String user) {
+    public void setUser(Map<String, String> user) {
         this.user = user;
     }
 
-    public String getCommit() {
-        return commit;
+    public String getStatus() {
+        return status;
     }
 
-    private void setCommit(String commit) {
-        this.commit = commit;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    private void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCreatedAt() {
@@ -59,27 +69,11 @@ public class Release implements Serializable {
         this.created_at = created_at;
     }
 
-    public Map<String, String> getEnv() {
-        return env;
+    public List<String> getAddon_plan_names() {
+        return addon_plan_names;
     }
 
-    private void setEnv(Map<String, String> env) {
-        this.env = env;
-    }
-
-    public List<String> getAddons() {
-        return addons;
-    }
-
-    private void setAddons(List<String> addons) {
-        this.addons = addons;
-    }
-
-    public Map<String, String> getPSTable() {
-        return pstable;
-    }
-
-    private void setPstable(Map<String, String> pstable) {
-        this.pstable = pstable;
+    private void setAddon_plan_names(List<String> addon_plan_names) {
+        this.addon_plan_names = addon_plan_names;
     }
 }

@@ -8,31 +8,21 @@ import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.*;
-import com.heroku.api.request.config.ConfigAdd;
+import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.config.ConfigList;
-import com.heroku.api.request.config.ConfigRemove;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.login.BasicAuthLogin;
-import com.heroku.api.request.maintenance.MaintenanceInfo;
-import com.heroku.api.request.maintenance.MaintenanceUpdate;
-import com.heroku.api.request.ps.ProcessList;
-import com.heroku.api.request.ps.Restart;
-import com.heroku.api.request.ps.Scale;
 import com.heroku.api.request.releases.ListReleases;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
-import com.heroku.api.request.run.Run;
-import com.heroku.api.request.run.RunResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
 import com.heroku.api.request.stack.StackList;
-import com.heroku.api.request.stack.StackMigrate;
 import com.heroku.api.request.user.UserInfo;
 
 import java.util.List;
@@ -58,18 +48,6 @@ public class HerokuAPI {
 
     protected final Connection connection;
     protected final String apiKey;
-
-    /**
-     * Logs into the Heroku API and retrieves an API key for a given username and password using HTTP Basic Authentication.
-     * @param username Heroku username.
-     * @param password Heroku password.
-     * @return An API key that can be used for subsequent API calls.
-     */
-    public static String obtainApiKey(String username, String password) {
-        Connection tmpConn = ConnectionFactory.get();
-        LoginVerification verification = tmpConn.execute(new BasicAuthLogin(username, password), null);
-        return verification.getApiKey();
-    }
 
     /**
      * Constructs a HerokuAPI with a {@link Connection} based on the first {@link com.heroku.api.connection.ConnectionProvider}
@@ -166,12 +144,12 @@ public class HerokuAPI {
     }
 
     /**
-     * Create a new app on the {@link Heroku.Stack.Cedar} stack. For more information about the Cedar stack, please see
+     * Create a new app on the {Heroku.Stack.Cedar14} stack. For more information about the Cedar stack, please see
      * the <a href="http://devcenter.heroku.com">Dev Center</a>.
      * @return
      */
     public App createApp() {
-        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar)), apiKey);
+        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
     }
 
     /**
@@ -185,32 +163,6 @@ public class HerokuAPI {
         return connection.execute(new AppCreate(app), apiKey);
     }
 
-    /**
-     * Clone an existing app that has previously been designated as a template
-     * into the authenticated user's account with a randomly generated name.
-     * App cloning is only supported on the {@link Heroku.Stack.Cedar} stack.
-     *
-     * @param templateAppName Name of the template app to clone.
-     * @return details about the cloned app
-     */
-    public App cloneApp(String templateAppName) {
-        return connection.execute(new AppClone(templateAppName, new App()), apiKey);
-    }
-
-    /**
-     * Clone an existing app that has previously been designated as a template
-     * into the authenticated user's account with details specified in the target app.
-     * Currently, only specifying the name of the target app is supported.
-     * App cloning is only supported on the {@link Heroku.Stack.Cedar} stack.
-     *
-     * @param templateAppName Name of the template app to clone.
-     * @param targetApp Details about the target app.
-     * @return details about the cloned targetApp
-     */
-    public App cloneApp(String templateAppName, App targetApp) {
-        return connection.execute(new AppClone(templateAppName, targetApp), apiKey);
-    }
-    
     /**
      * Rename an existing app.
      * @param appName Existing app name. See {@link #listApps()} for names that can be used.
@@ -269,25 +221,6 @@ public class HerokuAPI {
     // TODO: need addon upgrade/downgrade
 
     /**
-     * Change the number of processes running for a given process type.
-     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @param processType Process name. See {@link #listProcesses} for a list of processes that can be used.
-     * @param quantity The number to scale the process to.
-     */
-    public void scaleProcess(String appName, String processType, int quantity) {
-        connection.execute(new Scale(appName, processType, quantity), apiKey);
-    }
-
-    /**
-     * List of processes running for an app.
-     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @return
-     */
-    public List<Proc> listProcesses(String appName) {
-        return connection.execute(new ProcessList(appName), apiKey);
-    }
-
-    /**
      * List of releases for an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @return
@@ -299,11 +232,11 @@ public class HerokuAPI {
     /**
      * Rollback an app to a specific release.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @param releaseName Release name. See {@link #listReleases} for a list of the app's releases.
+     * @param releaseUuid Release UUID. See {@link #listReleases} for a list of the app's releases.
      * @return
      */
-    public String rollback(String appName, String releaseName) {
-        return connection.execute(new Rollback(appName, releaseName), apiKey);
+    public Release rollback(String appName, String releaseUuid) {
+        return connection.execute(new Rollback(appName, releaseUuid), apiKey);
     }
 
     /**
@@ -344,19 +277,12 @@ public class HerokuAPI {
     }
 
     /**
-     * Add environment variables to an app.
+     * Update environment variables to an app.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param config Key/Value pairs of environment variables.
      */
-    public void addConfig(String appName, Map<String, String> config) {
-        String jsonConfig = "{";
-        String separator = "";
-        for (Map.Entry<String, String> configEntry : config.entrySet()) {
-            jsonConfig = jsonConfig.concat(String.format("%s \"%s\":\"%s\"", separator, configEntry.getKey(), configEntry.getValue()));
-            separator = ",";
-        }
-        jsonConfig = jsonConfig.concat("}");
-        connection.execute(new ConfigAdd(appName, jsonConfig), apiKey);
+    public void updateConfig(String appName, Map<String, String> config) {
+        connection.execute(new ConfigUpdate(appName, config), apiKey);
     }
 
     /**
@@ -366,16 +292,6 @@ public class HerokuAPI {
      */
     public Map<String, String> listConfig(String appName) {
         return connection.execute(new ConfigList(appName), apiKey);
-    }
-
-    /**
-     * Remove an environment variable from an app.
-     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @param configVarName Name of the environment variable. See {@link #listConfig} for variables that can be removed
-     * @return
-     */
-    public Map<String, String> removeConfig(String appName, String configVarName) {
-        return connection.execute(new ConfigRemove(appName, configVarName), apiKey);
     }
 
     /**
@@ -398,68 +314,11 @@ public class HerokuAPI {
 
     /**
      * Get logs for an app by specifying additional parameters.
-     * @param logRequest See {@link LogRequestBuilder}
+     * @param logRequest See {LogRequestBuilder}
      * @return
      */
     public LogStreamResponse getLogs(Log.LogRequestBuilder logRequest) {
         return connection.execute(new Log(logRequest), apiKey);
-    }
-
-    /**
-     * Run a one-off process on a Heroku dyno.
-     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @param command Bash command to run inside a dyno. See <a href="http://devcenter.heroku.com/articles/oneoff-admin-ps">One-off processes</a>.
-     */
-    public void run(String appName, String command) {
-        connection.execute(new Run(appName, command), apiKey);
-    }
-
-    /**
-     * Run a one-off process on a Heroku dyno in an attached state. Running in an attached state allows for interactive input. Refer to {@link com.heroku.api.request.run.RunResponse#attach()}
-     * for more information on running an attached process.
-     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
-     * @param command Bash command to run inside a dyno. See <a href="http://devcenter.heroku.com/articles/oneoff-admin-ps">One-off processes</a>.
-     * @return
-     */
-    public RunResponse runAttached(String appName, String command) {
-        return connection.execute(new Run(appName, command, true), apiKey);
-    }
-
-    /**
-     * Restart an app.
-     * @param appName See {@link #listApps} for a list of apps that can be used.
-     */
-    public void restart(String appName) {
-        connection.execute(new Restart(appName), apiKey);
-    }
-
-    /**
-     * Restart a process for an app.
-     * @param appName See {@link #listApps} for a list of apps that can be used.
-     * @param type The type of process to restart. e.g. web, worker, etc...
-     */
-    public void restartProcessByType(String appName, String type) {
-        connection.execute(new Restart.ProcessTypeRestart(appName, type), apiKey);
-    }
-
-    /**
-     * Restart a named process.
-     * @param appName See {@link #listApps} for a list of apps that can be used.
-     * @param procName Name of process to restart.
-     */
-    public void restartProcessByName(String appName, String procName) {
-        connection.execute(new Restart.NamedProcessRestart(appName, procName), apiKey);
-    }
-
-    /**
-     * Migrates an app from its current stack to the specified stack. Stacks must be compatible with one another. e.g. an app can be migrated from
-     * {@link com.heroku.api.Heroku.Stack.Bamboo187} to {@link com.heroku.api.Heroku.Stack.Bamboo192}, but not to {@link com.heroku.api.Heroku.Stack.Cedar}.
-     * @param appName See {@link #listApps} for a list of apps that can be used.
-     * @param migrateTo Stack to migrate the app to.
-     * @return A message about the migration.
-     */
-    public String migrateStack(String appName, Heroku.Stack migrateTo) {
-        return connection.execute(new StackMigrate(appName, migrateTo), apiKey);
     }
 
     /**
@@ -478,7 +337,8 @@ public class HerokuAPI {
      * @return true if maintenance mode is enabled
      */
     public boolean isMaintenanceModeEnabled(String appName) {
-        return connection.execute(new MaintenanceInfo(appName), apiKey);
+        App app = connection.execute(new AppInfo(appName), apiKey);
+        return app.isMaintenance();
     }
 
     /**
@@ -488,6 +348,6 @@ public class HerokuAPI {
      * @param enable true to enable; false to disable
      */
     public void setMaintenanceMode(String appName, boolean enable) {
-        connection.execute(new MaintenanceUpdate(appName, enable), apiKey);
+        connection.execute(new AppUpdate(appName, enable), apiKey);
     }
 }

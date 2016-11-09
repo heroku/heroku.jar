@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.heroku.api.Heroku.RequestKey.AppName;
 import static com.heroku.api.Heroku.Resource.Domains;
 import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
@@ -38,7 +37,7 @@ public class DomainList implements Request<List<Domain>> {
 
     @Override
     public String getEndpoint() {
-        return Domains.format(config.get(AppName));
+        return Domains.format(config.getAppName());
     }
 
     @Override
@@ -48,6 +47,11 @@ public class DomainList implements Request<List<Domain>> {
 
     @Override
     public String getBody() {
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
         throw noBody();
     }
 

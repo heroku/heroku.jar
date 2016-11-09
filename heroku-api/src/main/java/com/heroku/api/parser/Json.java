@@ -28,6 +28,17 @@ public class Json {
     }
 
     /**
+     * Proxy method for getting the Parser and calling encode().
+     * @param object JSON byte array to be parsed.
+     * @param type Deserialized type for the JSON data
+     * @param <T> Deserialzed object type
+     * @return The JSON data deserialized to T
+     */
+    public static String encode(Object object) {
+        return Holder.parser.encode(object);
+    }
+
+    /**
      * Proxy method for getting the Parser and calling parse().
      * @param data JSON byte array to be parsed.
      * @param type Deserialized type for the JSON data

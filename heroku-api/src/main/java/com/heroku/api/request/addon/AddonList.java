@@ -4,13 +4,13 @@ import com.heroku.api.Addon;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -37,7 +37,12 @@ public class AddonList implements Request<List<Addon>> {
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        throw noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override
@@ -47,7 +52,7 @@ public class AddonList implements Request<List<Addon>> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<String, String>();
+        return Collections.emptyMap();
     }
 
     @Override

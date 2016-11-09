@@ -1,21 +1,19 @@
 package com.heroku.api.connection
 
-import java.lang.String
 import com.heroku.api.http._
-import com.twitter.finagle.Service
-import org.jboss.netty.handler.codec.http._
+import com.twitter.finagle.{http, Service}
 import com.heroku.api.request.Request
+import org.jboss.netty.buffer.ChannelBuffers
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
-import com.twitter.finagle.http.Http
-import org.jboss.netty.buffer.ChannelBuffers
+import com.twitter.finagle.http.{Response, Http}
 import java.nio.charset.Charset
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
 import com.heroku.api.http.Http.UserAgent
 import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
-import com.twitter.util.{Base64StringEncoder, Future}
+import com.twitter.util.{Await, Base64StringEncoder, Future}
 import com.twitter.conversions.time._
 import java.util
 
@@ -36,7 +34,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
     this(Heroku.Config.ENDPOINT.value)
   }
 
-  type HttpService = Service[HttpRequest, HttpResponse]
+  type HttpService = Service[http.Request, Response]
   val timeout = 60.seconds
 
   @volatile var client = newClient()
@@ -44,51 +42,51 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
   val hostHeader = getHostHeader
 
 
-  def execute[T](request: Request[T], key: String): T = executeAsync(request, key).get(timeout).get()
+  def execute[T](request: Request[T], key: String): T = Await.result(executeAsync(request, key), timeout)
 
   def executeAsync[T](request: Request[T], apiKey: String): Future[T] = executeAsync(request, mapAsJavaMap(Map.empty), apiKey)
 
-  def execute[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): T = executeAsync(request, extraHeaders, apiKey).get(timeout).get()
+  def execute[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): T = Await.result(executeAsync(request, extraHeaders, apiKey), timeout)
 
   def executeAsync[T](command: Request[T], extraHeaders:util.Map[String,String], key: String): Future[T] = {
     if (!client.isAvailable) {
-      client.release()
+      client.close()
       client = newClient()
     }
     client(toReq(command, extraHeaders, key)).map {
       resp =>
-        command.getResponse(resp.getContent.array(), resp.getStatus.getCode)
+        command.getResponse(resp.contentString.getBytes("UTF-8"), resp.status.code)
     }
   }
 
-  def toReq(cmd: Request[_], extraHeaders: util.Map[String, String], key: String): HttpRequest = {
+  def toReq(cmd: Request[_], extraHeaders: util.Map[String, String], key: String): com.twitter.finagle.http.Request = {
     val method = cmd.getHttpMethod match {
-      case Method.GET => HttpMethod.GET
-      case Method.PUT => HttpMethod.PUT
-      case Method.POST => HttpMethod.POST
-      case Method.DELETE => HttpMethod.DELETE
+      case Method.GET => http.Method.Get
+      case Method.PUT => http.Method.Put
+      case Method.POST => http.Method.Post
+      case Method.DELETE => http.Method.Delete
+      case Method.PATCH => http.Method.Patch
     }
-    val req = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, cmd.getEndpoint)
-    req.addHeader(cmd.getResponseType.getHeaderName, cmd.getResponseType.getHeaderValue)
-    req.addHeader(ApiVersion.HEADER, ApiVersion.v2.getHeaderValue)
-    req.addHeader(HttpHeaders.Names.HOST, hostHeader)
-    req.addHeader(UserAgent.LATEST.getHeaderName, UserAgent.LATEST.getHeaderValue("finagle"))
+    val req = http.Request(method, cmd.getEndpoint)
+    req.accept = cmd.getResponseType.getHeaderValue
+    req.headerMap.add(ApiVersion.HEADER, ApiVersion.v3.getHeaderValue)
+    req.host = hostHeader
+    req.headerMap.add(UserAgent.LATEST.getHeaderName, UserAgent.LATEST.getHeaderValue("finagle"))
 
     if (key != null) {
-      req.addHeader(HttpHeaders.Names.AUTHORIZATION, "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8")))
+      req.authorization = "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8"))
     }
 
     (cmd.getHeaders ++ extraHeaders) foreach {
       _ match {
-        case (k, v) => req.addHeader(k, v)
+        case (k, v) => req.headerMap.add(k, v)
       }
     }
     if (cmd.hasBody) {
       val body = ChannelBuffers.copiedBuffer(cmd.getBody, Charset.forName("UTF-8"))
-      req.setContent(body)
-      req.setHeader(HttpHeaders.Names.CONTENT_LENGTH, body.readableBytes().toString)
+      req.write(body)
+      req.contentLength = body.readableBytes()
     }
-
     req
   }
 
@@ -105,7 +103,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
     hhost + port
   }
 
-  def newClient(): HttpService = {
+  def newClient(): Service[http.Request, Response] = {
     val endpoint = HttpUtil.toURL(host)
     var builder = ClientBuilder()
       .codec(Http())
@@ -122,7 +120,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
   }
 
   def close() {
-    client.release()
+    client.close()
   }
 
 

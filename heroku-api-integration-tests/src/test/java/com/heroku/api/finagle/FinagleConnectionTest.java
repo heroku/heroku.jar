@@ -6,6 +6,7 @@ import com.heroku.api.IntegrationTestConfig;
 import com.heroku.api.User;
 import com.heroku.api.connection.FinagleConnection;
 import com.heroku.api.request.user.UserInfo;
+import com.twitter.util.Await;
 import com.twitter.util.Duration;
 import com.twitter.util.Future;
 import org.testng.annotations.Guice;
@@ -28,7 +29,12 @@ public class FinagleConnectionTest {
     @SuppressWarnings("unchecked")
     public void asyncTests() {
         Future<User> jsonArrayResponseFuture = connection.executeAsync(new UserInfo(), apiKey);
-        User user = (User) jsonArrayResponseFuture.get(Duration.fromTimeUnit(10L, TimeUnit.SECONDS)).get();
+        User user = null;
+        try {
+            user = Await.result(jsonArrayResponseFuture, Duration.fromTimeUnit(10L, TimeUnit.SECONDS));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(user.getEmail(), IntegrationTestConfig.CONFIG.getDefaultUser().getUsername());
     }
 

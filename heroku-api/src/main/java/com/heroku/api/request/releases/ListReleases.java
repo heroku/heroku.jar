@@ -34,7 +34,7 @@ public class ListReleases implements Request<List<Release>> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Releases.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.Releases.format(config.getAppName());
     }
 
     @Override
@@ -44,6 +44,11 @@ public class ListReleases implements Request<List<Release>> {
 
     @Override
     public String getBody() {
+        throw noBody();
+    }
+
+    @Override
+    public Map<String, Object> getBodyAsMap() {
         throw noBody();
     }
 

@@ -1,6 +1,8 @@
 package com.heroku.api;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * TODO: Javadoc
@@ -11,22 +13,35 @@ public class Collaborator implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    String access;
-    String email;
+    List<Map<String,String>> permissions;
+    Map<String,String> user;
+    String role;
 
-    public String getAccess() {
-        return access;
+    public List<Map<String, String>> getPermissions() {
+        return permissions;
     }
 
-    private void setAccess(String access) {
-        this.access = access;
+    public void setPermissions(List<Map<String, String>> permissions) {
+        this.permissions = permissions;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getEmail() {
-        return email;
+        return user.get("email");
     }
 
-    private void setEmail(String email) {
-        this.email = email;
+    public Map<String, String> getUser() {
+        return user;
+    }
+
+    public void setUser(Map<String, String> user) {
+        this.user = user;
     }
 }

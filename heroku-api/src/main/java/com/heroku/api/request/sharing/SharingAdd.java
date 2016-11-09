@@ -3,11 +3,11 @@ package com.heroku.api.request.sharing;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.response.Unit;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,7 +32,7 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Collaborators.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.Collaborators.format(config.getAppName());
     }
 
     @Override
@@ -42,17 +42,22 @@ public class SharingAdd implements Request<Unit> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.Collaborator);
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.TEXT;
+        return Http.Accept.JSON;
     }
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        return Collections.emptyMap();
     }
 
     @Override

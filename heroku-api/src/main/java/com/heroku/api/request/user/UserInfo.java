@@ -47,6 +47,11 @@ public class UserInfo implements Request<User> {
     }
 
     @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
+    }
+
+    @Override
     public Http.Accept getResponseType() {
         return Http.Accept.JSON;
     }

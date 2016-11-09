@@ -7,9 +7,9 @@ import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
+import java.util.Collections;
 import java.util.Map;
 
-import static com.heroku.api.http.HttpUtil.encodeParameters;
 import static com.heroku.api.parser.Json.parse;
 
 /**
@@ -21,7 +21,7 @@ public class AppRename implements Request<App> {
     private final RequestConfig config;
 
     public AppRename(String appName, String newName) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.CreateAppName, newName);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.AppName, newName);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class AppRename implements Request<App> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.App.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.App.format(config.getAppName());
     }
 
     @Override
@@ -41,7 +41,12 @@ public class AppRename implements Request<App> {
 
     @Override
     public String getBody() {
-        return encodeParameters(config, Heroku.RequestKey.CreateAppName);
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
@@ -51,7 +56,7 @@ public class AppRename implements Request<App> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        return Collections.emptyMap();
     }
 
     @Override

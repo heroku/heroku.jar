@@ -1,24 +1,27 @@
 package com.heroku.api.request.releases;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.Release;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
+import java.util.Collections;
 import java.util.Map;
+
+import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
  *
  * @author Naaman Newbold
  */
-public class Rollback implements Request<String> {
+public class Rollback implements Request<Release> {
     private final RequestConfig config;
 
     public Rollback(String appName, String releaseName) {
-        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.Rollback, releaseName);
+        this.config = new RequestConfig().app(appName).with(Heroku.RequestKey.Release, releaseName);
     }
 
     @Override
@@ -28,7 +31,7 @@ public class Rollback implements Request<String> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Releases.format(config.get(Heroku.RequestKey.AppName), config.get(Heroku.RequestKey.Rollback));
+        return Heroku.Resource.Releases.format(config.getAppName(), config.get(Heroku.RequestKey.Release));
     }
 
     @Override
@@ -38,7 +41,12 @@ public class Rollback implements Request<String> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.Rollback);
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
@@ -48,13 +56,13 @@ public class Rollback implements Request<String> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        return Collections.emptyMap();
     }
 
     @Override
-    public String getResponse(byte[] bytes, int status) {
-        if (status == Http.Status.OK.statusCode) {
-            return new String(bytes);
+    public Release getResponse(byte[] bytes, int status) {
+        if (status == Http.Status.CREATED.statusCode) {
+            return parse(bytes, getClass());
         }
         throw new RequestFailedException("Unable to rollback.", status, bytes);
     }

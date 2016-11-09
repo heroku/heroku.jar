@@ -1,46 +1,55 @@
-package com.heroku.api.request.maintenance;
+package com.heroku.api.request.config;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
-import com.heroku.api.parser.TypeReference;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
+import com.heroku.api.response.Unit;
 
 import java.util.Collections;
 import java.util.Map;
 
 /**
- * @author Ryan Brainard
+ * TODO: Javadoc
+ *
+ * @author James Ward
  */
-public class MaintenanceInfo implements Request<Boolean> {
+public class ConfigUpdate implements Request<Unit> {
 
     private final RequestConfig config;
 
-    public MaintenanceInfo(String appName) {
+    private final Map<String,?> configVars;
+
+    public ConfigUpdate(String appName, Map<String, String> configVars) {
+        this.configVars = configVars;
         this.config = new RequestConfig().app(appName);
     }
 
     @Override
     public Http.Method getHttpMethod() {
-        return Http.Method.GET;
+        return Http.Method.PATCH;
     }
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Maintenance.format(config.get(Heroku.RequestKey.AppName));
+        return Heroku.Resource.ConfigVars.format(config.getAppName());
     }
 
     @Override
     public boolean hasBody() {
-        return false;
+        return true;
     }
 
     @Override
     public String getBody() {
-        throw HttpUtil.noBody();
+        return Json.encode(configVars);
+    }
+
+    @Override
+    public Map<String,?> getBodyAsMap() {
+        return configVars;
     }
 
     @Override
@@ -54,12 +63,10 @@ public class MaintenanceInfo implements Request<Boolean> {
     }
 
     @Override
-    public Boolean getResponse(byte[] in, int code) {
-        if (Http.Status.OK.equals(code)) {
-            final Map<String, String> parsed = Json.parse(in, new TypeReference<Map<String, String>>() {}.getType());
-            return Boolean.valueOf(parsed.get("maintenance"));
-        }
+    public Unit getResponse(byte[] in, int code) {
+        if (code == Http.Status.OK.statusCode)
+            return Unit.unit;
         else
-            throw new RequestFailedException("MaintenanceInfo failed", code, in);
+            throw new RequestFailedException("Config add failed", code, in);
     }
 }

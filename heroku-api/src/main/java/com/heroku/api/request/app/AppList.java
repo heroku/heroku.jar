@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.heroku.api.http.HttpUtil.noBody;
+
 /**
  * TODO: Javadoc
  *
@@ -37,6 +39,11 @@ public class AppList implements Request<List<App>> {
     @Override
     public String getBody() {
         throw HttpUtil.noBody();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        throw noBody();
     }
 
     @Override

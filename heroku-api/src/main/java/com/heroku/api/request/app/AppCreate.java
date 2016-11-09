@@ -4,10 +4,10 @@ import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static com.heroku.api.parser.Json.parse;
@@ -23,7 +23,7 @@ public class AppCreate implements Request<App> {
 
     public AppCreate(App app) {
         RequestConfig builder = new RequestConfig();
-        builder = (app.getName() != null) ? builder.with(Heroku.RequestKey.CreateAppName, app.getName()) : builder;
+        builder = (app.getName() != null) ? builder.with(Heroku.RequestKey.AppName, app.getName()) : builder;
         builder = (app.getStack() != null) ? builder.onStack(app.getStack()) : builder;
         config = builder;
     }
@@ -45,7 +45,12 @@ public class AppCreate implements Request<App> {
 
     @Override
     public String getBody() {
-        return HttpUtil.encodeParameters(config, Heroku.RequestKey.Stack, Heroku.RequestKey.CreateAppName);
+        return config.asJson();
+    }
+
+    @Override
+    public Map<String,Object> getBodyAsMap() {
+        return config.asMap();
     }
 
     @Override
@@ -55,12 +60,14 @@ public class AppCreate implements Request<App> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Http.Header.Util.setHeaders(Http.ContentType.FORM_URLENCODED);
+        return Collections.emptyMap();
     }
 
     @Override
     public App getResponse(byte[] in, int code) {
-        if (code == Http.Status.ACCEPTED.statusCode)
+        if (code == Http.Status.CREATED.statusCode)
+            return parse(in, getClass());
+        else if (code == Http.Status.ACCEPTED.statusCode)
             return parse(in, getClass());
         else
             throw new RequestFailedException("Failed to create app", code, in);
