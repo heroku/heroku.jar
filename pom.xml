@@ -10,7 +10,7 @@
     <groupId>com.heroku.api</groupId>
     <artifactId>heroku-api-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.0</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <name>heroku.jar</name>
     <description>Heroku API Java Client</description>
@@ -23,11 +23,11 @@
         </license>
     </licenses>
     <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-   </distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
    <scm>
         <url>https://github.com/heroku/heroku.jar</url>
         <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
@@ -180,7 +180,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <profiles>
         <profile>
             <id>prepare-for-central</id>
