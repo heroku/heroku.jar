@@ -183,7 +183,7 @@
 
     <profiles>
         <profile>
-            <id>prepare-for-central</id>
+            <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
                 <property>

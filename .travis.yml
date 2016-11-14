@@ -26,4 +26,4 @@ env:
   # CI_DEPLOY_GPG_PASSPHRASE
   - secure: "rePQZHmt8f5sQMNfbW+AQESkJE0LGYNj1IdPBQH3xnOxV/Z0ixA0HfjFdlzoavGo4yC5TeC5hJl1aTiAM4xusPMBtZeoMfjhnKSCZCC1WUtSer6AtTNKkD2aTv3LIcXDjJjMwuadIIPMuGm8SNfpyBxdUvsu4hx8bwAzG2M9HKQ="
 before_script: ". ./.travis.profile"
-after_success: test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mvn deploy --settings=.travis.settings.xml -P prepare-for-central -DskipTests -Dheroku-api-integration-tests.skipTests=true
+after_success: test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mvn deploy --settings=.travis.settings.xml -P release -DskipTests -Dheroku-api-integration-tests.skipTests=true
