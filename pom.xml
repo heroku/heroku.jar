@@ -36,7 +36,7 @@
         <url>https://github.com/heroku/heroku.jar</url>
         <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
         <developerConnection>scm:git:git@github.com:heroku/heroku.jar.git</developerConnection>
-        <tag>heroku-api-parent-3.0.0</tag>
+        <tag>v0.17</tag>
     </scm>
     <developers>
         <developer>
