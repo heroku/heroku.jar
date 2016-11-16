@@ -22,7 +22,7 @@ set -e
 #   <profile>
 #     <id>ossrh</id>
 #     <activation>
-#     <activeByDefault>true</activeByDefault>
+#       <activeByDefault>true</activeByDefault>
 #     </activation>
 #     <properties>
 #       <gpg.executable>gpg</gpg.executable>
@@ -33,8 +33,8 @@ set -e
 
 # Now we can prepare for release (it's not really permantent, but there's no harm in overreacting at this point)
 read -p "Are you sure you want to release? It's permanent! (press any key to continue)"
-mvn release:clean release:prepare -Darguments="-DskipTests -Dheroku-api-integration-tests.skipTests=true"
+mvn release:clean release:prepare
 
 # Now we can actually release (it's slightly more permantent now)
 read -p "Are you still sure you want to release? It's permanent! (press any key to continue)"
-mvn release:perform -Darguments="-DskipTests -Dheroku-api-integration-tests.skipTests=true"
+mvn release:perform
