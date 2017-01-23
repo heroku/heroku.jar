@@ -27,10 +27,6 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
    <scm>
         <url>https://github.com/heroku/heroku.jar</url>
@@ -222,19 +218,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--<plugin>-->
-                        <!--<groupId>net.alchim31.maven</groupId>-->
-                        <!--<artifactId>scala-maven-plugin</artifactId>-->
-                        <!--<executions>-->
-                            <!--<execution>-->
-                                <!--<id>attach-scaladoc</id>-->
-                                <!--<phase>package</phase>-->
-                                <!--<goals>-->
-                                    <!--<goal>doc-jar</goal>-->
-                                <!--</goals>-->
-                            <!--</execution>-->
-                        <!--</executions>-->
-                    <!--</plugin>-->
                     <plugin>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${gpg.plugin.version}</version>
