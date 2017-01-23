@@ -2,8 +2,6 @@
 
 set -e
 
-rm -f */pom.xml.releaseBackup
-rm -f pom.xml.releaseBackup
-rm -f release.properties
+rm -f */pom.xml.versionsBackup && rm -f pom.xml.versionsBackup && rm -f */pom.xml.releaseBackup && rm -f pom.xml.releaseBackup && rm -f release.properties
 
 mvn release:prepare release:perform
