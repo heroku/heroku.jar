@@ -146,6 +146,7 @@ Likewise, the secure random parameter may be null in which case the default impl
     }
 
     public static enum RequestKey {
+        Slug("slug"),
         StackName("name"),
         Stack("stack"),
         AppMaintenance("maintenance"),
@@ -166,7 +167,6 @@ Likewise, the secure random parameter may be null in which case the default impl
         TransferOwner("recipient"),
         ConfigVars("config_vars"),
         ConfigVarName("key"),
-        ProcessType("type"),
         ProcessName("ps"),
         Quantity("qty"),
         Username("username"),
@@ -177,7 +177,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         LogTail("tail"),
         Release("release"),
         CreateDomain("hostname"),
-        DeleteDomain("hostname");
+        DeleteDomain("hostname"),
+        ProcessTypes("process_types");
 
         public final String queryParameter;
 
@@ -235,6 +236,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Scale(Process.value + "/scale"),
         Releases(App.value + "/releases"),
         Release(Releases.value + "/%s"),
+        Slugs(App.value + "/slugs"),
+        Slug(Slugs.value + "/%s"),
         Status(App.value + "/status"),
         Stacks("/stacks"),
         Domains(App.value + "/domains"),

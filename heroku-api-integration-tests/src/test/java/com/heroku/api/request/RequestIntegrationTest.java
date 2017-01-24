@@ -23,6 +23,7 @@ import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
+import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
@@ -296,6 +297,18 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(api.isMaintenanceModeEnabled(app.getName()));
         api.setMaintenanceMode(getApp().getName(), false);
         assertFalse(api.isMaintenanceModeEnabled(app.getName()));
+    }
+
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testSlugInfo(App app) {
+      HerokuAPI api = new HerokuAPI(connection, apiKey);
+      Slug newSlug = api.createSlug(app.getName(), new HashMap<String, String>());
+      assertEquals(newSlug.getBlob().getMethod(), "put");
+      assertNotNull(newSlug.getBlob().getUrl());
+      Slug slugInfo = connection.execute(new SlugInfo(app.getName(), newSlug.getId()), apiKey);
+      assertEquals(slugInfo.getId(), newSlug.getId());
+      assertEquals(slugInfo.getBlob().getMethod(), "get");
+      assertNotNull(slugInfo.getBlob().getUrl());
     }
     
     private void assertDomainIsPresent(App app, String domainName) {

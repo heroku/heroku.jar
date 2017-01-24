@@ -8,8 +8,8 @@ import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.*;
-import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.config.ConfigList;
+import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
@@ -22,6 +22,8 @@ import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
+import com.heroku.api.request.slugs.SlugCreate;
+import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
 
@@ -351,4 +353,25 @@ public class HerokuAPI {
     public void setMaintenanceMode(String appName, boolean enable) {
         connection.execute(new AppUpdate(appName, enable), apiKey);
     }
+
+    /**
+     * Gets the slug info for an existing slug
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param processTypes hash mapping process type names to their respective command
+     */
+    public Slug createSlug(String appName, Map<String, String> processTypes) {
+        return connection.execute(new SlugCreate(appName, processTypes), apiKey);
+    }
+
+    /**
+     * Gets the slug info for an existing slug
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param slugId the unique identifier of the slug
+     */
+    public Slug getSlugInfo(String appName, String slugId) {
+        return connection.execute(new SlugInfo(appName, slugId), apiKey);
+    }
+
 }
