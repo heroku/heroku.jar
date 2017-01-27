@@ -316,6 +316,15 @@ public class HerokuAPI {
     }
 
     /**
+     * Get logs for an app.
+     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
+     * @return log stream response
+     */
+    public LogStreamResponse getLogs(String appName, Boolean tail) {
+        return connection.execute(new Log(appName, tail), apiKey);
+    }
+
+    /**
      * Get logs for an app by specifying additional parameters.
      * @param logRequest See {LogRequestBuilder}
      * @return log stream response

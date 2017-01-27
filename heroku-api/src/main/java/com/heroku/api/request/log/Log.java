@@ -2,9 +2,11 @@ package com.heroku.api.request.log;
 
 
 import com.heroku.api.Heroku;
+import com.heroku.api.LogSession;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
+import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
@@ -31,10 +33,10 @@ public class Log implements Request<LogStreamResponse> {
     }
     
     public Log(LogRequestBuilder logRequest) {
-		this(logRequest.getConfig());
-	}
+        this(logRequest.getConfig());
+    }
 
-	public static LogRequestBuilder logFor(String app) {
+    public static LogRequestBuilder logFor(String app) {
         return new LogRequestBuilder().app(app);
     }
 
@@ -46,7 +48,7 @@ public class Log implements Request<LogStreamResponse> {
      * <pre>{@code new Log.LogRequestBuilder().app("myApp").ps("web.1").num(50).getRequest()}</pre>
      */
     public static class LogRequestBuilder {
-        RequestConfig config = new RequestConfig().with(Logplex, "true");
+        RequestConfig config = new RequestConfig();
 
         /**
          * Finalize the params and get a Log request.
@@ -71,7 +73,8 @@ public class Log implements Request<LogStreamResponse> {
          * @return builder object
          */
         public LogRequestBuilder app(String app) {
-            return add(AppName, app);
+            config = config.app(app);
+            return this;
         }
 
         /**
@@ -80,17 +83,16 @@ public class Log implements Request<LogStreamResponse> {
          * @return builder object
          */
         public LogRequestBuilder num(int num) {
-            return add(LogNum, String.valueOf(num));
+            return add(LogLines, String.valueOf(num));
         }
 
         /**
-         * Name of the process to get logs for. Process names can be seen by running {com.heroku.api.HerokuAPI#listProcesses}, or by
-         * retrieving all logs and inspecting the value inside the brackets (e.g. web.1 from app[web.1]).
-         * @param processName Name of the process. e.g. "web.1"
+         * Name of the dyno to get logs for (e.g. web.1).
+         * @param dyno Name of the dyno. e.g. "web.1"
          * @return builder object
          */
-        public LogRequestBuilder ps(String processName) {
-            return add(ProcessName, processName);
+        public LogRequestBuilder dyno(String dyno) {
+            return add(Dyno, dyno);
         }
 
         /**
@@ -109,42 +111,39 @@ public class Log implements Request<LogStreamResponse> {
          * @return builder object
          */
         public LogRequestBuilder tail(boolean tail) {
-            return (tail) ? add(LogTail, "1") : this;
+            return (tail) ? add(LogTail, "true") : this;
         }
         
     }
 
     @Override
     public Http.Method getHttpMethod() {
-        return Http.Method.GET;
+        return Http.Method.POST;
     }
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Logs.format(
-                config.get(AppName),
-                HttpUtil.encodeParameters(config, Logplex, LogNum, ProcessName, LogSource, LogTail)
-        );
+        return Heroku.Resource.Logs.format(config.getAppName());
     }
 
     @Override
     public boolean hasBody() {
-        return false;
+        return true;
     }
 
     @Override
     public String getBody() {
-        return null;
+        return config.asJson();
     }
 
     @Override
     public Map<String,Object> getBodyAsMap() {
-        return null;
+        return config.asMap();
     }
 
     @Override
     public Http.Accept getResponseType() {
-        return Http.Accept.TEXT;
+        return Http.Accept.JSON;
     }
 
     @Override
@@ -154,9 +153,10 @@ public class Log implements Request<LogStreamResponse> {
 
     @Override
     public LogStreamResponse getResponse(byte[] bytes, int status) {
-        if (status == 200) {
+        if (Http.Status.CREATED.equals(status)) {
             try {
-                URL logs = HttpUtil.toURL(new String(bytes));
+                LogSession logSession = Json.parse(bytes, LogSession.class);
+                URL logs = HttpUtil.toURL(logSession.getLogplex_url());
                 return new LogStreamResponse(logs);
             } catch (RuntimeException e) {
                 throw new RequestFailedException(e.getMessage(), status, bytes);
