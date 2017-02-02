@@ -20,6 +20,7 @@ public class Release implements Serializable {
     String description;
     String created_at;
     List<String> addon_plan_names;
+    Slug slug;
 
     public Map<String, String> getUser() {
         return user;
@@ -75,5 +76,13 @@ public class Release implements Serializable {
 
     private void setAddon_plan_names(List<String> addon_plan_names) {
         this.addon_plan_names = addon_plan_names;
+    }
+
+    public Slug getSlug() {
+        return slug;
+    }
+
+    public void setSlug(Slug slug) {
+        this.slug = slug;
     }
 }
