@@ -28,12 +28,12 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-   <scm>
+    <scm>
         <url>https://github.com/heroku/heroku.jar</url>
         <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
         <developerConnection>scm:git:git@github.com:heroku/heroku.jar.git</developerConnection>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
     <developers>
         <developer>
             <id>sclasen</id>
@@ -55,8 +55,8 @@
             <name>Joe Kutner</name>
             <email>joe@heroku.com</email>
         </developer>
-    </developers>
-    <mailingLists>
+     </developers>
+     <mailingLists>
         <mailingList>
             <name>Heroku.jar issues</name>
             <archive>https://github.com/heroku/heroku.jar/issues?state=closed</archive>
@@ -64,11 +64,11 @@
             <unsubscribe>https://github.com/heroku/heroku.jar/toggle_watch</unsubscribe>
             <post>https://github.com/heroku/heroku.jar/issues/new</post>
         </mailingList>
-    </mailingLists>
-    <issueManagement>
+     </mailingLists>
+     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/heroku/heroku.jar/issues/new</url>
-    </issueManagement>
+     </issueManagement>
 
 
     <modules>
@@ -103,7 +103,6 @@
         <release.plugin.version>2.5.3</release.plugin.version>
         <nexus-staging.plugin.version>1.6.7</nexus-staging.plugin.version>
     </properties>
-
 
     <build>
         <extensions>
@@ -182,7 +181,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
+     </build>
 
     <profiles>
         <profile>
