@@ -61,7 +61,7 @@ public class AddonRemove implements Request<AddonChange> {
     }
 
     @Override
-    public AddonChange getResponse(byte[] bytes, int status) {
+    public AddonChange getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }

@@ -61,7 +61,7 @@ public class SharingAdd implements Request<Unit> {
     }
 
     @Override
-    public Unit getResponse(byte[] in, int code) {
+    public Unit getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
         if (Http.Status.OK.equals(code) || Http.Status.CREATED.equals(code))
             return Unit.unit;
         else

@@ -61,7 +61,7 @@ public class SlugInfo implements Request<Slug> {
   }
 
   @Override
-  public Slug getResponse(byte[] bytes, int status) {
+  public Slug getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
     if (status == Http.Status.OK.statusCode) {
       return parse(bytes, getClass());
     } else {

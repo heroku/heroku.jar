@@ -56,5 +56,5 @@ public abstract class RequestTransformation<A,B> implements Request<B> {
     }
 
     @Override
-    public abstract B getResponse(byte[] bytes, int status);
+    public abstract B getResponse(byte[] bytes, int status, Map<String,String> responseHeaders);
 }

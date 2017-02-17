@@ -67,7 +67,7 @@ public class DomainAdd implements Request<Domain> {
     }
 
     @Override
-    public Domain getResponse(byte[] bytes, int status) {
+    public Domain getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (Http.Status.CREATED.equals(status)) {
             return parse(bytes, getClass());
         } else {

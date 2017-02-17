@@ -62,7 +62,7 @@ public class UserInfo implements Request<User> {
     }
 
     @Override
-    public User getResponse(byte[] bytes, int status) {
+    public User getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         } else {

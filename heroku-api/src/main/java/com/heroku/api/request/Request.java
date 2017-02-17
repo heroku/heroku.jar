@@ -66,6 +66,6 @@ public interface Request<T> {
      * @return The type {@link T} as specified by an individual request.
      * @throws com.heroku.api.exception.RequestFailedException Generally thrown when the HTTP status code is 4XX.
      */
-    T getResponse(byte[] bytes, int status);
+    T getResponse(byte[] bytes, int status, Map<String,String> headers);
 
 }

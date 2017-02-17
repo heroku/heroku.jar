@@ -6,7 +6,7 @@ import com.heroku.api.request.Request
 import org.jboss.netty.buffer.ChannelBuffers
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
-import com.twitter.finagle.http.{Response, Http}
+import com.twitter.finagle.http.{HeaderMap, Response, Http}
 import java.nio.charset.Charset
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
@@ -16,6 +16,8 @@ import com.heroku.api.Heroku
 import com.twitter.util.{Await, Base64StringEncoder, Future}
 import com.twitter.conversions.time._
 import java.util
+
+import scala.collection.JavaConversions
 
 trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
   def executeAsync[T](request: Request[T], apiKey: String): Future[T]
@@ -55,7 +57,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
     }
     client(toReq(command, extraHeaders, key)).map {
       resp =>
-        command.getResponse(resp.contentString.getBytes("UTF-8"), resp.status.code)
+        command.getResponse(resp.contentString.getBytes("UTF-8"), resp.status.code, toJavaMap(resp.headerMap))
     }
   }
 
@@ -123,7 +125,9 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
     client.close()
   }
 
-
+  def toJavaMap(headers:HeaderMap) = {
+    JavaConversions.mapAsJavaMap(headers.toMap)
+  }
 }
 
 

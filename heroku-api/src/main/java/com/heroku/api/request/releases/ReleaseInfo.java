@@ -62,7 +62,7 @@ public class ReleaseInfo implements Request<Release> {
     }
 
     @Override
-    public Release getResponse(byte[] bytes, int status) {
+    public Release getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }

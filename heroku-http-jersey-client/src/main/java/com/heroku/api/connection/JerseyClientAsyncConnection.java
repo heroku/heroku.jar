@@ -10,8 +10,10 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
 import org.glassfish.jersey.internal.util.Base64;
 
 import javax.ws.rs.client.*;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -74,7 +76,7 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
             }
 
             private T handleResponse(Response r) {
-                return request.getResponse(r.readEntity(byte[].class), r.getStatus());
+                return request.getResponse(r.readEntity(byte[].class), r.getStatus(), toJavaMap(r.getStringHeaders()));
             }
         };
     }
@@ -130,5 +132,13 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
         public Connection getConnection() {
             return new JerseyClientAsyncConnection();
         }
+    }
+
+    private Map<String,String> toJavaMap(MultivaluedMap<String, String> headers) {
+        Map<String,String> javaMap = new HashMap<>();
+        for (String key : headers.keySet()) {
+            javaMap.put(key, headers.getFirst(key));
+        }
+        return javaMap;
     }
 }

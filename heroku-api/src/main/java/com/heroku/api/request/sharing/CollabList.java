@@ -64,7 +64,7 @@ public class CollabList implements Request<List<Collaborator>> {
     }
 
     @Override
-    public List<Collaborator> getResponse(byte[] bytes, int status) {
+    public List<Collaborator> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         } else {

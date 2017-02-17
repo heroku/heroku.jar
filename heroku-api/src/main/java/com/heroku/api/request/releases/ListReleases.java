@@ -63,7 +63,7 @@ public class ListReleases implements Request<List<Release>> {
     }
 
     @Override
-    public List<Release> getResponse(byte[] bytes, int status) {
+    public List<Release> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }

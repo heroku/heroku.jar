@@ -60,7 +60,7 @@ public class StackList implements Request<List<StackInfo>>{
     }
 
     @Override
-    public List<StackInfo> getResponse(byte[] bytes, int status) {
+    public List<StackInfo> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (Http.Status.OK.equals(status)) {
             return parse(bytes, getClass());
         } else {

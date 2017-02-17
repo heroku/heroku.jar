@@ -60,7 +60,7 @@ public class Rollback implements Request<Release> {
     }
 
     @Override
-    public Release getResponse(byte[] bytes, int status) {
+    public Release getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.CREATED.statusCode) {
             return parse(bytes, getClass());
         }

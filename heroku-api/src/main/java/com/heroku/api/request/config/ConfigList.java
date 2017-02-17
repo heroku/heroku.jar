@@ -61,7 +61,7 @@ public class ConfigList implements Request<Map<String, String>> {
     }
 
     @Override
-    public Map<String, String> getResponse(byte[] bytes, int status) {
+    public Map<String, String> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         } else if (status == Http.Status.NOT_FOUND.statusCode) {

@@ -64,7 +64,7 @@ public class AppAddonsList implements Request<List<Addon>> {
     }
 
     @Override
-    public List<Addon> getResponse(byte[] bytes, int status) {
+    public List<Addon> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }

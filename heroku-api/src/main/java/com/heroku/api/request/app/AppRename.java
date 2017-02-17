@@ -60,7 +60,7 @@ public class AppRename implements Request<App> {
     }
 
     @Override
-    public App getResponse(byte[] bytes, int status) {
+    public App getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
         }

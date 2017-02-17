@@ -58,7 +58,7 @@ public class KeyAdd implements Request<Unit> {
         return Collections.emptyMap();
     }
 
-    public Unit getResponse(byte[] in, int code) {
+    public Unit getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
         if (code == Http.Status.CREATED.statusCode)
             return Unit.unit;
         else

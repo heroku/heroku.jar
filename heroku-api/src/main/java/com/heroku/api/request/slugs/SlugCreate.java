@@ -66,7 +66,7 @@ public class SlugCreate implements Request<Slug> {
   }
 
   @Override
-  public Slug getResponse(byte[] in, int code) {
+  public Slug getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
     if (code == Http.Status.CREATED.statusCode)
       return parse(in, getClass());
     else if (code == Http.Status.ACCEPTED.statusCode)

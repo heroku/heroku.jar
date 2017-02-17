@@ -70,7 +70,7 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
         AsyncCompletionHandler<T> handler = new AsyncCompletionHandler<T>() {
             @Override
             public T onCompleted(Response response) throws Exception {
-                return request.getResponse(response.getResponseBody().getBytes(), response.getStatusCode());
+                return request.getResponse(response.getResponseBody().getBytes(), response.getStatusCode(), request.getHeaders());
             }
         };
         return httpClient.executeRequest(asyncRequest, handler);

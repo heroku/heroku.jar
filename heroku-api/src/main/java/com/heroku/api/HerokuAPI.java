@@ -26,6 +26,7 @@ import com.heroku.api.request.slugs.SlugCreate;
 import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
+import com.heroku.api.util.Range;
 
 import java.util.List;
 import java.util.Map;
@@ -110,8 +111,17 @@ public class HerokuAPI {
      * List all apps for the current user's account.
      * @return a list of apps
      */
-    public List<App> listApps() {
+    public Range<App> listApps() {
         return connection.execute(new AppList(), apiKey);
+    }
+
+    /**
+     * List all apps for the current user's account.
+     * @param range The range of apps provided by {@link Range#getNextRange()}
+     * @return a list of apps
+     */
+    public Range<App> listApps(String range) {
+        return connection.execute(new AppList(range), apiKey);
     }
 
     /**

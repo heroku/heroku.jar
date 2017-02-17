@@ -64,7 +64,7 @@ public class DomainRemove implements Request<Unit> {
     }
 
     @Override
-    public Unit getResponse(byte[] bytes, int status) {
+    public Unit getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (Http.Status.OK.equals(status)) {
             return Unit.unit;
         } else {

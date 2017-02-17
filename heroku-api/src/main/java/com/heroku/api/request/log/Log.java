@@ -152,7 +152,7 @@ public class Log implements Request<LogStreamResponse> {
     }
 
     @Override
-    public LogStreamResponse getResponse(byte[] bytes, int status) {
+    public LogStreamResponse getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (Http.Status.CREATED.equals(status)) {
             try {
                 LogSession logSession = Json.parse(bytes, LogSession.class);

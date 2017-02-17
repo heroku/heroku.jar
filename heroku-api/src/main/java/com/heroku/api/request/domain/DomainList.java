@@ -66,7 +66,7 @@ public class DomainList implements Request<List<Domain>> {
     }
 
     @Override
-    public List<Domain> getResponse(byte[] bytes, int status) {
+    public List<Domain> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (Http.Status.OK.equals(status)) {
             return parse(bytes, getClass());
         } else {

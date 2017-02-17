@@ -112,6 +112,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
     }
 
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testListAppsWithRangeCommand(App app) throws IOException {
+      AppList cmd = new AppList("name ..");
+      List<App> response = connection.execute(cmd, apiKey);
+      assertNotNull(response);
+      assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
+    }
+
     // don't use the app dataprovider because it'll try to delete an already deleted app
     @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testDestroyAppCommand() throws IOException {

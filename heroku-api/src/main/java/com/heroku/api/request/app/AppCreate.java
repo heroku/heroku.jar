@@ -64,7 +64,7 @@ public class AppCreate implements Request<App> {
     }
 
     @Override
-    public App getResponse(byte[] in, int code) {
+    public App getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
         if (code == Http.Status.CREATED.statusCode)
             return parse(in, getClass());
         else if (code == Http.Status.ACCEPTED.statusCode)

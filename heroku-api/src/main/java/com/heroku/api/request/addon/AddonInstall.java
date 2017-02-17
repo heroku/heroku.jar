@@ -60,7 +60,7 @@ public class AddonInstall implements Request<AddonChange> {
     }
 
     @Override
-    public AddonChange getResponse(byte[] bytes, int status) {
+    public AddonChange getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.CREATED.statusCode) {
             return Json.parse(bytes, this.getClass());
         } else {

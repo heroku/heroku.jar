@@ -65,7 +65,7 @@ public class KeyRemove implements Request<Unit> {
     }
 
     @Override
-    public Unit getResponse(byte[] in, int code) {
+    public Unit getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
         if (code == Http.Status.OK.statusCode)
             return Unit.unit;
         else

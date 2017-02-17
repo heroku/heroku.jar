@@ -57,7 +57,7 @@ public class KeyList implements Request<List<Key>> {
     }
 
     @Override
-    public List<Key> getResponse(byte[] bytes, int status) {
+    public List<Key> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             if (new String(bytes).contains("nil-classes")) {
                 return new ArrayList<Key>();

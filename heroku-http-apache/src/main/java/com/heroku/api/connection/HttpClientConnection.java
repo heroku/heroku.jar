@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -95,7 +96,7 @@ public class HttpClientConnection implements FutureConnection {
 
             HttpResponse httpResponse = httpClient.execute(message, ctx);
 
-            return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode());
+            return request.getResponse(HttpUtil.getBytes(httpResponse.getEntity().getContent()), httpResponse.getStatusLine().getStatusCode(), toJavaMap(httpResponse.getAllHeaders()));
         } catch (IOException e) {
             throw new RuntimeException("Exception while executing request", e);
         }
@@ -168,6 +169,14 @@ public class HttpClientConnection implements FutureConnection {
         } else {
             return HttpClients.createDefault();
         }
+    }
+
+    protected Map<String,String> toJavaMap(Header[] headers) {
+        Map<String,String> javaMapHeaders = new HashMap<>();
+        for (Header h : headers) {
+            javaMapHeaders.put(h.getName(), h.getValue());
+        }
+        return javaMapHeaders;
     }
 
 

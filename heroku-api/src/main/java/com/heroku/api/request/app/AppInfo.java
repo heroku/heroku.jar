@@ -63,7 +63,7 @@ public class AppInfo implements Request<App> {
     }
 
     @Override
-    public App getResponse(byte[] data, int code) {
+    public App getResponse(byte[] data, int code, Map<String,String> responseHeaders) {
         if (Http.Status.OK.equals(code)) {
             return parse(data, getClass());
         } else {

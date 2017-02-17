@@ -61,7 +61,7 @@ public class AppUpdate implements Request<App> {
   }
 
   @Override
-  public App getResponse(byte[] in, int code) {
+  public App getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
     if (code == Http.Status.OK.statusCode)
       return parse(in, getClass());
     else

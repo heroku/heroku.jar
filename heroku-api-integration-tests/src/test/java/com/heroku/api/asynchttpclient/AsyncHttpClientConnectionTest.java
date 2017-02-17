@@ -28,7 +28,7 @@ public class AsyncHttpClientConnectionTest {
 
     @Test
     public void asyncTests() throws ExecutionException, TimeoutException, InterruptedException {
-        Future<List<App>> jsonArrayResponseFuture = connection.executeAsync(new AppList(), apiKey);
+        Future<? extends List<App>> jsonArrayResponseFuture = connection.executeAsync(new AppList(), apiKey);
         List<App> jsonArrayResponse = jsonArrayResponseFuture.get(10L, TimeUnit.SECONDS);
         Assert.assertTrue(jsonArrayResponse != null);
     }
