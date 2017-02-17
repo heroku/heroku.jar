@@ -17,4 +17,8 @@ public class Range<E> extends ArrayList<E> {
   public String getNextRange() {
     return this.nextRange;
   }
+
+  public Boolean hasNextRange() {
+    return this.nextRange != null;
+  }
 }
