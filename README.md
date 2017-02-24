@@ -7,21 +7,23 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 
 ###Add Dependencies to your pom.xml
 
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-api</artifactId>
-        <version>0.18</version>
-    </dependency>
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-json-jackson</artifactId>
-        <version>0.18</version>
-    </dependency>
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-http-apache</artifactId>
-        <version>0.18</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>com.heroku.api</groupId>
+    <artifactId>heroku-api</artifactId>
+    <version>0.18</version>
+</dependency>
+<dependency>
+    <groupId>com.heroku.api</groupId>
+    <artifactId>heroku-json-jackson</artifactId>
+    <version>0.18</version>
+</dependency>
+<dependency>
+    <groupId>com.heroku.api</groupId>
+    <artifactId>heroku-http-apache</artifactId>
+    <version>0.18</version>
+</dependency>
+```
 
 The artifacts are in Maven Central so you won't need to build them locally first if you don't want to.
 
