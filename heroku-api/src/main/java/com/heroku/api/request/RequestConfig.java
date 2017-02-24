@@ -89,11 +89,13 @@ public class RequestConfig {
     }
 
     private Map<String,Object> stringifyMap(Map<Heroku.RequestKey, Either> map) {
-        Map<String,Object> jsonMap = new HashMap<String, Object>();
+        Map<String,Object> jsonMap = new HashMap<>();
         for (Heroku.RequestKey key : map.keySet()) {
             RequestConfig.Either either = map.get(key);
-            if (either.isString()) {
+            if (either.is(String.class)) {
                 jsonMap.put(key.queryParameter, either.string());
+            } else if (either.is(Boolean.class)) {
+                jsonMap.put(key.queryParameter, either.bool());
             } else {
                 jsonMap.put(key.queryParameter, stringifyMap(either.map()));
             }
@@ -114,7 +116,14 @@ public class RequestConfig {
 
         private String string;
 
+        private Boolean bool;
+
         private Map<Heroku.RequestKey, Either> map;
+
+        public Either(Boolean value) {
+            this.type = Boolean.class;
+            this.bool = value;
+        }
 
         public Either(String value) {
             this.type = String.class;
@@ -130,20 +139,20 @@ public class RequestConfig {
             return string;
         }
 
+        public Boolean bool() {
+            return bool;
+        }
+
         public Map<Heroku.RequestKey, Either> map() {
             return map;
         }
 
         public Object value() {
-            return (isString()) ? string : map;
+            return (is(String.class)) ? string : map;
         }
 
-        public Boolean isMap() {
-            return Map.class.equals(type);
-        }
-
-        public Boolean isString() {
-            return String.class.equals(type);
+        public Boolean is(Class c) {
+            return c.equals(type);
         }
     }
 }

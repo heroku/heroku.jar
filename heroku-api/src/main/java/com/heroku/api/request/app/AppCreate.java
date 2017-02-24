@@ -8,6 +8,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.heroku.api.parser.Json.parse;
@@ -25,6 +26,16 @@ public class AppCreate implements Request<App> {
         RequestConfig builder = new RequestConfig();
         builder = (app.getName() != null) ? builder.with(Heroku.RequestKey.AppName, app.getName()) : builder;
         builder = (app.getStack() != null) ? builder.onStack(app.getStack()) : builder;
+
+        if (app.getSpace() != null) {
+            Map<Heroku.RequestKey, RequestConfig.Either> space = new HashMap<>();
+            space.put(Heroku.RequestKey.SpaceId, new RequestConfig.Either(app.getSpace().getId()));
+            space.put(Heroku.RequestKey.SpaceName, new RequestConfig.Either(app.getSpace().getName()));
+            space.put(Heroku.RequestKey.SpaceShield, new RequestConfig.Either(app.getSpace().getShield()));
+
+            builder.with(Heroku.RequestKey.Space, space);
+        }
+
         config = builder;
     }
 

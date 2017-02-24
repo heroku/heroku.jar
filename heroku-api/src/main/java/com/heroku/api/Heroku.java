@@ -164,7 +164,11 @@ Likewise, the secure random parameter may be null in which case the default impl
         Dyno("dyno"),
         LogLines("lines"),
         LogSource("source"),
-        LogTail("tail");
+        LogTail("tail"),
+        Space("space"),
+        SpaceId("id"),
+        SpaceName("name"),
+        SpaceShield("shield");
 
         public final String queryParameter;
 

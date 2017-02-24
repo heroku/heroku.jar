@@ -23,8 +23,9 @@ public class App implements Serializable {
     String buildpack_provided_description;
     String released_at;
     int slug_size;
-	  int repo_size;
+    int repo_size;
     boolean maintenance;
+    App.Space space;
 
     /**
      * Builder method for specifying the name of an app.
@@ -125,8 +126,6 @@ public class App implements Serializable {
         return web_url;
     }
 
-
-
     public String getGitUrl() {
         return git_url;
     }
@@ -172,6 +171,14 @@ public class App implements Serializable {
         copy.name = this.name;
         copy.stack = this.stack;
         return copy;
+    }
+
+    public Space getSpace() {
+        return space;
+    }
+
+    public void setSpace(Space space) {
+        this.space = space;
     }
 
     public static class Owner implements Serializable {
@@ -222,6 +229,39 @@ public class App implements Serializable {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    public static class Space implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        String id;
+        String name;
+        Boolean shield;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getShield() {
+            return shield;
+        }
+
+        public void setShield(Boolean shield) {
+            this.shield = shield;
         }
     }
 }
