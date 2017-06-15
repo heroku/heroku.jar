@@ -20,8 +20,8 @@ import static com.heroku.api.parser.Json.parse;
 public class StackList implements Request<List<StackInfo>>{
     private final RequestConfig config;
 
-    public StackList(String appName) {
-        this.config = new RequestConfig().app(appName);
+    public StackList() {
+        this.config = new RequestConfig();
     }
 
     @Override

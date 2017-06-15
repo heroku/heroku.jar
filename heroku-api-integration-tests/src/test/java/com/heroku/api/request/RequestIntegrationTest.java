@@ -265,7 +265,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testStackList(App app) {
-        List<StackInfo> stacks = connection.execute(new StackList(app.getName()), apiKey);
+        List<StackInfo> stacks = connection.execute(new StackList(), apiKey);
         for (StackInfo s : stacks) {
             if (app.getStack().equals(s.getStack())) {
                 assertTrue(true);

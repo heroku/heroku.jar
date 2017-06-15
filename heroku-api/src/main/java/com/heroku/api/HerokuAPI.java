@@ -345,11 +345,10 @@ public class HerokuAPI {
 
     /**
      * Gets a list of stacks available.
-     * @param appName See {@link #listApps} for a list of apps that can be used.
      * @return List of stacks available.
      */
-    public List<StackInfo> listAppStacks(String appName) {
-        return connection.execute(new StackList(appName), apiKey);
+    public List<StackInfo> listAppStacks() {
+        return connection.execute(new StackList(), apiKey);
     }
 
     /**
