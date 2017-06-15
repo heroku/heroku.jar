@@ -1,11 +1,11 @@
-#Heroku JAR
+# Heroku JAR
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
 [![Build Status](https://travis-ci.org/heroku/heroku.jar.svg?branch=master)](https://travis-ci.org/heroku/heroku.jar)
 
-##Usage
+## Usage
 
-###Add Dependencies to your pom.xml
+### Add Dependencies to your pom.xml
 
 ```xml
 <dependency>
@@ -39,7 +39,7 @@ App app = api.createApp();
 ```
 
 
-###API Key and Authentication
+### API Key and Authentication
 Heroku uses an API key for authentication. The API key can be found on the [account page](https://api.heroku.com/account).
 API keys can be regenerated at any time by the user. Only the current API key shown on the account page will work. The API
 key only changes when a user chooses to [regenerate](https://api.heroku.com/account) -- keys do not expire automatically.
@@ -52,27 +52,27 @@ When using API keys:
 * If they need to be stored, store them securely (e.g. encrypt the file or database column).
 * Catch RequestFailedException in case of an authorization failure.
 
-###Examples
+### Examples
 
-####Instantiate HerokuAPI with an API Key
+#### Instantiate HerokuAPI with an API Key
 ```java
 String apiKey = "...";
 HerokuAPI api = new HerokuAPI(apiKey);
 ```
 
-####Create an Application
+#### Create an Application
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 App app = api.createApp();
 ```
 
-####Create a named application on the cedar stack
+#### Create a named application on the cedar stack
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 App app = api.createApp(new App().on(Heroku.Stack.Cedar).named("MyApp"));
 ```
 
-####List applications
+#### List applications
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 List<App> apps = api.listApps();
@@ -81,13 +81,13 @@ for (App app : apps) {
 }
 ```
 
-####Add config
+#### Add config
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 api.addConfig("myExistingApp", new HashMap<String,String>(){{put("SOME_KEY", "SOMEVALUE")}});
 ```
 
-####Get Config
+#### Get Config
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 Map<String, String> config = api.listConfig("myExistingApp");
@@ -96,14 +96,14 @@ for (Map.Entry<String, String> var : config.entrySet()) {
 }
 ```
 
-####Remove Config
+#### Remove Config
 The removeConfig call expects a single config var name to be removed.
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
 Map<String, String> config = api.removeConfig("myExistingApp", "configVarToRemove");
 ```
 
-####Overriding the User-Agent Header
+#### Overriding the User-Agent Header
 The default User-Agent header is recommended for most use cases.
 
 If this library is being used as part of another library or
@@ -117,7 +117,7 @@ To conform to [RFC 2616 Section 14.43](http://tools.ietf.org/html/rfc2616#sectio
 from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
 provider with your own user agent.
 
-###For the latest snapshots...
+### For the latest snapshots...
 Use the snapshot version:
 
     <dependency>
@@ -146,7 +146,7 @@ Add the snapshot repository to your pom.xml
         </repository>
     </repositories>
 
-##Building Locally
+## Building Locally
 
 1. Clone the repo:
 
@@ -167,7 +167,7 @@ Add the snapshot repository to your pom.xml
 
 Tests are run automatically by Travis CI for all pushes and pull requests to `heroku/heroku.jar` with the exception of [pull requests from forks that only run unit tests](http://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests). In addition, successful test runs on `master` automatically deploy artifacts to OSS Sonatype. `SNAPSHOT` releases are available automatically as explained [above](#for-the-latest-snapshots), but release versions must be manually published as explained [below](#release).
 
-##Release
+## Release
 
 Artifact deployment is handled by [continuous integration](#continuous-integration), but the actual release is manual. To release a new version, first set the version and increment to the next snapshot:
 
@@ -187,7 +187,7 @@ At this point, Travis CI should build and deploy the artifact to OSS Sonatype. I
 
 ## Some Design Considerations
 
-###Minimal Dependencies
+### Minimal Dependencies
 
 One main design goal was to impose as few dependencies as possible on users of this api. Since there are
 a wide range of target users for this library, from build tools to ide plugins to applications,
@@ -227,7 +227,7 @@ We opted for a slightly more verbose dependency declaration an a flexible implem
        <version>0.1-SNAPSHOT</version>
     </dependency>
 
-###Flexible async model
+### Flexible async model
 
 Since we have decided to allow pluggable http client implementations, we also decided to allow asynchronous apis provided by the underlying httpclient
 implementations to surface themselves in the API. The com.heroku.api.connection.AsyncConnection interface allows implementations to parameterize the type of
