@@ -267,7 +267,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     public void testStackList(App app) {
         List<StackInfo> stacks = connection.execute(new StackList(), apiKey);
         for (StackInfo s : stacks) {
-            if (app.getStack().equals(s.getStack())) {
+            if (app.getStack().getName().equals(s.getStack().value)) {
                 assertTrue(true);
                 return;
             }
