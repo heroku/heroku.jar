@@ -24,7 +24,7 @@ public class AppCreate implements Request<App> {
     public AppCreate(App app) {
         RequestConfig builder = new RequestConfig();
         builder = (app.getName() != null) ? builder.with(Heroku.RequestKey.AppName, app.getName()) : builder;
-        builder = (app.getStack() != null) ? builder.onStack(app.getStack()) : builder;
+        builder = (app.getStack() != null) ? builder.with(Heroku.RequestKey.Stack, app.getStack().getName()) : builder;
         config = builder;
     }
 

@@ -20,17 +20,6 @@ public class RequestConfig {
     private final Map<Heroku.RequestKey, RequestConfig.Either> config = new EnumMap<Heroku.RequestKey, RequestConfig.Either>(Heroku.RequestKey.class);
 
     /**
-     * Sets the {Heroku.RequestKey.Stack} parameter.
-     * @param stack A {@link com.heroku.api.Heroku.Stack} to specify in the config.
-     * @return A new {@link RequestConfig}
-     */
-    public RequestConfig onStack(Heroku.Stack stack) {
-        Map<Heroku.RequestKey, Either> stackMap = new EnumMap<Heroku.RequestKey, Either>(Heroku.RequestKey.class);
-        stackMap.put(Heroku.RequestKey.StackName, new Either(stack.value));
-        return with(Heroku.RequestKey.Stack, stackMap);
-    }
-
-    /**
      * Sets the {Heroku.RequestKey.AppName} parameter.
      * @param appName Name of the app to specify in the config.
      * @return A new {@link RequestConfig}

@@ -75,7 +75,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         App response = connection.execute(cmd, apiKey);
 
         assertNotNull(response.getId());
-        assertEquals(response.getStack(), Cedar14);
+        assertEquals(response.getStack().getName(), Cedar14.value);
         assertFalse(response.isMaintenance());
         assertNull(response.getBuildpackProvidedDescription());
         deleteApp(response.getName());

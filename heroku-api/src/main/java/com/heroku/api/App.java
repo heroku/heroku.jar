@@ -138,8 +138,8 @@ public class App implements Serializable {
         return created_at;
     }
 
-    public Heroku.Stack getStack() {
-        return Heroku.Stack.fromString(stack.getName());
+    public App.Stack getStack() {
+        return stack;
     }
 
     public String getRequestedStack() {
@@ -212,7 +212,11 @@ public class App implements Serializable {
         }
 
         public Stack(Heroku.Stack herokuStack) {
-            this.name = herokuStack.name();
+            this.name = herokuStack.value;
+        }
+
+        public Stack(String name) {
+            this.name = name;
         }
 
         public String getId() {
