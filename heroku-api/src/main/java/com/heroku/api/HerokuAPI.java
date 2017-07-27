@@ -8,6 +8,7 @@ import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.*;
+import com.heroku.api.request.builds.BuildCreate;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.key.KeyAdd;
@@ -24,6 +25,7 @@ import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.sharing.SharingTransfer;
 import com.heroku.api.request.slugs.SlugCreate;
 import com.heroku.api.request.slugs.SlugInfo;
+import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.util.Range;
@@ -392,4 +394,19 @@ public class HerokuAPI {
         return connection.execute(new SlugInfo(appName, slugId), apiKey);
     }
 
+    /**
+     * Creates a source
+     *
+     */
+    public Source createSource() {
+        return connection.execute(new SourceCreate(), apiKey);
+    }
+
+    /**
+     * Creates a source
+     *
+     */
+    public Build createBuild(String appName, Build build) {
+        return connection.execute(new BuildCreate(appName, build), apiKey);
+    }
 }

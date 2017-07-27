@@ -318,6 +318,27 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
       assertEquals(slugInfo.getBlob().getMethod(), "get");
       assertNotNull(slugInfo.getBlob().getUrl());
     }
+
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testCreateBuild(App app) {
+      HerokuAPI api = new HerokuAPI(connection, apiKey);
+      Source source = api.createSource();
+
+      Build build = api.createBuild(app.getName(),
+          new Build(
+              source.getSource_blob().getGet_url(),
+              "v1",
+              new String[]{"https://github.com/ryandotsmith/null-buildpack"}
+          )
+      );
+
+      assertNotNull(build.getRelease().getId());
+      assertNotNull(build.getSlug().getId());
+      assertNotNull(build.getStatus());
+      assertEquals(build.getSource_blob().getVersion(), "v1");
+      assertEquals(build.getBuildpacks().size(), 1);
+      assertEquals(build.getBuildpacks().get(0).getUrl(), "https://github.com/ryandotsmith/null-buildpack");
+    }
     
     private void assertDomainIsPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
