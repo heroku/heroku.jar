@@ -27,7 +27,7 @@ The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku 
 
 The artifacts are in Maven Central so you won't need to build them locally first if you don't want to.
 
-###Use HerokuAPI
+### Use HerokuAPI
 HerokuAPI contains all the methods necessary to interact with Heroku's REST API. HerokuAPI must be instantiated with an
 API key in order to authenticate and make API calls. Requests to the API typically take no arguments, or simple strings.
 Responses come in the form of read-only POJOs, Maps, or void.
@@ -81,10 +81,10 @@ for (App app : apps) {
 }
 ```
 
-#### Add config
+#### Update config
 ```java
 HerokuAPI api = new HerokuAPI(apiKey);
-api.addConfig("myExistingApp", new HashMap<String,String>(){{put("SOME_KEY", "SOMEVALUE")}});
+api.updateConfig("myExistingApp", new HashMap<String,String>(){{put("SOME_KEY", "SOMEVALUE")}});
 ```
 
 #### Get Config
