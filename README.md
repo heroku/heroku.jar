@@ -117,35 +117,6 @@ To conform to [RFC 2616 Section 14.43](http://tools.ietf.org/html/rfc2616#sectio
 from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
 provider with your own user agent.
 
-### For the latest snapshots...
-Use the snapshot version:
-
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-api</artifactId>
-        <version>0.10-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-json-jackson</artifactId>
-        <version>0.10-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>com.heroku.api</groupId>
-        <artifactId>heroku-http-apache</artifactId>
-        <version>0.10-SNAPSHOT</version>
-    </dependency>
-
-Add the snapshot repository to your pom.xml
-
-    <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <snapshots/>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
-
 ## Building Locally
 
 1. Clone the repo:
@@ -165,25 +136,15 @@ Add the snapshot repository to your pom.xml
 
 ## Continuous Integration
 
-Tests are run automatically by Travis CI for all pushes and pull requests to `heroku/heroku.jar` with the exception of [pull requests from forks that only run unit tests](http://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests). In addition, successful test runs on `master` automatically deploy artifacts to OSS Sonatype. `SNAPSHOT` releases are available automatically as explained [above](#for-the-latest-snapshots), but release versions must be manually published as explained [below](#release).
+Tests are run automatically by Travis CI for all pushes and pull requests to `heroku/heroku.jar` with the exception of [pull requests from forks that only run unit tests](http://docs.travis-ci.com/user/pull-requests/#Security-Restrictions-when-testing-Pull-Requests). Release versions must be manually published as explained [below](#release).
 
 ## Release
 
-Artifact deployment is handled by [continuous integration](#continuous-integration), but the actual release is manual. To release a new version, first set the version and increment to the next snapshot:
+To release a new version, run the release script:
 
 ```
-echo ${RELEASE_VERSION:?Required}
-echo ${NEXT_VERSION:?Required}
-git checkout master
-mvn versions:set -DnewVersion=${RELEASE_VERSION}
-git commit -am "release v${RELEASE_VERSION}"
-git tag v${RELEASE_VERSION}
-mvn versions:set -DnewVersion=${NEXT_VERSION}
-git commit -am "starting development of v${NEXT_VERSION}"
-git push origin master --tags
+$ bash release.sh
 ```
-
-At this point, Travis CI should build and deploy the artifact to OSS Sonatype. If that is successful, log into [OSS Sonatype](https://oss.sonatype.org) (assuming you have access), search for the new artifacts in the [Staging Repositories](https://oss.sonatype.org/#stagingRepositories), close, test, and release them.
 
 ## Some Design Considerations
 
