@@ -15,13 +15,10 @@ public class Build implements Serializable {
   SourceBlob source_blob;
   List<Buildpack> buildpacks;
   String output_stream_url;
-  Identifiable release;
-  Identifiable slug;
   String status;
-  String updated_at;
-  String created_at;
   String id;
-  User user;
+
+  public Build() {}
 
   public Build(String url, String version, String[] buildpackUrls) {
     this.source_blob = new SourceBlob();
@@ -60,22 +57,6 @@ public class Build implements Serializable {
     this.output_stream_url = output_stream_url;
   }
 
-  public Identifiable getRelease() {
-    return release;
-  }
-
-  public void setRelease(Identifiable release) {
-    this.release = release;
-  }
-
-  public Identifiable getSlug() {
-    return slug;
-  }
-
-  public void setSlug(Identifiable slug) {
-    this.slug = slug;
-  }
-
   public String getStatus() {
     return status;
   }
@@ -84,36 +65,12 @@ public class Build implements Serializable {
     this.status = status;
   }
 
-  public String getUpdated_at() {
-    return updated_at;
-  }
-
-  public void setUpdated_at(String updated_at) {
-    this.updated_at = updated_at;
-  }
-
-  public String getCreated_at() {
-    return created_at;
-  }
-
-  public void setCreated_at(String created_at) {
-    this.created_at = created_at;
-  }
-
   public String getId() {
     return id;
   }
 
   public void setId(String id) {
     this.id = id;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
   public static class Buildpack implements Serializable {
@@ -160,30 +117,6 @@ public class Build implements Serializable {
       this.version = version;
     }
 
-  }
-
-  public static class Identifiable implements Serializable {
-    String id;
-
-    public String getId() {
-      return id;
-    }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-  }
-
-  public static class User extends Identifiable {
-    String email;
-
-    public String getEmail() {
-      return email;
-    }
-
-    public void setEmail(String email) {
-      this.email = email;
-    }
   }
 
 }

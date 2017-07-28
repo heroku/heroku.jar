@@ -32,7 +32,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.util.RetryAnalyzerCount;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -309,35 +311,45 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testSlugInfo(App app) {
-      HerokuAPI api = new HerokuAPI(connection, apiKey);
-      Slug newSlug = api.createSlug(app.getName(), new HashMap<String, String>());
-      assertEquals(newSlug.getBlob().getMethod(), "put");
-      assertNotNull(newSlug.getBlob().getUrl());
-      Slug slugInfo = connection.execute(new SlugInfo(app.getName(), newSlug.getId()), apiKey);
-      assertEquals(slugInfo.getId(), newSlug.getId());
-      assertEquals(slugInfo.getBlob().getMethod(), "get");
-      assertNotNull(slugInfo.getBlob().getUrl());
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+        Slug newSlug = api.createSlug(app.getName(), new HashMap<String, String>());
+        assertEquals(newSlug.getBlob().getMethod(), "put");
+        assertNotNull(newSlug.getBlob().getUrl());
+        Slug slugInfo = connection.execute(new SlugInfo(app.getName(), newSlug.getId()), apiKey);
+        assertEquals(slugInfo.getId(), newSlug.getId());
+        assertEquals(slugInfo.getBlob().getMethod(), "get");
+        assertNotNull(slugInfo.getBlob().getUrl());
     }
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCreateBuild(App app) {
-      HerokuAPI api = new HerokuAPI(connection, apiKey);
-      Source source = api.createSource();
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+        Source source = api.createSource();
 
-      Build build = api.createBuild(app.getName(),
-          new Build(
-              source.getSource_blob().getGet_url(),
-              "v1",
-              new String[]{"https://github.com/ryandotsmith/null-buildpack"}
-          )
-      );
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("repo.tgz").getFile());
 
-      assertNotNull(build.getRelease().getId());
-      assertNotNull(build.getSlug().getId());
-      assertNotNull(build.getStatus());
-      assertEquals(build.getSource_blob().getVersion(), "v1");
-      assertEquals(build.getBuildpacks().size(), 1);
-      assertEquals(build.getBuildpacks().get(0).getUrl(), "https://github.com/ryandotsmith/null-buildpack");
+        try {
+          uploadFile(source.getSource_blob().getPut_url(), file);
+        } catch (Exception e) {
+          e.printStackTrace();
+          fail();
+        }
+
+        Build build = api.createBuild(app.getName(),
+            new Build(
+                source.getSource_blob().getGet_url(),
+                "v1",
+                new String[]{"https://github.com/ryandotsmith/null-buildpack"}
+            )
+        );
+
+        assertNotNull(build.getStatus());
+        assertEquals(build.getSource_blob().getVersion(), "v1");
+
+        Build buildInfo = api.getBuildInfo(app.getName(), build.getId());
+        assertNotNull(buildInfo.getStatus());
+        assertEquals(buildInfo.getSource_blob().getVersion(), "v1");
     }
     
     private void assertDomainIsPresent(App app, String domainName) {
@@ -419,5 +431,23 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
             return false;
         }
+    }
+
+    private void uploadFile(String urlString, File file) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+        httpCon.setDoOutput(true);
+        httpCon.setRequestMethod("PUT");
+
+        InputStream inputStream = new FileInputStream(file);
+        OutputStream outputStream = httpCon.getOutputStream();
+
+        Integer c;
+        while ((c = inputStream.read()) != -1) {
+          outputStream.write(c);
+        }
+        outputStream.close();
+
+        httpCon.getInputStream();
     }
 }

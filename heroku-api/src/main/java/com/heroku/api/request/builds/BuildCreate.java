@@ -4,12 +4,11 @@ import com.heroku.api.Build;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.heroku.api.parser.Json.parse;
 
@@ -21,6 +20,8 @@ public class BuildCreate implements Request<Build> {
 
   private final RequestConfig config;
 
+  private List<Map<String,String>> buildpacks = new ArrayList<>();
+
   public BuildCreate(String appName, Build build) {
     Map<Heroku.RequestKey, RequestConfig.Either> sourceBlob = new HashMap<>();
     sourceBlob.put(Heroku.RequestKey.SourceBlobUrl, new RequestConfig.Either(build.getSource_blob().getUrl()));
@@ -28,19 +29,17 @@ public class BuildCreate implements Request<Build> {
     if (null != build.getSource_blob().getChecksum()) sourceBlob.put(Heroku.RequestKey.SourceBlobChecksum, new RequestConfig.Either(build.getSource_blob().getChecksum()));
 
     RequestConfig builder = new RequestConfig();
-    builder = builder.
-        with(Heroku.RequestKey.AppName, appName).
-        with(Heroku.RequestKey.SourceBlob, sourceBlob);
+    builder = builder.with(Heroku.RequestKey.SourceBlob, sourceBlob);
 
     if (build.getBuildpacks() != null) {
-      Map<Heroku.RequestKey, RequestConfig.Either> buildpacks = new HashMap<>();
-      for (Build.Buildpack b : build.getBuildpacks()) {
-        buildpacks.put(Heroku.RequestKey.BuildpackUrl, new RequestConfig.Either(b.getUrl()));
+      for (Build.Buildpack b: build.getBuildpacks()) {
+        Map<String, String> urlMap = new HashMap<>();
+        urlMap.put(Heroku.RequestKey.BuildpackUrl.queryParameter, b.getUrl());
+        buildpacks.add(urlMap);
       }
-      builder = builder.with(Heroku.RequestKey.Buildpacks, buildpacks);
     }
 
-    config = builder;
+    config = builder.app(appName);
   }
 
   @Override
@@ -60,12 +59,16 @@ public class BuildCreate implements Request<Build> {
 
   @Override
   public String getBody() {
-    return config.asJson();
+    return Json.encode(getBodyAsMap());
   }
 
   @Override
   public Map<String,Object> getBodyAsMap() {
-    return config.asMap();
+    Map<String, Object> map = config.asMap();
+    if (!buildpacks.isEmpty()) {
+      map.put(Heroku.RequestKey.Buildpacks.queryParameter, buildpacks);
+    }
+    return map;
   }
 
   @Override

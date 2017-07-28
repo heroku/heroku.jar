@@ -9,6 +9,7 @@ import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
 import com.heroku.api.request.app.*;
 import com.heroku.api.request.builds.BuildCreate;
+import com.heroku.api.request.builds.BuildInfo;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.key.KeyAdd;
@@ -403,10 +404,22 @@ public class HerokuAPI {
     }
 
     /**
-     * Creates a source
+     * Creates a build
      *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param build the build information
      */
     public Build createBuild(String appName, Build build) {
         return connection.execute(new BuildCreate(appName, build), apiKey);
+    }
+
+    /**
+     * Gets the info for a running build
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param buildId the unique identifier of the build
+     */
+    public Build getBuildInfo(String appName, String buildId) {
+        return connection.execute(new BuildInfo(appName, buildId), apiKey);
     }
 }

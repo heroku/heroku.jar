@@ -220,6 +220,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         AppAddons(App.value + "/addons"),
         AppAddon(AppAddons.value + "/%s"),
         Builds("/apps/%s/builds"),
+        BuildInfo("/apps/%s/builds/%s"),
+        BuildResult("/apps/%s/builds/%s/result"),
         User("/account"),
         Key(User.value + "/keys/%s"),
         Keys(User.value + "/keys"),
