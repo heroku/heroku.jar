@@ -7,15 +7,21 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.app.AppCreate;
 import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.builds.BuildCreate;
+import com.heroku.api.request.builds.BuildInfo;
 import com.heroku.api.request.config.ConfigUpdate;
+import com.heroku.api.request.dynos.DynoList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
+import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.response.Unit;
+import com.heroku.api.util.Range;
 import org.testng.annotations.*;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +48,6 @@ public abstract class BaseRequestIntegrationTest {
 
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
 
-
     @DataProvider(parallel = true)
     public Object[][] app() {
         return new Object[][]{{getApp()}};
@@ -50,7 +55,12 @@ public abstract class BaseRequestIntegrationTest {
 
     @DataProvider(parallel = true)
     public Object[][] newApp() {
-        return new Object[][]{{createApp()}};
+        return new Object[][]{{createApp("new")}};
+    }
+
+    @DataProvider(parallel = true)
+    public Object[][] javaApp() {
+        return new Object[][]{{getJavaApp()}};
     }
 
     public App getApp() {
@@ -61,10 +71,64 @@ public abstract class BaseRequestIntegrationTest {
     }
 
     public App createApp() {
-        System.out.println("Creating app...");
+        return createApp("");
+    }
+
+    public App createApp(String type) {
+        System.out.println("Creating " + (type.isEmpty() ? type : type + " ") + "app...");
         App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
         apps.add(app);
         System.out.format("%s created\n", app.getName());
+        return app;
+    }
+
+    public App getJavaApp() {
+        App app = createApp("Java");
+        Source source = connection.execute(new SourceCreate(), apiKey);
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("java-repo.tgz").getFile());
+
+        try {
+            uploadFile(source.getSource_blob().getPut_url(), file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        Build build = connection.execute(new BuildCreate(app.getName(),
+            new Build(
+                source.getSource_blob().getGet_url(),
+                "v1",
+                new String[]{"https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/java.tgz"}
+            )
+        ), apiKey);
+
+        while (!"succeeded".equals(build.getStatus())) {
+            if ("failed".equals(build.getStatus())) {
+                System.out.println(build.getOutput_stream_url());
+                fail("Java build failed");
+                break;
+            } else if (!"pending".equals(build.getStatus())) {
+                fail("Java build has invalid status: " + build.getStatus());
+                break;
+            } else {
+                build = connection.execute(new BuildInfo(app.getName(), build.getId()), apiKey);
+            }
+        }
+
+        Range<Dyno> dynos = connection.execute(new DynoList(app.getName()), apiKey);
+        Integer attempts = 0;
+        while (dynos.isEmpty()) {
+            if (attempts > 10) {
+                fail("Failed to start dynos for " + app.getName());
+                break;
+            }
+            dynos = connection.execute(new DynoList(app.getName()), apiKey);
+            attempts++;
+            try { Thread.sleep(2000); } catch (InterruptedException e) { }
+        }
+
         return app;
     }
 
@@ -194,6 +258,24 @@ public abstract class BaseRequestIntegrationTest {
                 fail("Collaborator was not removed");
             }
         }
+    }
+
+    void uploadFile(String urlString, File file) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+        httpCon.setDoOutput(true);
+        httpCon.setRequestMethod("PUT");
+
+        InputStream inputStream = new FileInputStream(file);
+        OutputStream outputStream = httpCon.getOutputStream();
+
+        Integer c;
+        while ((c = inputStream.read()) != -1) {
+            outputStream.write(c);
+        }
+        outputStream.close();
+
+        httpCon.getInputStream();
     }
 
 }

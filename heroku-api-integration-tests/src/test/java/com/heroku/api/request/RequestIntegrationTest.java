@@ -27,14 +27,14 @@ import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
+import com.heroku.api.util.Range;
 import org.testng.ITestResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.util.RetryAnalyzerCount;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,7 +239,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(user.getEmail(), testUser.getUsername());
     }
 
-    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListReleases(App app) {
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
         assertEquals(releases.get(0).getVersion(), 1);
@@ -255,7 +255,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(releaseInfo.getId(), releases.get(0).getId());
     }
     
-    @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
         addConfig(app, "releaseTest", "releaseTest");
         List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
@@ -351,6 +351,34 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotNull(buildInfo.getStatus());
         assertEquals(buildInfo.getSource_blob().getVersion(), "v1");
     }
+
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testDynosRestart(App app) {
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+        Range<Dyno> dynos = api.listDynos(app.getName());
+        assertNotEquals(dynos.size(), 0);
+        String updatedAt = dynos.get(0).getUpdated_at();
+
+        api.restartDynos(app.getName());
+
+        dynos = api.listDynos(app.getName());
+        assertNotEquals(dynos.size(), 0);
+        assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
+    }
+
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testDynoRestart(App app) {
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+        Range<Dyno> dynos = api.listDynos(app.getName());
+        assertNotEquals(dynos.size(), 0);
+        String updatedAt = dynos.get(0).getUpdated_at();
+
+        api.restartDyno(app.getName(), dynos.get(0).getId());
+
+        dynos = api.listDynos(app.getName());
+        assertNotEquals(dynos.size(), 0);
+        assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
+    }
     
     private void assertDomainIsPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
@@ -431,23 +459,5 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
             return false;
         }
-    }
-
-    private void uploadFile(String urlString, File file) throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-        httpCon.setDoOutput(true);
-        httpCon.setRequestMethod("PUT");
-
-        InputStream inputStream = new FileInputStream(file);
-        OutputStream outputStream = httpCon.getOutputStream();
-
-        Integer c;
-        while ((c = inputStream.read()) != -1) {
-          outputStream.write(c);
-        }
-        outputStream.close();
-
-        httpCon.getInputStream();
     }
 }
