@@ -241,7 +241,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         Status(App.value + "/status"),
         Stacks("/stacks"),
         Domains(App.value + "/domains"),
-        Domain(Domains.value + "/%s");
+        Domain(Domains.value + "/%s"),
+        Dynos("/apps/%s/dynos"),
+        Dyno(Dynos.value + "/%s");
 
         public final String value;
 

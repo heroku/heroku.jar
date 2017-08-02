@@ -12,6 +12,9 @@ import com.heroku.api.request.builds.BuildCreate;
 import com.heroku.api.request.builds.BuildInfo;
 import com.heroku.api.request.config.ConfigList;
 import com.heroku.api.request.config.ConfigUpdate;
+import com.heroku.api.request.dynos.DynoList;
+import com.heroku.api.request.dynos.DynoRestart;
+import com.heroku.api.request.dynos.DynoRestartAll;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
@@ -421,5 +424,33 @@ public class HerokuAPI {
      */
     public Build getBuildInfo(String appName, String buildId) {
         return connection.execute(new BuildInfo(appName, buildId), apiKey);
+    }
+
+    /**
+     * List app dynos for an app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     */
+    public Range<Dyno> listDynos(String appName) {
+        return connection.execute(new DynoList(appName), apiKey);
+    }
+
+    /**
+     * Restarts a single dyno
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param dynoId the unique identifier of the dyno to restart
+     */
+    public void restartDyno(String appName, String dynoId) {
+        connection.execute(new DynoRestart(appName, dynoId), apiKey);
+    }
+
+    /**
+     * Restarts all dynos for an app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     */
+    public void restartDynos(String appName) {
+        connection.execute(new DynoRestartAll(appName), apiKey);
     }
 }
