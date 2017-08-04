@@ -3,6 +3,7 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
+import com.heroku.api.formation.Scale;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -452,5 +453,16 @@ public class HerokuAPI {
      */
     public void restartDynos(String appName) {
         connection.execute(new DynoRestartAll(appName), apiKey);
+    }
+
+    /**
+     * Scales a process type
+     * 
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param processType type of process to maintain
+     * @param quantity number of processes to maintain
+     */
+    public Formation scale(String appName, String processType, int quantity) {
+        return connection.execute(new Scale(appName, processType, quantity), apiKey);
     }
 }

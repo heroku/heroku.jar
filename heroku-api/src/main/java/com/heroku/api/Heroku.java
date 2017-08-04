@@ -174,7 +174,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Space("space"),
         SpaceId("id"),
         SpaceName("name"),
-        SpaceShield("shield");
+        SpaceShield("shield"),
+        Quantity("quantity");
 
         public final String queryParameter;
 
@@ -243,7 +244,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         Domains(App.value + "/domains"),
         Domain(Domains.value + "/%s"),
         Dynos("/apps/%s/dynos"),
-        Dyno(Dynos.value + "/%s");
+        Dyno(Dynos.value + "/%s"),
+        Formations(App.value + "/formation"),
+        Formation(Formations.value + "/%s");
 
         public final String value;
 
