@@ -3,7 +3,7 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
-import com.heroku.api.formation.Scale;
+import com.heroku.api.request.formation.FormationUpdate;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -463,6 +463,6 @@ public class HerokuAPI {
      * @param quantity number of processes to maintain
      */
     public Formation scale(String appName, String processType, int quantity) {
-        return connection.execute(new Scale(appName, processType, quantity), apiKey);
+        return connection.execute(new FormationUpdate(appName, processType, quantity), apiKey);
     }
 }

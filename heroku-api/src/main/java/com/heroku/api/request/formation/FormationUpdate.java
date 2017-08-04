@@ -1,28 +1,28 @@
-package com.heroku.api.formation;
-
-import java.util.Map;
+package com.heroku.api.request.formation;
 
 import com.heroku.api.Formation;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
-import com.heroku.api.http.HttpUtil;
 import com.heroku.api.http.Http.Accept;
 import com.heroku.api.http.Http.Method;
+import com.heroku.api.http.HttpUtil;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
+
+import java.util.Map;
 
 import static com.heroku.api.parser.Json.parse;
 
 /**
  * @author Román Sosa
  */
-public class Scale implements Request<Formation> {
+public class FormationUpdate implements Request<Formation> {
 
     private final RequestConfig config;
     private final String processType;
     
-    public Scale(String appName, String processType, int quantity) {
+    public FormationUpdate(String appName, String processType, int quantity) {
 
         config = new RequestConfig().app(appName)
                 .with(Heroku.RequestKey.Quantity, String.valueOf(quantity));
