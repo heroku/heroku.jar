@@ -3,7 +3,6 @@ package com.heroku.api;
 
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
-import com.heroku.api.request.formation.FormationUpdate;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
@@ -16,6 +15,8 @@ import com.heroku.api.request.config.ConfigUpdate;
 import com.heroku.api.request.dynos.DynoList;
 import com.heroku.api.request.dynos.DynoRestart;
 import com.heroku.api.request.dynos.DynoRestartAll;
+import com.heroku.api.request.formation.FormationList;
+import com.heroku.api.request.formation.FormationUpdate;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
@@ -464,5 +465,14 @@ public class HerokuAPI {
      */
     public Formation scale(String appName, String processType, int quantity) {
         return connection.execute(new FormationUpdate(appName, processType, quantity), apiKey);
+    }
+
+    /**
+     * Lists the formation info for an app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     */
+    public List<Formation> listFormation(String appName) {
+        return connection.execute(new FormationList(appName), apiKey);
     }
 }

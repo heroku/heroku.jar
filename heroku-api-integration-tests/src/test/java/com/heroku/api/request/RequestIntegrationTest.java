@@ -379,6 +379,25 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertNotEquals(dynos.size(), 0);
         assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
     }
+
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testFormation(App app) {
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+
+        List<Formation> formation = api.listFormation(app.getName());
+        assertNotEquals(formation.size(), 0);
+        Formation web = formation.get(0);
+        assertEquals(web.getType(), "web");
+        assertEquals(web.getQuantity(), 1);
+
+        try{
+          api.scale(app.getName(), "web", 2);
+        } catch (RequestFailedException e) {
+          assertEquals(e.getStatusCode(), 422);
+          return;
+        }
+        fail("Scaling did not throw a RequestFailedException");
+    }
     
     private void assertDomainIsPresent(App app, String domainName) {
         for (Domain d : connection.execute(new DomainList(app.getName()), apiKey)) {
