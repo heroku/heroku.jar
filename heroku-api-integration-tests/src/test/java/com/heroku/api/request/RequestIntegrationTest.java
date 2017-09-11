@@ -17,7 +17,7 @@ import com.heroku.api.request.domain.DomainAdd;
 import com.heroku.api.request.domain.DomainList;
 import com.heroku.api.request.domain.DomainRemove;
 import com.heroku.api.request.log.Log;
-import com.heroku.api.request.releases.ListReleases;
+import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.sharing.CollabList;
@@ -241,7 +241,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testListReleases(App app) {
-        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        List<Release> releases = connection.execute(new ReleaseList(app.getName()), apiKey);
         assertEquals(releases.get(0).getVersion(), 1);
         assertEquals(releases.get(0).getDescription(), "Initial release");
     }
@@ -249,7 +249,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testReleaseInfo(App app) {
         addConfig(app, "releaseTest", "releaseTest"); //ensure a release exists
-        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        List<Release> releases = connection.execute(new ReleaseList(app.getName()), apiKey);
         Release releaseInfo = connection.execute(new ReleaseInfo(app.getName(), releases.get(0).getId()), apiKey);
         assertEquals(releaseInfo.getVersion(), releases.get(0).getVersion());
         assertEquals(releaseInfo.getId(), releases.get(0).getId());
@@ -258,7 +258,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
         addConfig(app, "releaseTest", "releaseTest");
-        List<Release> releases = connection.execute(new ListReleases(app.getName()), apiKey);
+        List<Release> releases = connection.execute(new ReleaseList(app.getName()), apiKey);
         Release previousRelease = releases.get(releases.size() - 2);
         Release rollback = connection.execute(new Rollback(app.getName(), previousRelease.getId()), apiKey);
         assertNotSame(rollback.getId(), previousRelease.getId());

@@ -22,7 +22,7 @@ import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.releases.ListReleases;
+import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.ReleaseInfo;
 import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.sharing.CollabList;
@@ -247,7 +247,7 @@ public class HerokuAPI {
      * @return a list of releases
      */
     public List<Release> listReleases(String appName) {
-        return connection.execute(new ListReleases(appName), apiKey);
+        return connection.execute(new ReleaseList(appName), apiKey);
     }
 
     /**

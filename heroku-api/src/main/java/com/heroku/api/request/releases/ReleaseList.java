@@ -4,11 +4,12 @@ import com.heroku.api.Heroku;
 import com.heroku.api.Release;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
+import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
+import com.heroku.api.util.Range;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
@@ -19,11 +20,11 @@ import static com.heroku.api.parser.Json.parse;
  *
  * @author Naaman Newbold
  */
-public class ListReleases implements Request<List<Release>> {
+public class ReleaseList implements Request<Range<Release>> {
 
     private final RequestConfig config;
 
-    public ListReleases(String appName) {
+    public ReleaseList(String appName) {
         this.config = new RequestConfig().app(appName);
     }
     
@@ -63,9 +64,13 @@ public class ListReleases implements Request<List<Release>> {
     }
 
     @Override
-    public List<Release> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
+    public Range<Release> getResponse(byte[] bytes, int status, Map<String,String> responseHeaders) {
         if (status == Http.Status.OK.statusCode) {
             return parse(bytes, getClass());
+        } else if (status == 206) {
+            Range<Release> r = Json.parse(bytes, ReleaseList.class);
+            r.setNextRange(responseHeaders.get("Next-Range"));
+            return r;
         }
         throw new RequestFailedException("Unable to list releases.", status, bytes);
     }
