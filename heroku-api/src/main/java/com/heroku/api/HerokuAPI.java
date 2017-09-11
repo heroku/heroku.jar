@@ -251,6 +251,16 @@ public class HerokuAPI {
     }
 
     /**
+     * List of releases for an app.
+     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
+     * @param range The range of releases provided by {@link Range#getNextRange()}
+     * @return a list of releases
+     */
+    public List<Release> listReleases(String appName, String range) {
+        return connection.execute(new ReleaseList(appName, range), apiKey);
+    }
+
+    /**
      * Rollback an app to a specific release.
      * @param appName App name. See {@link #listApps} for a list of apps that can be used.
      * @param releaseUuid Release UUID. See {@link #listReleases} for a list of the app's releases.

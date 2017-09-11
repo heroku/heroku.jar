@@ -10,6 +10,7 @@ import com.heroku.api.request.RequestConfig;
 import com.heroku.api.util.Range;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
@@ -22,10 +23,17 @@ import static com.heroku.api.parser.Json.parse;
  */
 public class ReleaseList implements Request<Range<Release>> {
 
+    private Map<String,String> headers = new HashMap<>();
+
     private final RequestConfig config;
 
     public ReleaseList(String appName) {
         this.config = new RequestConfig().app(appName);
+    }
+
+    public ReleaseList(String appName, String range) {
+        this(appName);
+        this.headers.put("Range", range);
     }
     
     @Override
