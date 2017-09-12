@@ -352,7 +352,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(buildInfo.getSource_blob().getVersion(), "v1");
     }
 
-    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "javaApp", retryAnalyzer = AllowFailuresRetryAnalyzer.class)
     public void testDynosRestart(App app) {
         HerokuAPI api = new HerokuAPI(connection, apiKey);
         Range<Dyno> dynos = api.listDynos(app.getName());
@@ -361,14 +361,12 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
         api.restartDynos(app.getName());
 
-        try { Thread.sleep(2000); } catch (InterruptedException e) { }
-
         dynos = api.listDynos(app.getName());
           assertNotEquals(dynos.size(), 0);
           assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
     }
 
-    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    @Test(dataProvider = "javaApp", retryAnalyzer = AllowFailuresRetryAnalyzer.class)
     public void testDynoRestart(App app) {
         HerokuAPI api = new HerokuAPI(connection, apiKey);
         Range<Dyno> dynos = api.listDynos(app.getName());
@@ -376,8 +374,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         String updatedAt = dynos.get(0).getUpdated_at();
 
         api.restartDyno(app.getName(), dynos.get(0).getId());
-
-        try { Thread.sleep(2000); } catch (InterruptedException e) { }
 
         dynos = api.listDynos(app.getName());
         assertNotEquals(dynos.size(), 0);
@@ -482,5 +478,27 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
             return false;
         }
+    }
+
+    public static class AllowFailuresRetryAnalyzer extends RetryAnalyzerCount {
+      private int count = 0;
+      private int maxCount = 5;
+
+      @Override
+      public boolean retryMethod(ITestResult result) {
+        if (!result.isSuccess()) {
+          if (count < maxCount) {
+            count++;
+            result.setStatus(ITestResult.SUCCESS);
+            String message = Thread.currentThread().getName() + ": Error in " + result.getName() + " Retrying "
+                + (maxCount + 1 - count) + " more times";
+            System.out.println(message);
+            return true;
+          } else {
+            result.setStatus(ITestResult.FAILURE);
+          }
+        }
+        return false;
+      }
     }
 }
