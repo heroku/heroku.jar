@@ -361,9 +361,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
         api.restartDynos(app.getName());
 
+        try { Thread.sleep(2000); } catch (InterruptedException e) { }
+
         dynos = api.listDynos(app.getName());
-        assertNotEquals(dynos.size(), 0);
-        assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
+          assertNotEquals(dynos.size(), 0);
+          assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
     }
 
     @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
@@ -374,6 +376,8 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         String updatedAt = dynos.get(0).getUpdated_at();
 
         api.restartDyno(app.getName(), dynos.get(0).getId());
+
+        try { Thread.sleep(2000); } catch (InterruptedException e) { }
 
         dynos = api.listDynos(app.getName());
         assertNotEquals(dynos.size(), 0);
