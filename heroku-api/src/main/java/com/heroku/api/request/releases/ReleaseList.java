@@ -9,7 +9,6 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 import com.heroku.api.util.Range;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class ReleaseList implements Request<Range<Release>> {
 
     @Override
     public Map<String, String> getHeaders() {
-        return Collections.emptyMap();
+        return headers;
     }
 
     @Override
