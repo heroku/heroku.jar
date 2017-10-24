@@ -25,7 +25,7 @@ public interface UserAgentValueProvider {
     String getHeaderValue(String customPart);
 
     class DEFAULT implements UserAgentValueProvider {
-        private final String userAgentValuePattern = "heroku.jar/%s %s";
+        private final String userAgentValuePattern = "heroku.jar/%s (%s) Java/%s (%s)";
 
         @Override
         public String getHeaderValue() {
@@ -34,7 +34,11 @@ public interface UserAgentValueProvider {
 
         @Override
         public String getHeaderValue(String subComponentUserAgents) {
-            return String.format(userAgentValuePattern, Heroku.JarProperties.getProperty("heroku.jar.version"), subComponentUserAgents);
+            return String.format(userAgentValuePattern,
+                Heroku.JarProperties.getProperty("heroku.jar.version"),
+                subComponentUserAgents,
+                System.getProperty("java.version"),
+                System.getProperty("java.vendor"));
         }
     }
 }
