@@ -27,7 +27,7 @@ public class BuildpackInstallation {
     this.buildpack = buildpack;
   }
 
-  class Buildpack {
+  public class Buildpack {
 
     private static final long serialVersionUID = 1L;
 
