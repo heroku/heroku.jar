@@ -1,13 +1,23 @@
 package com.heroku.api;
 
 
+import java.util.List;
+import java.util.Map;
+
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.ConnectionFactory;
 import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.*;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.app.AppDestroy;
+import com.heroku.api.request.app.AppExists;
+import com.heroku.api.request.app.AppInfo;
+import com.heroku.api.request.app.AppList;
+import com.heroku.api.request.app.AppRename;
+import com.heroku.api.request.app.AppUpdate;
+import com.heroku.api.request.buildpacks.BuildpackInstallationList;
 import com.heroku.api.request.builds.BuildCreate;
 import com.heroku.api.request.builds.BuildInfo;
 import com.heroku.api.request.config.ConfigList;
@@ -22,8 +32,8 @@ import com.heroku.api.request.key.KeyList;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.Log;
 import com.heroku.api.request.log.LogStreamResponse;
-import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.ReleaseInfo;
+import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
@@ -35,9 +45,6 @@ import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.util.Range;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -484,5 +491,14 @@ public class HerokuAPI {
      */
     public List<Formation> listFormation(String appName) {
         return connection.execute(new FormationList(appName), apiKey);
+    }
+
+    /**
+     * Lists the buildpacks installed on an app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     */
+    public List<BuildpackInstallation> listBuildpackInstallations(String appName) {
+        return connection.execute(new BuildpackInstallationList(appName), apiKey);
     }
 }

@@ -1,6 +1,41 @@
 package com.heroku.api.request;
 
-import com.heroku.api.*;
+import static com.heroku.api.Heroku.Stack.Cedar14;
+import static com.heroku.api.IntegrationTestConfig.CONFIG;
+import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
+import static com.heroku.api.http.Http.Status.SERVICE_UNAVAILABLE;
+import static com.heroku.api.http.Http.Status.UNPROCESSABLE_ENTITY;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.heroku.api.Addon;
+import com.heroku.api.AddonChange;
+import com.heroku.api.App;
+import com.heroku.api.Build;
+import com.heroku.api.BuildpackInstallation;
+import com.heroku.api.Collaborator;
+import com.heroku.api.Domain;
+import com.heroku.api.Dyno;
+import com.heroku.api.Formation;
+import com.heroku.api.HerokuAPI;
+import com.heroku.api.IntegrationTestConfig;
+import com.heroku.api.Release;
+import com.heroku.api.Slug;
+import com.heroku.api.Source;
+import com.heroku.api.StackInfo;
+import com.heroku.api.User;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
@@ -17,8 +52,8 @@ import com.heroku.api.request.domain.DomainAdd;
 import com.heroku.api.request.domain.DomainList;
 import com.heroku.api.request.domain.DomainRemove;
 import com.heroku.api.request.log.Log;
-import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.ReleaseInfo;
+import com.heroku.api.request.releases.ReleaseList;
 import com.heroku.api.request.releases.Rollback;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sharing.SharingAdd;
@@ -32,17 +67,6 @@ import org.testng.ITestResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.util.RetryAnalyzerCount;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.heroku.api.Heroku.Stack.Cedar14;
-import static com.heroku.api.IntegrationTestConfig.CONFIG;
-import static com.heroku.api.http.Http.Status.*;
-import static org.testng.Assert.*;
 
 
 /**
@@ -255,7 +279,6 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(releaseInfo.getId(), releases.get(0).getId());
     }
     
-    @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testRollback(App app) {
         addConfig(app, "releaseTest", "releaseTest");
         List<Release> releases = connection.execute(new ReleaseList(app.getName()), apiKey);
@@ -397,6 +420,13 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
           return;
         }
         fail("Scaling did not throw a RequestFailedException");
+    }
+
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+    public void testBuildpackInstallationList(App app) {
+        HerokuAPI api = new HerokuAPI(connection, apiKey);
+        List<BuildpackInstallation> buildpacks = api.listBuildpackInstallations(app.getName());
+        assertNotEquals(buildpacks.size(), 0);
     }
     
     private void assertDomainIsPresent(App app, String domainName) {
