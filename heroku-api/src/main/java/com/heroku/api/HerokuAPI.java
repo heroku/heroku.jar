@@ -18,6 +18,7 @@ import com.heroku.api.request.app.AppList;
 import com.heroku.api.request.app.AppRename;
 import com.heroku.api.request.app.AppUpdate;
 import com.heroku.api.request.buildpacks.BuildpackInstallationList;
+import com.heroku.api.request.buildpacks.BuildpackInstallationUpdate;
 import com.heroku.api.request.builds.BuildCreate;
 import com.heroku.api.request.builds.BuildInfo;
 import com.heroku.api.request.config.ConfigList;
@@ -500,5 +501,15 @@ public class HerokuAPI {
      */
     public List<BuildpackInstallation> listBuildpackInstallations(String appName) {
         return connection.execute(new BuildpackInstallationList(appName), apiKey);
+    }
+
+    /**
+     * Update the list of buildpacks installed on an app
+     *
+     * @param appName See {@link #listApps} for a list of apps that can be used.
+     * @param buildpacks the new list of buildpack names or URLs.
+     */
+    public void updateBuildpackInstallations(String appName, List<String> buildpacks) {
+        connection.execute(new BuildpackInstallationUpdate(appName, buildpacks), apiKey);
     }
 }

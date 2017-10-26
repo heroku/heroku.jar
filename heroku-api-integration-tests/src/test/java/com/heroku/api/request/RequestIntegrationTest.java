@@ -16,6 +16,7 @@ import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,7 +376,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(buildInfo.getSource_blob().getVersion(), "v1");
     }
 
-    @Test(dataProvider = "javaApp", retryAnalyzer = AllowFailuresRetryAnalyzer.class)
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testDynosRestart(App app) {
         HerokuAPI api = new HerokuAPI(connection, apiKey);
         Range<Dyno> dynos = api.listDynos(app.getName());
@@ -389,7 +390,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
           assertNotEquals(dynos.get(0).getUpdated_at(), updatedAt, "dyno was not updated");
     }
 
-    @Test(dataProvider = "javaApp", retryAnalyzer = AllowFailuresRetryAnalyzer.class)
+    @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testDynoRestart(App app) {
         HerokuAPI api = new HerokuAPI(connection, apiKey);
         Range<Dyno> dynos = api.listDynos(app.getName());
@@ -423,10 +424,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     }
 
     @Test(dataProvider = "javaApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
-    public void testBuildpackInstallationList(App app) {
+    public void testBuildpackInstallations(App app) {
         HerokuAPI api = new HerokuAPI(connection, apiKey);
+
+        List<String> buildpacksToSet = new ArrayList<>();
+        buildpacksToSet.add("heroku/jvm");
+        api.updateBuildpackInstallations(app.getName(), buildpacksToSet);
+
         List<BuildpackInstallation> buildpacks = api.listBuildpackInstallations(app.getName());
-        assertNotEquals(buildpacks.size(), 0);
+        assertEquals(1, buildpacks.size());
+        assertEquals("heroku/jvm", buildpacks.get(0).getBuildpack().getName());
     }
     
     private void assertDomainIsPresent(App app, String domainName) {
@@ -508,27 +515,5 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
             return false;
         }
-    }
-
-    public static class AllowFailuresRetryAnalyzer extends RetryAnalyzerCount {
-      private int count = 0;
-      private int maxCount = 5;
-
-      @Override
-      public boolean retryMethod(ITestResult result) {
-        if (!result.isSuccess()) {
-          if (count < maxCount) {
-            count++;
-            result.setStatus(ITestResult.SUCCESS);
-            String message = Thread.currentThread().getName() + ": Error in " + result.getName() + " Retrying "
-                + (maxCount + 1 - count) + " more times";
-            System.out.println(message);
-            return true;
-          } else {
-            result.setStatus(ITestResult.FAILURE);
-          }
-        }
-        return false;
-      }
     }
 }

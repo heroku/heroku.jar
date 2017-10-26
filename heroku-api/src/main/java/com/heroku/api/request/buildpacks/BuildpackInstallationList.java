@@ -40,7 +40,7 @@ public class BuildpackInstallationList implements Request<Range<BuildpackInstall
 
   @Override
   public String getEndpoint() {
-    return Heroku.Resource.Dynos.format(this.appName);
+    return Heroku.Resource.BuildpackInstalltions.format(this.appName);
   }
 
   @Override
@@ -77,7 +77,7 @@ public class BuildpackInstallationList implements Request<Range<BuildpackInstall
       r.setNextRange(responseHeaders.get("Next-Range"));
       return r;
     } else {
-      throw new RequestFailedException("Dyno list failed", code, in);
+      throw new RequestFailedException("Buildpack Installation list failed", code, in);
     }
   }
 }

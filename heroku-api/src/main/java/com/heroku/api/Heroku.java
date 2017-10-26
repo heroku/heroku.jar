@@ -1,10 +1,12 @@
 package com.heroku.api;
 
 
-import com.heroku.api.exception.HerokuAPIException;
-import com.heroku.api.http.Http;
-
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
@@ -13,6 +15,9 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import com.heroku.api.exception.HerokuAPIException;
+import com.heroku.api.http.Http;
 
 
 public class Heroku {
@@ -246,7 +251,8 @@ Likewise, the secure random parameter may be null in which case the default impl
         Dynos("/apps/%s/dynos"),
         Dyno(Dynos.value + "/%s"),
         Formations(App.value + "/formation"),
-        Formation(Formations.value + "/%s");
+        Formation(Formations.value + "/%s"),
+        BuildpackInstalltions("/apps/%s/buildpack-installations"),;
 
         public final String value;
 

@@ -146,6 +146,7 @@
                         <suiteXmlFile>src/test/resources/testng-httpclient-gson.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/testng-jersey-client.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <rerunFailingTestsCount>5</rerunFailingTestsCount>
                     <properties>
                         <property>
                             <name>surefire.testng.verbose</name>
