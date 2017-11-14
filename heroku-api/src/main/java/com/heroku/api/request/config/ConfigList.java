@@ -1,16 +1,16 @@
 package com.heroku.api.request.config;
 
+import static com.heroku.api.http.HttpUtil.noBody;
+import static com.heroku.api.parser.Json.parse;
+
+import java.util.Collections;
+import java.util.Map;
+
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
-
-import java.util.Collections;
-import java.util.Map;
-
-import static com.heroku.api.http.HttpUtil.noBody;
-import static com.heroku.api.parser.Json.parse;
 
 /**
  * TODO: Javadoc
@@ -68,7 +68,7 @@ public class ConfigList implements Request<Map<String, String>> {
             throw new RequestFailedException("Application not found.", status, bytes);
         } else if (status == Http.Status.FORBIDDEN.statusCode) {
             throw new RequestFailedException(
-                    "Insufficient privileges to \"" + config.get(Heroku.RequestKey.AppName) + "\"",
+                    "Insufficient privileges to \"" + config.getAppName() + "\"",
                     status,
                     bytes
             );
