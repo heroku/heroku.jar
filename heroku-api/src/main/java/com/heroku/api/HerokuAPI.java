@@ -221,6 +221,17 @@ public class HerokuAPI {
     }
 
     /**
+     * Add an addon to the app.
+     * @param appName App name. See {@link #listApps} for a list of apps that can be used.
+     * @param addonName Addon name. See {@link #listAllAddons} to get a list of addons that can be used.
+     * @param addonConfig Addon configuration.
+     * @return The request object
+     */
+    public AddonChange addAddon(String appName, String addonName, Map<String,String> addonConfig) {
+        return connection.execute(new AddonInstall(appName, addonName, addonConfig), apiKey);
+    }
+
+    /**
      * Get a list of all addons available. Refer to http://addons.heroku.com for more information about addons.
      * @return a list of add-ons
      */

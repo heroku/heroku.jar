@@ -247,6 +247,25 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
         assertEquals(response.getState(), "provisioned");
     }
 
+    @Test(dataProvider = "app", retryAnalyzer = GeneralRetryAnalyzer.class)
+    public void testAddAddonToAppWithConfig(App app) {
+        AddonInstall installReq = new AddonInstall(app.getName(), "heroku-postgresql", new HashMap<String, String>(){{
+            put("db-version", "9.6");
+        }});
+        AddonChange installResponse = connection.execute(installReq, apiKey);
+        assertEquals(installResponse.getState(), "provisioned");
+    }
+
+    @Test(dataProvider = "app", retryAnalyzer = GeneralRetryAnalyzer.class)
+    public void testAddAddonToAppWithConfigAndName(App app) {
+        System.out.println("installing addon");
+        AddonInstall installReq = new AddonInstall(app.getName(), "heroku-postgresql", "database", new HashMap<String, String>(){{
+            put("db-version", "9.6");
+        }});
+        AddonChange installResponse = connection.execute(installReq, apiKey);
+        assertEquals(installResponse.getState(), "provisioned");
+    }
+
     @Test(dataProvider = "newApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
     public void testCollaboratorList(App app) {
         Request<List<Collaborator>> req = new CollabList(app.getName());
