@@ -57,6 +57,18 @@ public class RequestConfig {
         return newConfig;
     }
 
+    /**
+     * Sets a {@link com.heroku.api.Heroku.RequestKey} parameter.
+     * @param key Heroku request key
+     * @param data arbitrary key/value map
+     * @return A new {@link RequestConfig}
+     */
+    public RequestConfig withOptions(Heroku.RequestKey key, Map<String, String> data) {
+        RequestConfig newConfig = copy();
+        newConfig.config.put(key, new Either(new Data(data)));
+        return newConfig;
+    }
+
     public String get(Heroku.RequestKey key) {
         return config.get(key).string();
     }
@@ -85,6 +97,8 @@ public class RequestConfig {
                 jsonMap.put(key.queryParameter, either.string());
             } else if (either.is(Boolean.class)) {
                 jsonMap.put(key.queryParameter, either.bool());
+            } else if (either.is(Data.class)) {
+                jsonMap.put(key.queryParameter, either.data());
             } else {
                 jsonMap.put(key.queryParameter, stringifyMap(either.map()));
             }
@@ -107,6 +121,8 @@ public class RequestConfig {
 
         private Boolean bool;
 
+        private Data data;
+
         private Map<Heroku.RequestKey, Either> map;
 
         public Either(Boolean value) {
@@ -117,6 +133,11 @@ public class RequestConfig {
         public Either(String value) {
             this.type = String.class;
             this.string = value;
+        }
+
+        public Either(Data data) {
+            this.type = Data.class;
+            this.data = data;
         }
 
         public Either(Map<Heroku.RequestKey, Either> value) {
@@ -132,16 +153,30 @@ public class RequestConfig {
             return bool;
         }
 
-        public Map<Heroku.RequestKey, Either> map() {
-            return map;
+        public Map<String,String> data() {
+            return data.map();
         }
 
-        public Object value() {
-            return (is(String.class)) ? string : map;
+        public Map<Heroku.RequestKey, Either> map() {
+            return map;
         }
 
         public Boolean is(Class c) {
             return c.equals(type);
         }
+    }
+
+    public static class Data {
+
+        private Map<String, String> map;
+
+        public Data(Map<String, String> map) {
+            this.map = map;
+        }
+
+        public Map<String, String> map() {
+            return map;
+        }
+
     }
 }

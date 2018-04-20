@@ -1,5 +1,6 @@
 package com.heroku.api.request.addon;
 
+import com.heroku.api.Addon;
 import com.heroku.api.AddonChange;
 import com.heroku.api.Heroku;
 import com.heroku.api.exception.RequestFailedException;
@@ -9,6 +10,7 @@ import com.heroku.api.request.Request;
 import com.heroku.api.request.RequestConfig;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,6 +24,21 @@ public class AddonInstall implements Request<AddonChange> {
 
     public AddonInstall(String appName, String addonPlan) {
         config = new RequestConfig().app(appName).with(Heroku.RequestKey.AddonPlan, addonPlan);
+    }
+
+    public AddonInstall(String appName, String addonPlan, Map<String,String> addonConfig) {
+        config = new RequestConfig().app(appName)
+            .with(Heroku.RequestKey.AddonPlan, addonPlan)
+            .withOptions(Heroku.RequestKey.AddonConfig, addonConfig);
+    }
+
+    public AddonInstall(String appName, String addonPlan, final String attachmentName, Map<String,String> addonConfig) {
+        config = new RequestConfig().app(appName)
+            .with(Heroku.RequestKey.AddonPlan, addonPlan)
+            .with(Heroku.RequestKey.AddonAttachment, new HashMap<Heroku.RequestKey, RequestConfig.Either>() {{
+                put(Heroku.RequestKey.AddonAttachmentName, new RequestConfig.Either(attachmentName));
+            }})
+            .withOptions(Heroku.RequestKey.AddonConfig, addonConfig);
     }
 
     @Override

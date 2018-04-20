@@ -2,6 +2,7 @@ package com.heroku.api;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * TODO: Javadoc
@@ -16,26 +17,15 @@ public class Addon implements Serializable {
     String description;
     URL url;
     String state;
-    String beta;
-    int price_cents;
-    String price_unit;
     String id;
-    Boolean configured;
+    Plan plan;
 
-    public Boolean getConfigured() {
-        return configured;
+    public Plan getPlan() {
+        return plan;
     }
 
-    private void setConfigured(Boolean configured) {
-        this.configured = configured;
-    }
-
-    public int getPriceCents() {
-        return price_cents;
-    }
-
-    private void setPrice_cents(int price_cents) {
-        this.price_cents = price_cents;
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     public String getId() {
@@ -44,15 +34,6 @@ public class Addon implements Serializable {
 
     private void setId(String id) {
         this.id = id;
-    }
-
-    public String getPriceUnit() {
-        return price_unit;
-    }
-
-
-    private void setPrice_unit(String price_unit) {
-        this.price_unit = price_unit;
     }
 
     public String getName() {
@@ -87,12 +68,28 @@ public class Addon implements Serializable {
         this.state = state;
     }
 
-    public String getBeta() {
-        return beta;
-    }
+    public static class Plan implements Serializable {
 
-    private void setBeta(String beta) {
-        this.beta = beta;
-    }
+        private static final long serialVersionUID = 1L;
 
+        String id;
+
+        String name;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
