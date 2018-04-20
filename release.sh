@@ -4,6 +4,8 @@ set -e
 
 unset HEROKU_TEST_USERS
 
-rm -f */pom.xml.versionsBackup && rm -f pom.xml.versionsBackup && rm -f */pom.xml.releaseBackup && rm -f pom.xml.releaseBackup && rm -f release.properties
+./mvnw release:clean release:prepare -DdryRun
 
-mvn release:prepare release:perform
+./mvnw release:clean release:prepare
+
+./mvnw release:perform
