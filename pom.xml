@@ -10,7 +10,7 @@
     <groupId>com.heroku.api</groupId>
     <artifactId>heroku-api-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.33-SNAPSHOT</version>
+    <version>0.33</version>
 
     <name>heroku.jar</name>
     <description>Heroku API Java Client</description>
@@ -32,7 +32,7 @@
         <url>https://github.com/heroku/heroku.jar</url>
         <connection>scm:git:https://github.com/heroku/heroku.jar.git</connection>
         <developerConnection>scm:git:https://github.com/heroku/heroku.jar.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.33</tag>
     </scm>
     <developers>
         <developer>
