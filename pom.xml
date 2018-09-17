@@ -30,9 +30,9 @@
     </distributionManagement>
     <scm>
         <url>https://github.com/heroku/heroku.jar</url>
-        <connection>scm:git:git@github.com:heroku/heroku.jar.git</connection>
-        <developerConnection>scm:git:git@github.com:heroku/heroku.jar.git</developerConnection>
-      <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/heroku/heroku.jar.git</connection>
+        <developerConnection>scm:git:https://github.com/heroku/heroku.jar.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
