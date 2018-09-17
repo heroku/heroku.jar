@@ -22,8 +22,8 @@ public class App implements Serializable {
     String git_url;
     String buildpack_provided_description;
     String released_at;
-    int slug_size;
-    int repo_size;
+    long slug_size;
+    long repo_size;
     boolean maintenance;
     App.Space space;
 
@@ -97,11 +97,11 @@ public class App implements Serializable {
         this.buildpack_provided_description = buildpack_provided_description;
     }
 
-    private void setSlug_size(int slug_size) {
+    private void setSlug_size(long slug_size) {
         this.slug_size = slug_size;
     }
 
-    private void setRepo_size(int repo_size) {
+    private void setRepo_size(long repo_size) {
         this.repo_size = repo_size;
     }
 
@@ -146,11 +146,11 @@ public class App implements Serializable {
         return requested_stack;
     }
 
-    public int getSlugSize() {
+    public long getSlugSize() {
         return slug_size;
     }
 
-    public int getRepoSize() {
+    public long getRepoSize() {
         return repo_size;
     }
 
