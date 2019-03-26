@@ -25,6 +25,7 @@ public class TeamApp extends App {
     TeamApp copy = new TeamApp();
     copy.name = this.name;
     copy.stack = this.stack;
+    copy.team = this.team;
     return copy;
   }
 

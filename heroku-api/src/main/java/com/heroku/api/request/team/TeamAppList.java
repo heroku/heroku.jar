@@ -26,12 +26,12 @@ public class TeamAppList implements Request<Range<TeamApp>> {
 
     private String team;
 
-    public TeamAppList(String team) {
-        this.team = team;
+    public TeamAppList(String teamNameOrId) {
+        this.team = teamNameOrId;
     }
 
-    public TeamAppList(String team, String range) {
-        this(team);
+    public TeamAppList(String teamNameOrId, String range) {
+        this(teamNameOrId);
         this.headers.put("Range", range);
     }
 

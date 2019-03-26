@@ -258,9 +258,11 @@ Likewise, the secure random parameter may be null in which case the default impl
         Formations(App.value + "/formation"),
         Formation(Formations.value + "/%s"),
         BuildpackInstalltions("/apps/%s/buildpack-installations"),
-        TeamApps("/teams/%/apps"),
+        TeamApps("/teams/%s/apps"),
+        TeamAppsAll("/teams/apps"),
         TeamApp("/teams/apps/%s"),
-        Team("/teams/%s"),;
+        Team("/teams/%s"),
+        Teams("/teams"),;
 
         public final String value;
 

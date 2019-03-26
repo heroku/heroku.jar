@@ -442,16 +442,16 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
   }
 
   @Test(dataProvider = "teamApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
-  public void testListTeamAppsCommand(TeamApp app) throws IOException {
-    TeamAppList cmd = new TeamAppList(app.getTeam().getName());
+  public void testListTeamAppsCommand(TeamApp app) {
+    TeamAppList cmd = new TeamAppList(app.getTeam().getId());
     List<TeamApp> response = connection.execute(cmd, apiKey);
     assertNotNull(response);
     assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
   }
 
   @Test(dataProvider = "teamApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
-  public void testListTeamAppsWithRangeCommand(TeamApp app) throws IOException {
-    TeamAppList cmd = new TeamAppList(app.getTeam().getName(), "name ..");
+  public void testListTeamAppsWithRangeCommand(TeamApp app) {
+    TeamAppList cmd = new TeamAppList(app.getTeam().getId(), "name ..");
     List<TeamApp> response = connection.execute(cmd, apiKey);
     assertNotNull(response);
     assertTrue(response.size() > 0, "At least one app should be present, but there are none.");

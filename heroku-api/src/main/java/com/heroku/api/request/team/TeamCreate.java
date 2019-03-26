@@ -35,7 +35,7 @@ public class TeamCreate implements Request<Team> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.Apps.value;
+        return Heroku.Resource.Teams.value;
     }
 
     @Override
@@ -65,7 +65,9 @@ public class TeamCreate implements Request<Team> {
 
     @Override
     public Team getResponse(byte[] in, int code, Map<String,String> responseHeaders) {
-        if (code == Http.Status.CREATED.statusCode)
+        if (code == Http.Status.OK.statusCode)
+            return parse(in, getClass());
+        else if (code == Http.Status.CREATED.statusCode)
             return parse(in, getClass());
         else if (code == Http.Status.ACCEPTED.statusCode)
             return parse(in, getClass());

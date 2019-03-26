@@ -37,7 +37,7 @@ public class TeamAppCreate implements Request<TeamApp> {
 
     @Override
     public String getEndpoint() {
-        return Heroku.Resource.TeamApps.value;
+        return Heroku.Resource.TeamAppsAll.value;
     }
 
     @Override

@@ -45,6 +45,7 @@ public abstract class BaseRequestIntegrationTest {
     Connection connection;
 
     private List<App> apps = new ArrayList<App>();
+    private List<App> javaApps = new ArrayList<App>();
     private List<Team> teams = new ArrayList<Team>();
     protected IntegrationTestConfig.TestUser sharingUser;
 
@@ -72,12 +73,17 @@ public abstract class BaseRequestIntegrationTest {
         return createApp();
     }
 
-    @DataProvider(parallel = true)
+    @DataProvider
     public Object[][] teamApp() {
-        System.out.println("Creating team...");
-        Team team = connection.execute(new TeamCreate(new Team("herokujar-" + new Random().nextInt(999999))), apiKey);
-        System.out.format("team %s created\n", team.getName());
-        teams.add(team);
+        Team team;
+        if (teams.size() > 0) {
+            team = teams.get(0);
+        } else {
+            System.out.println("Creating team...");
+            team = connection.execute(new TeamCreate(new Team("herokujar-" + new Random().nextInt(999999))), apiKey);
+            System.out.format("team %s created\n", team.getName());
+            teams.add(team);
+        }
 
         System.out.println("Creating team app...");
         TeamApp app = connection.execute(new TeamAppCreate(new TeamApp().withTeam(team).on(Heroku.Stack.Heroku16)), apiKey);
@@ -99,7 +105,13 @@ public abstract class BaseRequestIntegrationTest {
     }
 
     public App getJavaApp() {
-        App app = createApp("Java");
+        App app;
+        if (javaApps.size() > 0) {
+            app = javaApps.get(0);
+        } else {
+            app = createApp("Java");
+            javaApps.add(app);
+        }
         Source source = connection.execute(new SourceCreate(), apiKey);
 
         ClassLoader classLoader = getClass().getClassLoader();
