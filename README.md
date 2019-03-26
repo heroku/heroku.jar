@@ -131,7 +131,7 @@ provider with your own user agent.
 
     * Or run with tests:
 
-            export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@heroku.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@heroku.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
+            export HEROKU_TEST_USERS=[\{\"username\":\"defaultuser@example.com\",\"password\":\"defaultUserPass\",\"apikey\":\"defaultUserAPIKey\",\"defaultuser\":\"true\"\},\{\"username\":\"secondUser@example.com\",\"password\":\"password\",\"apikey\":\"apiKey\"\}]
             mvn install
 
 ## Continuous Integration

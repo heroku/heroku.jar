@@ -183,7 +183,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         SpaceId("id"),
         SpaceName("name"),
         SpaceShield("shield"),
-        Quantity("quantity");
+        Quantity("quantity"),
+        Team("team"),
+        TeamName("name");
 
         public final String queryParameter;
 
@@ -255,7 +257,10 @@ Likewise, the secure random parameter may be null in which case the default impl
         Dyno(Dynos.value + "/%s"),
         Formations(App.value + "/formation"),
         Formation(Formations.value + "/%s"),
-        BuildpackInstalltions("/apps/%s/buildpack-installations"),;
+        BuildpackInstalltions("/apps/%s/buildpack-installations"),
+        TeamApps("/teams/%/apps"),
+        TeamApp("/teams/apps/%s"),
+        Team("/teams/%s"),;
 
         public final String value;
 

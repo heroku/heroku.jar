@@ -21,22 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.heroku.api.Addon;
-import com.heroku.api.AddonChange;
-import com.heroku.api.App;
-import com.heroku.api.Build;
-import com.heroku.api.BuildpackInstallation;
-import com.heroku.api.Collaborator;
-import com.heroku.api.Domain;
-import com.heroku.api.Dyno;
-import com.heroku.api.Formation;
-import com.heroku.api.HerokuAPI;
-import com.heroku.api.IntegrationTestConfig;
-import com.heroku.api.Release;
-import com.heroku.api.Slug;
-import com.heroku.api.Source;
-import com.heroku.api.StackInfo;
-import com.heroku.api.User;
+import com.heroku.api.*;
 import com.heroku.api.connection.Connection;
 import com.heroku.api.connection.HttpClientConnection;
 import com.heroku.api.exception.RequestFailedException;
@@ -61,6 +46,7 @@ import com.heroku.api.request.sharing.SharingAdd;
 import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
+import com.heroku.api.request.team.TeamAppList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import com.heroku.api.util.Range;
@@ -256,11 +242,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     assertEquals(installResponse.getState(), "provisioned");
   }
 
-  @Test(dataProvider = "app", retryAnalyzer = GeneralRetryAnalyzer.class)
+  @Test(dataProvider = "newApp", retryAnalyzer = GeneralRetryAnalyzer.class)
   public void testAddAddonToAppWithConfigAndName(App app) {
     System.out.println("installing addon");
     AddonInstall installReq = new AddonInstall(app.getName(), "heroku-postgresql", "database", new HashMap<String, String>() {{
-      put("db-version", "9.6");
+      put("db-version", "11");
     }});
     AddonChange installResponse = connection.execute(installReq, apiKey);
     assertEquals(installResponse.getState(), "provisioned");
@@ -453,6 +439,22 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     List<BuildpackInstallation> buildpacks = api.listBuildpackInstallations(app.getName());
     assertEquals(1, buildpacks.size());
     assertEquals("heroku/jvm", buildpacks.get(0).getBuildpack().getName());
+  }
+
+  @Test(dataProvider = "teamApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+  public void testListTeamAppsCommand(TeamApp app) throws IOException {
+    TeamAppList cmd = new TeamAppList(app.getTeam().getName());
+    List<TeamApp> response = connection.execute(cmd, apiKey);
+    assertNotNull(response);
+    assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
+  }
+
+  @Test(dataProvider = "teamApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+  public void testListTeamAppsWithRangeCommand(TeamApp app) throws IOException {
+    TeamAppList cmd = new TeamAppList(app.getTeam().getName(), "name ..");
+    List<TeamApp> response = connection.execute(cmd, apiKey);
+    assertNotNull(response);
+    assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
   }
 
   private void assertDomainIsPresent(App app, String domainName) {

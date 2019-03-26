@@ -10,13 +10,7 @@ import com.heroku.api.request.addon.AddonInstall;
 import com.heroku.api.request.addon.AddonList;
 import com.heroku.api.request.addon.AddonRemove;
 import com.heroku.api.request.addon.AppAddonsList;
-import com.heroku.api.request.app.AppCreate;
-import com.heroku.api.request.app.AppDestroy;
-import com.heroku.api.request.app.AppExists;
-import com.heroku.api.request.app.AppInfo;
-import com.heroku.api.request.app.AppList;
-import com.heroku.api.request.app.AppRename;
-import com.heroku.api.request.app.AppUpdate;
+import com.heroku.api.request.app.*;
 import com.heroku.api.request.buildpacks.BuildpackInstallationList;
 import com.heroku.api.request.buildpacks.BuildpackInstallationUpdate;
 import com.heroku.api.request.builds.BuildCreate;
@@ -44,6 +38,8 @@ import com.heroku.api.request.slugs.SlugCreate;
 import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.request.stack.StackList;
+import com.heroku.api.request.team.TeamAppInfo;
+import com.heroku.api.request.team.TeamAppList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.util.Range;
 
@@ -523,4 +519,33 @@ public class HerokuAPI {
     public void updateBuildpackInstallations(String appName, List<String> buildpacks) {
         connection.execute(new BuildpackInstallationUpdate(appName, buildpacks), apiKey);
     }
+
+    /**
+     * Get information about a specific team's app.
+     * @param name The name of the app. See {@link #listApps} to get a list of apps and their names.
+     * @return an app object
+     */
+    public TeamApp getTeamApp(String name) {
+        return connection.execute(new TeamAppInfo(name), apiKey);
+    }
+
+    /**
+     * List all apps for a team.
+     * @return a list of apps
+     */
+    public Range<TeamApp> listTeamApps(String team) {
+        return connection.execute(new TeamAppList(team), apiKey);
+    }
+
+    /**
+     * List all apps for a team.
+     * @param range The range of apps provided by {@link Range#getNextRange()}
+     * @return a list of apps
+     */
+    public Range<TeamApp> listTeamApps(String team, String range) {
+        return connection.execute(new TeamAppList(team, range), apiKey);
+    }
+
+
+
 }

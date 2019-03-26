@@ -15,6 +15,9 @@ import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.log.LogStreamResponse;
 import com.heroku.api.request.sharing.CollabList;
 import com.heroku.api.request.sources.SourceCreate;
+import com.heroku.api.request.team.TeamAppCreate;
+import com.heroku.api.request.team.TeamCreate;
+import com.heroku.api.request.team.TeamDestroy;
 import com.heroku.api.response.Unit;
 import com.heroku.api.util.Range;
 import org.testng.annotations.*;
@@ -22,10 +25,8 @@ import org.testng.annotations.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +45,7 @@ public abstract class BaseRequestIntegrationTest {
     Connection connection;
 
     private List<App> apps = new ArrayList<App>();
+    private List<Team> teams = new ArrayList<Team>();
     protected IntegrationTestConfig.TestUser sharingUser;
 
     static String apiKey = IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey();
@@ -68,6 +70,20 @@ public abstract class BaseRequestIntegrationTest {
             return apps.get(0);
 
         return createApp();
+    }
+
+    @DataProvider(parallel = true)
+    public Object[][] teamApp() {
+        System.out.println("Creating team...");
+        Team team = connection.execute(new TeamCreate(new Team("herokujar-" + new Random().nextInt(999999))), apiKey);
+        System.out.format("team %s created\n", team.getName());
+        teams.add(team);
+
+        System.out.println("Creating team app...");
+        TeamApp app = connection.execute(new TeamAppCreate(new TeamApp().withTeam(team).on(Heroku.Stack.Heroku16)), apiKey);
+
+        System.out.format("app %s created\n", app.getName());
+        return new Object[][]{{app}};
     }
 
     public App createApp() {
@@ -167,6 +183,7 @@ public abstract class BaseRequestIntegrationTest {
     @AfterClass(alwaysRun = true)
     public void deleteTestApps() throws IOException, InterruptedException {
         deleteApps(apps);
+        deleteTeams(teams);
     }
 
     void deleteApps(List<App> appsToDelete) throws InterruptedException {
@@ -188,6 +205,25 @@ public abstract class BaseRequestIntegrationTest {
         System.out.format("Deleted apps in %dms\n", (System.currentTimeMillis() - start));
     }
 
+    void deleteTeams(List<Team> teamsToDelete) throws InterruptedException {
+        long start = System.currentTimeMillis();
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (final Team res : teamsToDelete) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.format("Deleting team %s\n", res.getName());
+                    deleteTeam(res.getName());
+                    System.out.format("Deleted team %s\n", res.getName());
+                }
+            });
+        }
+        // await termination of all the threads to complete app deletion.
+        executorService.shutdown();
+        executorService.awaitTermination(300L, TimeUnit.SECONDS);
+        System.out.format("Deleted teams in %dms\n", (System.currentTimeMillis() - start));
+    }
+
     void deleteKeys(List<Key> keysToDelete) throws InterruptedException {
         long start = System.currentTimeMillis();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -207,7 +243,7 @@ public abstract class BaseRequestIntegrationTest {
         System.out.format("Deleted keys in %dms\n", (System.currentTimeMillis() - start));
     }
 
-    public void deleteKey(String sshkey) {
+    void deleteKey(String sshkey) {
         try {
             connection.execute(new KeyRemove(sshkey), apiKey);
         } catch (RequestFailedException e) {
@@ -217,7 +253,7 @@ public abstract class BaseRequestIntegrationTest {
         }
     }
 
-    public void deleteApp(String appName) {
+    void deleteApp(String appName) {
         try {
             connection.execute(new AppDestroy(appName), apiKey);
         } catch (RequestFailedException e) {
@@ -227,7 +263,22 @@ public abstract class BaseRequestIntegrationTest {
         }
     }
 
-    protected void addConfig(App app, String... nameValuePairs) {
+    void deleteTeam(String teamName) {
+        try {
+            HerokuAPI api = new HerokuAPI(apiKey);
+            for (TeamApp app : api.listTeamApps(teamName)) {
+                deleteApp(app.getName());
+            }
+
+            connection.execute(new TeamDestroy(teamName), apiKey);
+        } catch (RequestFailedException e) {
+            if (e.getStatusCode() != Http.Status.FORBIDDEN.statusCode) {
+                throw e;
+            }
+        }
+    }
+
+    void addConfig(App app, String... nameValuePairs) {
         if (nameValuePairs.length != 0 && (nameValuePairs.length % 2) != 0) {
             throw new RuntimeException("Config must have an equal number of name and value pairs.");
         }
@@ -239,16 +290,6 @@ public abstract class BaseRequestIntegrationTest {
 
         Request<Unit> req = new ConfigUpdate(app.getName(), configVars);
         connection.execute(req, apiKey);
-    }
-
-    void assertLogIsReadable(LogStreamResponse logsResponse) throws IOException {
-        InputStream in = logsResponse.openStream();
-        try {
-            in = logsResponse.openStream();
-            in.close();
-        } finally {
-            in.close();
-        }
     }
 
     void assertCollaboratorNotPresent(String collabEmail, CollabList collabList) {
