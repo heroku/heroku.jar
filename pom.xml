@@ -89,6 +89,7 @@
         <guice.version>4.1.0</guice.version>
         <apache.commons-httpclient.version>4.4</apache.commons-httpclient.version>
         <finagle.version>6.39.0</finagle.version>
+        <scala.version>2.11.12</scala.version>
         <twitter.util.version>6.38.0</twitter.util.version>
         <ning.async.version>2.0.20</ning.async.version>
         <netty.version>4.1.6.Final</netty.version>
@@ -101,7 +102,7 @@
         <maven.clover.version>3.1.0</maven.clover.version>
         <jersey.version>2.24</jersey.version>
         <release.plugin.version>2.5.3</release.plugin.version>
-        <nexus-staging.plugin.version>1.6.7</nexus-staging.plugin.version>
+        <nexus-staging.plugin.version>1.6.8</nexus-staging.plugin.version>
     </properties>
 
     <build>

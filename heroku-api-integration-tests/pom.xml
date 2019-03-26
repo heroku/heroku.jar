@@ -111,7 +111,7 @@
 
     </dependencies>
     <properties>
-        <guava.version>19.0</guava.version>
+        <guava.version>27.1-jre</guava.version>
         <heroku-api-integration-tests.skipTests>true</heroku-api-integration-tests.skipTests>
     </properties>
 
