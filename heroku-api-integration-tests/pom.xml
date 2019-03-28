@@ -54,16 +54,6 @@
             <artifactId>heroku-http-ning-async</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-http-jersey-client</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.heroku.api</groupId>
-            <artifactId>heroku-json-jersey-client</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
 
 
         <!-- Test Deps -->
@@ -144,7 +134,6 @@
                         <suiteXmlFile>src/test/resources/testng-asynchttpclient.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/testng-httpclient-jackson.xml</suiteXmlFile>
                         <suiteXmlFile>src/test/resources/testng-httpclient-gson.xml</suiteXmlFile>
-                        <suiteXmlFile>src/test/resources/testng-jersey-client.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <rerunFailingTestsCount>5</rerunFailingTestsCount>
                     <properties>
