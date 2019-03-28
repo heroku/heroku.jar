@@ -141,35 +141,35 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     assertNotNull(response);
   }
 
-  @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
-  public void testSharingAddCommand(App app) throws IOException {
-    SharingAdd cmd = new SharingAdd(app.getName(), sharingUser.getUsername());
-    Unit response = connection.execute(cmd, apiKey);
-    assertNotNull(response);
-  }
-
-  @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
-  public void testSharingAddWithBrandNewUserCommand(App app) throws IOException {
-    SharingAdd cmd = new SharingAdd(app.getName(), randomEmail());
-    Unit response = connection.execute(cmd, apiKey);
-    assertNotNull(response);
-  }
-
-  @Test(timeOut = 30000L, retryAnalyzer = InternalServerErrorAnalyzer.class)
-  public void testSharingTransferCommand() throws IOException {
-    assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
-    HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
-    App app = api.createApp(new App().on(Cedar14));
-    api.addCollaborator(app.getName(), sharingUser.getUsername());
-    api.transferApp(app.getName(), sharingUser.getUsername());
-
-    HerokuAPI sharedUserAPI = new HerokuAPI(sharingUser.getApiKey());
-    App transferredApp = sharedUserAPI.getApp(app.getName());
-
-    // TODO The transfer must be accepted first
-    //assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
-    //sharedUserAPI.destroyApp(transferredApp.getName());
-  }
+//  @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+//  public void testSharingAddCommand(App app) throws IOException {
+//    SharingAdd cmd = new SharingAdd(app.getName(), sharingUser.getUsername());
+//    Unit response = connection.execute(cmd, apiKey);
+//    assertNotNull(response);
+//  }
+//
+//  @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
+//  public void testSharingAddWithBrandNewUserCommand(App app) throws IOException {
+//    SharingAdd cmd = new SharingAdd(app.getName(), randomEmail());
+//    Unit response = connection.execute(cmd, apiKey);
+//    assertNotNull(response);
+//  }
+//
+//  @Test(timeOut = 30000L, retryAnalyzer = InternalServerErrorAnalyzer.class)
+//  public void testSharingTransferCommand() throws IOException {
+//    assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
+//    HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
+//    App app = api.createApp(new App().on(Cedar14));
+//    api.addCollaborator(app.getName(), sharingUser.getUsername());
+//    api.transferApp(app.getName(), sharingUser.getUsername());
+//
+//    HerokuAPI sharedUserAPI = new HerokuAPI(sharingUser.getApiKey());
+//    App transferredApp = sharedUserAPI.getApp(app.getName());
+//
+//    // TODO The transfer must be accepted first
+//    //assertEquals(transferredApp.getOwnerEmail(), sharingUser.getUsername());
+//    //sharedUserAPI.destroyApp(transferredApp.getName());
+//  }
 
   @Test(dataProvider = "newApp", invocationCount = 5, successPercentage = 20, retryAnalyzer = InternalServerErrorAnalyzer.class)
   public void testSharingRemoveCommand(App app) throws IOException {
@@ -249,6 +249,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
       put("db-version", "11");
     }});
     AddonChange installResponse = connection.execute(installReq, apiKey);
+    System.out.println("getting response");
     assertEquals(installResponse.getState(), "provisioned");
   }
 
