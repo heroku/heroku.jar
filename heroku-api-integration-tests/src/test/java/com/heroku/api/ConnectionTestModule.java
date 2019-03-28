@@ -22,7 +22,7 @@ public abstract class ConnectionTestModule extends AbstractModule {
 
     @Provides
     public Connection getConnection() throws IOException {
-        return (Connection) getConnectionImpl();
+        return getConnectionImpl();
     }
 
 
