@@ -262,7 +262,9 @@ Likewise, the secure random parameter may be null in which case the default impl
         TeamAppsAll("/teams/apps"),
         TeamApp("/teams/apps/%s"),
         Team("/teams/%s"),
-        Teams("/teams"),;
+        Teams("/teams"),
+        TeamInvoices("/teams/%s/invoices"),
+        TeamInvoice("/teams/%s/invoices/%s"),;
 
         public final String value;
 

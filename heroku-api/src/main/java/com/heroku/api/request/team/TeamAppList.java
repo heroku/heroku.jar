@@ -1,6 +1,5 @@
 package com.heroku.api.request.team;
 
-import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.TeamApp;
 import com.heroku.api.exception.RequestFailedException;

@@ -40,6 +40,7 @@ import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.team.TeamAppInfo;
 import com.heroku.api.request.team.TeamAppList;
+import com.heroku.api.request.team.TeamInvoiceList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.util.Range;
 
@@ -531,6 +532,7 @@ public class HerokuAPI {
 
     /**
      * List all apps for a team.
+     * @param team The name or id of the team.
      * @return a list of apps
      */
     public Range<TeamApp> listTeamApps(String team) {
@@ -539,6 +541,7 @@ public class HerokuAPI {
 
     /**
      * List all apps for a team.
+     * @param team The name or id of the team.
      * @param range The range of apps provided by {@link Range#getNextRange()}
      * @return a list of apps
      */
@@ -546,6 +549,12 @@ public class HerokuAPI {
         return connection.execute(new TeamAppList(team, range), apiKey);
     }
 
-
-
+    /**
+     * List all apps for a team.
+     * @param team The name or id of the team.
+     * @return a list of apps
+     */
+    public List<Invoice> listTeamInvoices(String team) {
+        return connection.execute(new TeamInvoiceList(team), apiKey);
+    }
 }

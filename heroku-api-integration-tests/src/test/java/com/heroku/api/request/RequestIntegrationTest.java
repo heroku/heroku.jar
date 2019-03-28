@@ -47,6 +47,7 @@ import com.heroku.api.request.sharing.SharingRemove;
 import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.stack.StackList;
 import com.heroku.api.request.team.TeamAppList;
+import com.heroku.api.request.team.TeamInvoiceList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import com.heroku.api.util.Range;
@@ -459,6 +460,14 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
     List<TeamApp> response = connection.execute(cmd, apiKey);
     assertNotNull(response);
     assertTrue(response.size() > 0, "At least one app should be present, but there are none.");
+  }
+
+  @Test(dataProvider = "teamApp", retryAnalyzer = InternalServerErrorAnalyzer.class)
+  public void testListTeamInvoices(TeamApp app) {
+    TeamInvoiceList cmd = new TeamInvoiceList(app.getTeam().getName());
+    List<Invoice> response = connection.execute(cmd, apiKey);
+    assertNotNull(response);
+    assertEquals(response.size(), 0, "Hopefully we haven't been charged already!");
   }
 
   private void assertDomainIsPresent(App app, String domainName) {
