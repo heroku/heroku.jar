@@ -2,14 +2,15 @@ package com.heroku.api.request.team;
 
 import com.heroku.api.Heroku;
 import com.heroku.api.Invoice;
+import com.heroku.api.TeamApp;
 import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.http.HttpUtil;
 import com.heroku.api.parser.Json;
 import com.heroku.api.request.Request;
+import com.heroku.api.util.Range;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.heroku.api.http.HttpUtil.noBody;
@@ -19,7 +20,7 @@ import static com.heroku.api.http.HttpUtil.noBody;
  *
  * @author Joe Kutner
  */
-public class TeamInvoiceList implements Request<List<Invoice>> {
+public class TeamInvoiceList implements Request<Range<Invoice>> {
 
   private Map<String,String> headers = new HashMap<>();
 
@@ -27,6 +28,11 @@ public class TeamInvoiceList implements Request<List<Invoice>> {
 
   public TeamInvoiceList(String teamNameOrId) {
     this.team = teamNameOrId;
+  }
+
+  public TeamInvoiceList(String teamNameOrId, String range) {
+    this(teamNameOrId);
+    this.headers.put("Range", range);
   }
 
   @Override
@@ -65,9 +71,13 @@ public class TeamInvoiceList implements Request<List<Invoice>> {
   }
 
   @Override
-  public List<Invoice> getResponse(byte[] in, int code, Map<String, String> responseHeaders) {
+  public Range<Invoice> getResponse(byte[] in, int code, Map<String, String> responseHeaders) {
     if (code == 200) {
       return Json.parse(in, TeamInvoiceList.class);
+    } else if (code == 206) {
+      Range<Invoice> r = Json.parse(in, TeamInvoiceList.class);
+      r.setNextRange(responseHeaders.get("Next-Range"));
+      return r;
     } else {
       throw new RequestFailedException("TeamInvoiceList Failed", code, in);
     }

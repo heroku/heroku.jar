@@ -554,7 +554,16 @@ public class HerokuAPI {
      * @param team The name or id of the team.
      * @return a list of apps
      */
-    public List<Invoice> listTeamInvoices(String team) {
+    public Range<Invoice> listTeamInvoices(String team) {
         return connection.execute(new TeamInvoiceList(team), apiKey);
+    }
+
+    /**
+     * List all apps for a team.
+     * @param team The name or id of the team.
+     * @return a list of apps
+     */
+    public Range<Invoice> listTeamInvoices(String team, String range) {
+        return connection.execute(new TeamInvoiceList(team, range), apiKey);
     }
 }
