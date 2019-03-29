@@ -75,18 +75,19 @@ public abstract class BaseRequestIntegrationTest {
 
     @DataProvider
     public Object[][] teamApp() {
+        HerokuAPI api = new HerokuAPI(apiKey);
         Team team;
         if (teams.size() > 0) {
             team = teams.get(0);
         } else {
             System.out.println("Creating team...");
-            team = connection.execute(new TeamCreate(new Team("herokujar-" + new Random().nextInt(999999))), apiKey);
+            team = api.createTeam("herokujar-" + new Random().nextInt(999999));
             System.out.format("team %s created\n", team.getName());
             teams.add(team);
         }
 
         System.out.println("Creating team app...");
-        TeamApp app = connection.execute(new TeamAppCreate(new TeamApp().withTeam(team).on(Heroku.Stack.Heroku16)), apiKey);
+        TeamApp app = api.createTeamApp(new TeamApp().withTeam(team).on(Heroku.Stack.Heroku16));
 
         System.out.format("app %s created\n", app.getName());
         return new Object[][]{{app}};

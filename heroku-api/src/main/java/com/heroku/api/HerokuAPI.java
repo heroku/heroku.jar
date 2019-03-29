@@ -38,9 +38,7 @@ import com.heroku.api.request.slugs.SlugCreate;
 import com.heroku.api.request.slugs.SlugInfo;
 import com.heroku.api.request.sources.SourceCreate;
 import com.heroku.api.request.stack.StackList;
-import com.heroku.api.request.team.TeamAppInfo;
-import com.heroku.api.request.team.TeamAppList;
-import com.heroku.api.request.team.TeamInvoiceList;
+import com.heroku.api.request.team.*;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.util.Range;
 
@@ -528,6 +526,33 @@ public class HerokuAPI {
      */
     public TeamApp getTeamApp(String name) {
         return connection.execute(new TeamAppInfo(name), apiKey);
+    }
+
+    /**
+     * Create a new team
+     * @param name The name of the team
+     * @return an team object
+     */
+    public Team createTeam(String name) {
+        return connection.execute(new TeamCreate(new Team(name)), apiKey);
+    }
+
+    /**
+     * Create a new team
+     * @param team The name of the team to create this app for
+     * @return an team object
+     */
+    public TeamApp createTeamApp(String team) {
+        return connection.execute(new TeamAppCreate(new TeamApp().withTeam(new Team(team)).on(Heroku.Stack.Heroku16)), apiKey);
+    }
+
+    /**
+     * Create a new team
+     * @param app The team app
+     * @return an team object
+     */
+    public TeamApp createTeamApp(TeamApp app) {
+        return connection.execute(new TeamAppCreate(app), apiKey);
     }
 
     /**
