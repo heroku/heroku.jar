@@ -23,7 +23,7 @@
          <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>${apache.commons-httpclient.version}</version>
+            <version>${apache.commons-httpcore.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
