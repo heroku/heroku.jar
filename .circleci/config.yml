@@ -1,0 +1,8 @@
+version: 2 # use CircleCI 2.0
+jobs: # a collection of steps
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - checkout
+      - run: mvn clean verify
