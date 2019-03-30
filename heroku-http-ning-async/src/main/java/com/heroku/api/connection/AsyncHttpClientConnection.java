@@ -6,7 +6,7 @@ import com.heroku.api.exception.RequestFailedException;
 import com.heroku.api.http.Http;
 import com.heroku.api.request.Request;
 import org.asynchttpclient.*;
-import org.asynchttpclient.util.Base64;
+import java.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -22,7 +22,7 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
 
     private org.asynchttpclient.Request buildRequest(Request<?> req, Map<String,String> extraHeaders, String key) {
         BoundRequestBuilder builder = prepareRequest(req);
-        builder.setHeader(Heroku.ApiVersion.v3.getHeaderName(), String.valueOf(Heroku.ApiVersion.v3.getHeaderValue()));
+        builder.setHeader(Heroku.ApiVersion.v3.getHeaderName(), Heroku.ApiVersion.v3.getHeaderValue());
         builder.setHeader(Http.ContentType.JSON.getHeaderName(), Http.ContentType.JSON.getHeaderValue());
         builder.setHeader(Http.UserAgent.LATEST.getHeaderName(), Http.UserAgent.LATEST.getHeaderValue("asynchttpclient"));
         for (Map.Entry<String, String> entry : extraHeaders.entrySet()) {
@@ -34,7 +34,7 @@ public class AsyncHttpClientConnection implements ListenableFutureConnection {
         }
         if (key != null) {
             try {
-                builder.setHeader("Authorization", "Basic " + Base64.encode((":" + key).getBytes("UTF-8")));
+                builder.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((":" + key).getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
                 throw new HerokuAPIException("UnsupportedEncodingException while encoding api key", e);
             }
