@@ -1,10 +1,10 @@
 package com.heroku.api.parser;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroku.api.exception.ParseException;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.JavaType;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -32,7 +32,7 @@ public class JerseyClientJsonParser implements Parser {
     @Override
     public <T> T parse(byte[] data, Type type) {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         JavaType javaType = mapper.constructType(type);
         try {
             return mapper.readValue(data, javaType);

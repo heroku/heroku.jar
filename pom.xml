@@ -89,7 +89,7 @@
         <twitter.util.version>6.38.0</twitter.util.version>
         <ning.async.version>2.8.1</ning.async.version>
         <netty.version>4.1.34.Final</netty.version>
-        <jackson.version>1.9.10</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <gson.version>1.7.1</gson.version>
         <jdk.version>1.8</jdk.version>
         <source.plugin.version>2.1.2</source.plugin.version>
