@@ -12,7 +12,7 @@ import static org.testng.Assert.assertEquals;
 public class JsonTest {
   @Test
   public void parseRequest() {
-    App app = new App().named("foobar").on(Heroku.Stack.Cedar14);
+    App app = new App().named("foobar").on(Heroku.Stack.Heroku18);
     AppCreate request = new AppCreate(app);
 
     String json = request.getBody();

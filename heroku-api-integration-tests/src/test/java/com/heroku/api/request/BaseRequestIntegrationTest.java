@@ -99,7 +99,7 @@ public abstract class BaseRequestIntegrationTest {
 
     public App createApp(String type) {
         System.out.println("Creating " + (type.isEmpty() ? type : type + " ") + "app...");
-        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
+        App app = connection.execute(new AppCreate(new App().on(Heroku.Stack.Heroku18)), apiKey);
         apps.add(app);
         System.out.format("%s created\n", app.getName());
         return app;

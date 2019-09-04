@@ -197,7 +197,9 @@ Likewise, the secure random parameter may be null in which case the default impl
 
     public static enum Stack {
         Cedar14("cedar-14"),
-        Heroku16("heroku-16");
+        Container("container"),
+        Heroku16("heroku-16"),
+        Heroku18("heroku-18");
 
         public final String value;
 

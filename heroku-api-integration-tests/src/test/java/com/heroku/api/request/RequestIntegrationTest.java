@@ -1,6 +1,6 @@
 package com.heroku.api.request;
 
-import static com.heroku.api.Heroku.Stack.Cedar14;
+import static com.heroku.api.Heroku.Stack.Heroku18;
 import static com.heroku.api.IntegrationTestConfig.CONFIG;
 import static com.heroku.api.http.Http.Status.INTERNAL_SERVER_ERROR;
 import static com.heroku.api.http.Http.Status.SERVICE_UNAVAILABLE;
@@ -51,6 +51,7 @@ import com.heroku.api.request.team.TeamInvoiceList;
 import com.heroku.api.request.user.UserInfo;
 import com.heroku.api.response.Unit;
 import com.heroku.api.util.Range;
+import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -85,11 +86,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
 
   @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
   public void testCreateAppCommand() throws IOException {
-    AppCreate cmd = new AppCreate(new App().on(Cedar14));
+    AppCreate cmd = new AppCreate(new App().on(Heroku18));
     App response = connection.execute(cmd, apiKey);
 
     assertNotNull(response.getId());
-    assertEquals(response.getStack().getName(), Cedar14.value);
+    assertEquals(response.getStack().getName(), Heroku18.value);
     assertFalse(response.isMaintenance());
     assertNull(response.getBuildpackProvidedDescription());
     deleteApp(response.getName());
@@ -137,7 +138,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
   // don't use the app dataprovider because it'll try to delete an already deleted app
   @Test(retryAnalyzer = InternalServerErrorAnalyzer.class)
   public void testDestroyAppCommand() throws IOException {
-    AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Cedar14)).getName());
+    AppDestroy cmd = new AppDestroy(new HerokuAPI(connection, apiKey).createApp(new App().on(Heroku18)).getName());
     Unit response = connection.execute(cmd, apiKey);
     assertNotNull(response);
   }
@@ -163,7 +164,7 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
   public void testSharingTransferCommand() throws IOException {
     assertNotSame(IntegrationTestConfig.CONFIG.getDefaultUser().getUsername(), sharingUser.getUsername());
     HerokuAPI api = new HerokuAPI(IntegrationTestConfig.CONFIG.getDefaultUser().getApiKey());
-    App app = api.createApp(new App().on(Cedar14));
+    App app = api.createApp(new App().on(Heroku18));
     api.addCollaborator(app.getName(), sharingUser.getUsername());
     api.transferApp(app.getName(), sharingUser.getUsername());
 
@@ -302,7 +303,11 @@ public class RequestIntegrationTest extends BaseRequestIntegrationTest {
   @Test(dataProvider = "app", retryAnalyzer = InternalServerErrorAnalyzer.class)
   public void testStackList(App app) {
     List<StackInfo> stacks = connection.execute(new StackList(), apiKey);
+    assertFalse(stacks.isEmpty());
+    assertNotNull(app.getStack());
+    assertNotNull(app.getStack().getName());
     for (StackInfo s : stacks) {
+      assertNotNull(s.getStack());
       if (app.getStack().getName().equals(s.getStack().value)) {
         assertTrue(true);
         return;

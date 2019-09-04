@@ -168,12 +168,12 @@ public class HerokuAPI {
     }
 
     /**
-     * Create a new app on the {Heroku.Stack.Cedar14} stack. For more information about the Cedar stack, please see
+     * Create a new app on the {Heroku.Stack.Heroku18} stack. For more information about the Cedar stack, please see
      * the <a href="http://devcenter.heroku.com">Dev Center</a>.
      * @return an app object
      */
     public App createApp() {
-        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Cedar14)), apiKey);
+        return connection.execute(new AppCreate(new App().on(Heroku.Stack.Heroku18)), apiKey);
     }
 
     /**

@@ -91,7 +91,7 @@ public class JsonParseTest {
 
     @Test
     public void testEncodeApp() {
-        App a = new App().on(Heroku.Stack.Cedar14);
+        App a = new App().on(Heroku.Stack.Heroku18);
         a.setMaintenance(true);
         String json = encode(a);
         assertTrue(json.indexOf("true") != 0);
