@@ -4,8 +4,8 @@ set -e
 
 unset HEROKU_TEST_USERS
 
-./mvnw release:clean release:prepare -DdryRun
+./mvnw ${MAVEN_CUSTOM_OPTS:-} release:clean release:prepare -DdryRun
 
-./mvnw release:clean release:prepare
+./mvnw ${MAVEN_CUSTOM_OPTS:-} release:clean release:prepare
 
-./mvnw release:perform
+./mvnw ${MAVEN_CUSTOM_OPTS:-} release:perform
