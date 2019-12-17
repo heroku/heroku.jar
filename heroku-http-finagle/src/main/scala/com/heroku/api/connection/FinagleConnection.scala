@@ -14,7 +14,7 @@ import com.heroku.api.http.Http.UserAgent
 import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 import com.twitter.util.{Await, Base64StringEncoder, Future}
-import com.twitter.conversions.time._
+import com.twitter.conversions.DurationOps._
 import java.util
 
 import com.twitter.finagle
