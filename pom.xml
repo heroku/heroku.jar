@@ -150,6 +150,11 @@
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>3.4.6</version>
+                    <configuration>
+                        <args>
+                            <arg>-nobootcp</arg>
+                        </args>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
