@@ -1,13 +1,13 @@
 package com.heroku.api.connection
 
 import com.heroku.api.http._
-import com.twitter.finagle.{http, Service}
+import com.twitter.finagle.{Service, http}
 import com.heroku.api.request.Request
-import org.jboss.netty.buffer.ChannelBuffers
+
 import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
-import com.twitter.finagle.http.{HeaderMap, Response, Http}
-import java.nio.charset.Charset
+
+import com.twitter.finagle.http.{HeaderMap, Response}
 import com.twitter.finagle.builder.ClientBuilder
 import com.heroku.api.http.Http.Method
 import com.heroku.api.http.Http.UserAgent
@@ -16,6 +16,9 @@ import com.heroku.api.Heroku
 import com.twitter.util.{Await, Base64StringEncoder, Future}
 import com.twitter.conversions.time._
 import java.util
+
+import com.twitter.finagle
+import com.twitter.io.Buf
 
 import scala.collection.JavaConversions
 
@@ -85,9 +88,9 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
       }
     }
     if (cmd.hasBody) {
-      val body = ChannelBuffers.copiedBuffer(cmd.getBody, Charset.forName("UTF-8"))
+      val body = Buf.Utf8(cmd.getBody)
       req.write(body)
-      req.contentLength = body.readableBytes()
+      req.contentLength = body.length
     }
     req
   }
@@ -108,7 +111,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
   def newClient(): Service[http.Request, Response] = {
     val endpoint = HttpUtil.toURL(host)
     var builder = ClientBuilder()
-      .codec(Http())
+      .stack(finagle.Http.client)
       .hosts(new InetSocketAddress(endpoint.getHost, getPort(endpoint)))
       .hostConnectionLimit(10)
     if (endpoint.getProtocol.equals("https")) {
