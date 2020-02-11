@@ -146,6 +146,7 @@ public class HttpClientConnection implements FutureConnection {
         HttpHost proxy = new HttpHost(proxyUri.getHost(), proxyUri.getPort(), proxyUri.getScheme());
         DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
         return HttpClients.custom()
+            .useSystemProperties()
             .setRoutePlanner(routePlanner)
             .build();
     }
@@ -167,7 +168,7 @@ public class HttpClientConnection implements FutureConnection {
                 throw new IllegalArgumentException("HTTP_PROXY is not valid!" , e);
             }
         } else {
-            return HttpClients.createDefault();
+            return HttpClients.createSystem();
         }
     }
 
