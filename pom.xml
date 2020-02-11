@@ -154,6 +154,7 @@
                     <configuration>
                         <args>
                             <arg>-nobootcp</arg>
+                            <arg>-usejavacp</arg>
                         </args>
                     </configuration>
                 </plugin>
