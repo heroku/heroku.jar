@@ -51,6 +51,12 @@
             <version>${netty.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Override jackson-databind version of finagle -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
