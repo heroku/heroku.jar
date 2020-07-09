@@ -7,7 +7,7 @@ import com.heroku.api.Heroku;
  *
  * To provide a custom User-Agent value, implement this interface
  * and create a <i>provider-configuration file</i> at
- * <tt>META-INF/services/com.heroku.api.http.UserAgentValueProvider</tt>
+ * {@code META-INF/services/com.heroku.api.http.UserAgentValueProvider}
  * containing the fully-qualified name of your provider class.
  * See {@link java.util.ServiceLoader} for details.
  * 
