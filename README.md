@@ -1,7 +1,7 @@
 # Heroku JAR
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
-[![Build Status](https://travis-ci.org/heroku/heroku.jar.svg?branch=master)](https://travis-ci.org/heroku/heroku.jar) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.api/heroku-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.api/heroku-api)
+[![Build Status](https://travis-ci.com/heroku/heroku.jar.svg?branch=main)](https://travis-ci.com/heroku/heroku.jar) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.heroku.api/heroku-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.heroku.api/heroku-api)
 
 ## Usage
 
@@ -108,13 +108,13 @@ The default User-Agent header is recommended for most use cases.
 
 If this library is being used as part of another library or
 application that wishes to set its own User-Agent header value,
-implement the [`com.heroku.api.http.UserAgentValueProvider`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
+implement the [`com.heroku.api.http.UserAgentValueProvider`](https://github.com/heroku/heroku.jar/blob/main/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
 interface and create a provider-configuration file at `META-INF/services/com.heroku.api.http.UserAgentValueProvider`
 containing the fully-qualified name of your provider class.
 See [`java.util.ServiceLoader`](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) for details.
 
 To conform to [RFC 2616 Section 14.43](http://tools.ietf.org/html/rfc2616#section-14.43), consider prepending the value
-from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/master/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
+from the [`DEFAULT`](https://github.com/heroku/heroku.jar/blob/main/heroku-api/src/main/java/com/heroku/api/http/UserAgentValueProvider.java)
 provider with your own user agent.
 
 ## Building Locally

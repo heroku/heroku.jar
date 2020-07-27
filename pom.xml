@@ -18,7 +18,7 @@
     <licenses>
         <license>
             <name>BSD License (BSD 3-Clause)</name>
-            <url>https://github.com/heroku/heroku.jar/blob/master/LICENSE</url>
+            <url>https://github.com/heroku/heroku.jar/blob/main/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
