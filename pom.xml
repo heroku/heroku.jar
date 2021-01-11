@@ -86,7 +86,7 @@
         <finagle.version>20.5.0</finagle.version>
         <scala.version>2.11.12</scala.version>
         <twitter.util.version>19.12.0</twitter.util.version>
-        <ning.async.version>2.10.4</ning.async.version>
+        <ning.async.version>2.12.2</ning.async.version>
         <netty.version>4.1.44.Final</netty.version>
         <jackson.version>2.9.10.8</jackson.version>
         <jackson.annotations.version>2.9.10</jackson.annotations.version>
