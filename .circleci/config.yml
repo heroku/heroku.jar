@@ -1,8 +1,42 @@
-version: 2 # use CircleCI 2.0
-jobs: # a collection of steps
-  build:
+version: 2.1
+
+executors:
+  openjdk-8:
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: cimg/openjdk:8.0
+  openjdk-11:
+    docker:
+      - image: cimg/openjdk:11.0
+  openjdk-15:
+    docker:
+      - image: cimg/openjdk:15.0
+
+jobs:
+  maven:
+    parameters:
+      executor:
+        type: "string"
+    executor:
+      name: << parameters.executor >>
     steps:
       - checkout
-      - run: mvn clean verify
+      - run: ./mvnw clean verify
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+
+workflows:
+  ci:
+    jobs:
+      - maven:
+          matrix:
+            parameters:
+              executor: ["openjdk-8", "openjdk-11", "openjdk-15"]
+
