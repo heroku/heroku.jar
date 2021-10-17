@@ -80,7 +80,7 @@
     <properties>
         <heroku.jar.version>${project.version}</heroku.jar.version>
         <testng.version>7.4.0</testng.version>
-        <guice.version>4.1.0</guice.version>
+        <guice.version>5.0.1</guice.version>
         <apache.commons-httpclient.version>4.5.7</apache.commons-httpclient.version>
         <apache.commons-httpcore.version>4.4.11</apache.commons-httpcore.version>
         <finagle.version>21.2.0</finagle.version>
