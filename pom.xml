@@ -93,7 +93,7 @@
         <gson.version>1.7.1</gson.version>
         <jdk.version>1.8</jdk.version>
         <source.plugin.version>3.2.1</source.plugin.version>
-        <gpg.plugin.version>1.2</gpg.plugin.version>
+        <gpg.plugin.version>3.0.1</gpg.plugin.version>
         <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <jersey.version>2.26</jersey.version>
         <release.plugin.version>2.5.3</release.plugin.version>
