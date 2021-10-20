@@ -84,7 +84,7 @@
         <apache.commons-httpclient.version>4.5.13</apache.commons-httpclient.version>
         <apache.commons-httpcore.version>4.4.14</apache.commons-httpcore.version>
         <finagle.version>21.2.0</finagle.version>
-        <scala.version>2.11.12</scala.version>
+        <scala.version>2.13.6</scala.version>
         <twitter.util.version>21.2.0</twitter.util.version>
         <ning.async.version>2.12.3</ning.async.version>
         <netty.version>4.1.44.Final</netty.version>
