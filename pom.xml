@@ -87,7 +87,7 @@
         <scala.version>2.13.10</scala.version>
         <twitter.util.version>22.7.0</twitter.util.version>
         <ning.async.version>2.12.3</ning.async.version>
-        <netty.version>4.1.70.Final</netty.version>
+        <netty.version>4.1.84.Final</netty.version>
         <jackson.version>2.13.4.2</jackson.version>
         <jackson.annotations.version>2.13.4</jackson.annotations.version>
         <gson.version>2.10</gson.version>
