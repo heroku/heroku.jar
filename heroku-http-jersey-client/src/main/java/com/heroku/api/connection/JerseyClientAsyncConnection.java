@@ -7,11 +7,11 @@ import com.heroku.api.request.Request;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
-import org.glassfish.jersey.internal.util.Base64;
+import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.client.*;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class JerseyClientAsyncConnection implements AsyncConnection<Future<?>> {
     public <T> Future<T> executeAsync(final Request<T> request, final Map<String,String> extraHeaders, final String apiKey) {
         final Invocation.Builder builder = client.target(ENDPOINT.value + request.getEndpoint()).request();
 
-        builder.header("Authorization", Base64.encodeAsString((":" + apiKey).getBytes()));
+        builder.header("Authorization", Base64.getEncoder().encodeToString((":" + apiKey).getBytes()));
         builder.header(request.getResponseType().getHeaderName(), request.getResponseType().getHeaderValue());
         builder.header(Heroku.ApiVersion.v3.getHeaderName(), Heroku.ApiVersion.v3.getHeaderValue());
         builder.header(Http.ContentType.JSON.getHeaderName(), Http.ContentType.JSON.getHeaderValue());
