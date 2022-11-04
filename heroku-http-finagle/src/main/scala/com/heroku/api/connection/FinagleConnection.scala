@@ -4,7 +4,6 @@ import com.heroku.api.http._
 import com.twitter.finagle.{Service, http}
 import com.heroku.api.request.Request
 
-import collection.JavaConversions._
 import java.net.{InetSocketAddress, URL}
 
 import com.twitter.finagle.http.{HeaderMap, Response}
@@ -15,12 +14,11 @@ import com.heroku.api.Heroku.ApiVersion
 import com.heroku.api.Heroku
 import com.twitter.util.{Await, Base64StringEncoder, Future}
 import com.twitter.conversions.DurationOps._
+import scala.jdk.CollectionConverters._
 import java.util
 
 import com.twitter.finagle
 import com.twitter.io.Buf
-
-import scala.collection.JavaConversions
 
 trait TwitterFutureConnection extends AsyncConnection[Future[_]] {
   def executeAsync[T](request: Request[T], apiKey: String): Future[T]
@@ -49,7 +47,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
 
   def execute[T](request: Request[T], key: String): T = Await.result(executeAsync(request, key), timeout)
 
-  def executeAsync[T](request: Request[T], apiKey: String): Future[T] = executeAsync(request, mapAsJavaMap(Map.empty), apiKey)
+  def executeAsync[T](request: Request[T], apiKey: String): Future[T] = executeAsync(request, Map.empty.asJava, apiKey)
 
   def execute[T](request: Request[T], extraHeaders: util.Map[String, String], apiKey: String): T = Await.result(executeAsync(request, extraHeaders, apiKey), timeout)
 
@@ -82,7 +80,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
       req.authorization = "Basic " + Base64StringEncoder.encode((":" + key).getBytes("UTF-8"))
     }
 
-    (cmd.getHeaders ++ extraHeaders) foreach {
+    (cmd.getHeaders.asScala ++ extraHeaders.asScala) foreach {
       _ match {
         case (k, v) => req.headerMap.add(k, v)
       }
@@ -129,7 +127,7 @@ class FinagleConnection(val host: String) extends TwitterFutureConnection {
   }
 
   def toJavaMap(headers:HeaderMap) = {
-    JavaConversions.mapAsJavaMap(headers.toMap)
+    headers.toMap.asJava
   }
 }
 

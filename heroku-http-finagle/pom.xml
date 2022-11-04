@@ -23,25 +23,25 @@
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>finagle-core_2.11</artifactId>
+            <artifactId>finagle-core_2.13</artifactId>
             <version>${finagle.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>finagle-http_2.11</artifactId>
+            <artifactId>finagle-http_2.13</artifactId>
             <version>${finagle.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>util-core_2.11</artifactId>
+            <artifactId>util-core_2.13</artifactId>
             <version>${twitter.util.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.twitter</groupId>
-            <artifactId>util-codec_2.11</artifactId>
+            <artifactId>util-codec_2.13</artifactId>
             <version>${twitter.util.version}</version>
             <scope>compile</scope>
         </dependency>

@@ -83,9 +83,9 @@
         <guice.version>5.0.1</guice.version>
         <apache.commons-httpclient.version>4.5.13</apache.commons-httpclient.version>
         <apache.commons-httpcore.version>4.4.15</apache.commons-httpcore.version>
-        <finagle.version>21.2.0</finagle.version>
-        <scala.version>2.11.12</scala.version>
-        <twitter.util.version>21.2.0</twitter.util.version>
+        <finagle.version>22.7.0</finagle.version>
+        <scala.version>2.13.10</scala.version>
+        <twitter.util.version>22.7.0</twitter.util.version>
         <ning.async.version>2.12.3</ning.async.version>
         <netty.version>4.1.70.Final</netty.version>
         <jackson.version>2.13.0</jackson.version>
@@ -132,7 +132,7 @@
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
-                    <version>3.4.6</version>
+                    <version>4.7.2</version>
                     <configuration>
                         <args>
                             <arg>-nobootcp</arg>
