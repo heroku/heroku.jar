@@ -95,7 +95,7 @@
         <source.plugin.version>3.2.1</source.plugin.version>
         <gpg.plugin.version>3.0.1</gpg.plugin.version>
         <javadoc.plugin.version>3.5.0</javadoc.plugin.version>
-        <jersey.version>3.0.9</jersey.version>
+        <jersey.version>3.0.10</jersey.version>
         <release.plugin.version>2.5.3</release.plugin.version>
         <nexus-staging.plugin.version>1.6.13</nexus-staging.plugin.version>
     </properties>
