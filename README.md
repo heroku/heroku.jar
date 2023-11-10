@@ -3,6 +3,9 @@
 ![Maven Central](https://img.shields.io/maven-central/v/com.heroku.api/heroku-api)
 [![CI](https://github.com/heroku/heroku.jar/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku.jar/actions/workflows/ci.yml)
 
+> [!WARNING]
+> This project is out-of-date and is not being actively maintained.
+
 The Heroku JAR is a java artifact that provides a simple wrapper for the Heroku REST API. The Heroku REST API allows Heroku users to manage their accounts, applications, addons, and other aspects related to Heroku.
 
 
